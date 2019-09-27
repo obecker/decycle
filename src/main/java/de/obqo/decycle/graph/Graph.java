@@ -13,18 +13,19 @@ import com.google.common.graph.MutableNetwork;
 import com.google.common.graph.NetworkBuilder;
 import de.obqo.decycle.model.Node;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.val;
 
 public class Graph {
 
-    private enum EdgeLabel {
+    enum EdgeLabel {
         CONTAINS, REFERENCES
     }
 
     @RequiredArgsConstructor
     @EqualsAndHashCode
-    private static class Edge {
+    @Getter
+    static class Edge {
 
         private final Node from;
         private final Node to;
@@ -57,7 +58,7 @@ public class Graph {
     private MutableNetwork<Node, Edge> internalGraph =
             NetworkBuilder.directed().allowsParallelEdges(true).build();
 
-    public void connect(Node a, Node b) {
+    public void connect(final Node a, final Node b) {
         System.out.println(String.format("%s -> %s", a, b));
 
         addEdge(a, b);
@@ -66,23 +67,23 @@ public class Graph {
     }
 
     private void addEdge(final Node a, final Node b) {
-        if (filter.test(a) && filter.test(b) && edgeFilter.test(a, b)) {
-            internalGraph.addEdge(a, b, new Edge(a, b, EdgeLabel.REFERENCES));
+        if (this.filter.test(a) && this.filter.test(b) && this.edgeFilter.test(a, b)) {
+            this.internalGraph.addEdge(a, b, new Edge(a, b, EdgeLabel.REFERENCES));
         }
     }
 
-    public void add(Node node) {
+    public void add(final Node node) {
         System.out.println(String.format("Add %s", node));
 
-        if (filter.test(node)) {
+        if (this.filter.test(node)) {
             unfilteredAdd(node);
         }
     }
 
-    private void unfilteredAdd(Node node) {
-        val cat = category.apply(node);
+    private void unfilteredAdd(final Node node) {
+        final var cat = this.category.apply(node);
         if (cat.equals(node)) {
-            internalGraph.addNode(node);
+            this.internalGraph.addNode(node);
         } else {
             addNodeToSlice(node, cat);
             unfilteredAdd(cat);
@@ -90,32 +91,34 @@ public class Graph {
     }
 
     private void addNodeToSlice(final Node node, final Node cat) {
-        internalGraph.addEdge(cat, node, new Edge(cat, node, EdgeLabel.CONTAINS));
+        this.internalGraph.addEdge(cat, node, new Edge(cat, node, EdgeLabel.CONTAINS));
     }
 
     public Set<Node> allNodes() {
-        return internalGraph.nodes();
+        return this.internalGraph.nodes();
     }
 
     public Set<Node> topNodes() {
-        return internalGraph.nodes().stream()
-                            .filter(n -> internalGraph.inEdges(n).stream()
-                                                      .allMatch(e -> e.label != EdgeLabel.CONTAINS))
-                            .collect(Collectors.toSet());
+        return this.internalGraph.nodes().stream()
+                                 .filter(n -> this.internalGraph.inEdges(n).stream()
+                                                                .allMatch(e -> e.label != EdgeLabel.CONTAINS))
+                                 .collect(Collectors.toSet());
     }
 
-    private Set<Node> connectedNodes(Node node, EdgeLabel label) {
-        return internalGraph.nodes().contains(node) ? internalGraph.outEdges(node).stream()
-                                                                   .filter(e -> e.label == label)
-                                                                   .map(e -> e.to)
-                                                                   .collect(Collectors.toSet()) : Set.of();
+    private Set<Node> connectedNodes(final Node node, final EdgeLabel label) {
+        return this.internalGraph.nodes().contains(node)
+                ? this.internalGraph.outEdges(node).stream()
+                                    .filter(e -> e.label == label)
+                                    .map(e -> e.to)
+                                    .collect(Collectors.toSet())
+                : Set.of();
     }
 
-    public Set<Node> contentsOf(Node group) {
+    public Set<Node> contentsOf(final Node group) {
         return connectedNodes(group, EdgeLabel.CONTAINS);
     }
 
-    public Set<Node> connectionsOf(Node node) {
+    public Set<Node> connectionsOf(final Node node) {
         return connectedNodes(node, EdgeLabel.REFERENCES);
     }
 }
