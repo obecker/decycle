@@ -41,13 +41,4 @@ public class SimpleNode implements Node {
     public Set<String> getTypes() {
         return Set.of(this.nodeType);
     }
-
-//    public SimpleNode toPackageNode() {
-//        if (this.nodeType == PACKAGE) {
-//            return this;
-//        }
-//        final int classNameIndex = this.name.lastIndexOf('.');
-//        final String packageName = classNameIndex < 0 ? "" : this.name.substring(0, classNameIndex);
-//        return packageNode(packageName);
-//    }
 }

@@ -1,6 +1,7 @@
 package de.obqo.decycle.graph;
 
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 
 import com.google.common.graph.Network;
@@ -15,7 +16,6 @@ class SliceNodeFinder implements Function<Node, SimpleNode> {
     private final String slice;
     private final Network<Node, Graph.Edge> graph;
 
-
     private boolean contains(final ParentAwareNode pan) {
         return pan.getVals().stream().anyMatch(n ->
                 n instanceof SimpleNode && n.getTypes().contains(this.slice));
@@ -28,13 +28,15 @@ class SliceNodeFinder implements Function<Node, SimpleNode> {
                   .findFirst().get();
     }
 
+    private Set<Graph.Edge> inEdges(final Node node) {
+        return this.graph.nodes().contains(node) ? this.graph.inEdges(node) : Set.of();
+    }
+
     private Optional<Node> container(final Node n) {
-        return this.graph.nodes().contains(n)
-                ? this.graph.inEdges(n).stream()
-                            .filter(e -> e.getLabel() == Graph.EdgeLabel.CONTAINS)
-                            .map(Graph.Edge::getFrom)
-                            .findFirst()
-                : Optional.empty();
+        return inEdges(n).stream()
+                         .filter(e -> e.getLabel() == Graph.EdgeLabel.CONTAINS)
+                         .map(Graph.Edge::getFrom)
+                         .findFirst();
     }
 
     public boolean isDefinedAt(final Node n) {
@@ -57,5 +59,9 @@ class SliceNodeFinder implements Function<Node, SimpleNode> {
             return findIn((ParentAwareNode) node);
         }
         return apply(container(node).get());
+    }
+
+    public Optional<SimpleNode> lift(final Node node) {
+        return isDefinedAt(node) ? Optional.of(apply(node)) : Optional.empty();
     }
 }
