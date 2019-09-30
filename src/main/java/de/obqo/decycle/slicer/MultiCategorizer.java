@@ -5,7 +5,7 @@ import java.util.Objects;
 import de.obqo.decycle.model.Node;
 
 /**
- * combines multiple Categorizers to a single one by applying one after the other until one succeeds to categorize the node.
+ * Combines multiple Categorizers to a single one by applying one after the other until one succeeds to categorize the node.
  */
 public class MultiCategorizer implements Categorizer {
 

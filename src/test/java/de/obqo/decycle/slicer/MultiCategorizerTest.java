@@ -25,14 +25,14 @@ class MultiCategorizerTest {
 
     @Test
     void combineWithASingleCategorizerShouldReturnCategoryOfTheArgument() {
-        final Categorizer cat = new MultiCategorizer(ListCategory.of(n("a"), n("b"), n("c")));
+        final Categorizer cat = new MultiCategorizer(ListCategorizer.of(n("a"), n("b"), n("c")));
 
         assertThat(cat.apply(n("b"))).isEqualTo(n("c"));
     }
 
     @Test
     void shouldCombine() {
-        final Categorizer cat = new MultiCategorizer(ListCategory.of(n("a"), n("b")), ListCategory.of(n("b"), n("c")));
+        final Categorizer cat = new MultiCategorizer(ListCategorizer.of(n("a"), n("b")), ListCategorizer.of(n("b"), n("c")));
 
         assertThat(cat.apply(n("b"))).isEqualTo(n("c"));
     }

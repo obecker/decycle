@@ -8,15 +8,15 @@ import de.obqo.decycle.model.Node;
  * Represents a list of categories, so for example in {@code ListCategory.of(a, b, c)} the category of {@code a} is
  * {@code b} and the category of {@code b} is {@code c}.
  */
-public class ListCategory implements Categorizer {
+public class ListCategorizer implements Categorizer {
 
     private List<Node> nodes;
 
-    public static ListCategory of(final Node... nodes) {
-        return new ListCategory(List.of(nodes));
+    public static ListCategorizer of(final Node... nodes) {
+        return new ListCategorizer(List.of(nodes));
     }
 
-    private ListCategory(final List<Node> nodes) {
+    private ListCategorizer(final List<Node> nodes) {
         this.nodes = nodes;
     }
 

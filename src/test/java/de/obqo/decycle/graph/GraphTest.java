@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import de.obqo.decycle.model.Node;
 import de.obqo.decycle.model.SimpleNode;
-import de.obqo.decycle.slicer.ListCategory;
+import de.obqo.decycle.slicer.ListCategorizer;
 
 class GraphTest {
 
@@ -74,7 +74,7 @@ class GraphTest {
         final var topCategory = n("top");
         final var subCategory = n("sub");
         final var node = n("a");
-        final var g = new Graph(ListCategory.of(node, subCategory, topCategory));
+        final var g = new Graph(ListCategorizer.of(node, subCategory, topCategory));
         g.add(node);
 
         assertThat(g.topNodes()).containsOnly(topCategory);
@@ -134,7 +134,7 @@ class GraphTest {
 
     @Test
     void allNodesInAGraphWithCategoriesShouldContainTheNodesAndAllCategories() {
-        final var g = new Graph(ListCategory.of(n("a"), n("b"), n("c")).combine(ListCategory.of(n("23"), n("42"), n("c"))));
+        final var g = new Graph(ListCategorizer.of(n("a"), n("b"), n("c")).combine(ListCategorizer.of(n("23"), n("42"), n("c"))));
         g.add(n("a"));
         g.add(n("23"));
 
@@ -144,7 +144,7 @@ class GraphTest {
 
     @Test
     void categoriesShouldNotBeFiltered() {
-        final var g = new Graph(ListCategory.of(n("a"), n("b")), x -> x.equals(n("a")));
+        final var g = new Graph(ListCategorizer.of(n("a"), n("b")), x -> x.equals(n("a")));
         g.add(n("a"));
 
         assertThat(g.topNodes()).containsOnly(n("b"));

@@ -34,7 +34,7 @@ public class Graph {
         private final EdgeLabel label;
     }
 
-    private final Categorizer category;
+    private final Categorizer categorizer;
     private final Predicate<Node> filter;
     private final BiPredicate<Node, Node> edgeFilter;
 
@@ -45,24 +45,22 @@ public class Graph {
         this(null);
     }
 
-    public Graph(final Categorizer category) {
-        this(category, null);
+    public Graph(final Categorizer categorizer) {
+        this(categorizer, null);
     }
 
-    public Graph(final Categorizer category, final Predicate<Node> filter) {
-        this(category, filter, null);
+    public Graph(final Categorizer categorizer, final Predicate<Node> filter) {
+        this(categorizer, filter, null);
     }
 
-    public Graph(final Categorizer category, final Predicate<Node> filter,
+    public Graph(final Categorizer categorizer, final Predicate<Node> filter,
                  final BiPredicate<Node, Node> edgeFilter) {
-        this.category = defaultValue(category, n -> n);
+        this.categorizer = defaultValue(categorizer, n -> n);
         this.filter = defaultValue(filter, __ -> true);
         this.edgeFilter = defaultValue(edgeFilter, (n, m) -> true).and((n, m) -> !Objects.equals(n, m));
     }
 
     public void connect(final Node a, final Node b) {
-        System.out.println(String.format("%s -> %s", a, b));
-
         addEdge(a, b);
         add(a);
         add(b);
@@ -75,15 +73,13 @@ public class Graph {
     }
 
     public void add(final Node node) {
-        System.out.println(String.format("Add %s", node));
-
         if (this.filter.test(node)) {
             unfilteredAdd(node);
         }
     }
 
     private void unfilteredAdd(final Node node) {
-        final var cat = this.category.apply(node);
+        final var cat = this.categorizer.apply(node);
         if (cat.equals(node)) {
             this.internalGraph.addNode(node);
         } else {
