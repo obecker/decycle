@@ -17,7 +17,7 @@ import lombok.SneakyThrows;
 public class Analyzer {
 
     public Graph analyze(final String sourceFolder, final Categorizer categorizer, final Predicate<Node> filter) {
-        final Graph graph = new Graph(categorizer, filter);
+        final Graph graph = new Graph(categorizer, filter, new NoSelfReference(categorizer));
 
         final String[] libs = sourceFolder.split(System.getProperty("path.separator"));
         Stream.of(libs).flatMap(FileFinder::find).forEach(file -> analyze(file, graph));

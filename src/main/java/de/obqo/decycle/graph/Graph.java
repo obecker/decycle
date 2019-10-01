@@ -18,7 +18,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-public class Graph {
+public class Graph implements SliceSource {
 
     enum EdgeLabel {
         CONTAINS, REFERENCES
@@ -57,7 +57,7 @@ public class Graph {
                  final BiPredicate<Node, Node> edgeFilter) {
         this.categorizer = defaultValue(categorizer, n -> n);
         this.filter = defaultValue(filter, __ -> true);
-        this.edgeFilter = defaultValue(edgeFilter, (n, m) -> true).and((n, m) -> !Objects.equals(n, m));
+        this.edgeFilter = defaultValue(edgeFilter, (n, m) -> !Objects.equals(n, m));
     }
 
     public void connect(final Node a, final Node b) {
@@ -122,6 +122,12 @@ public class Graph {
         return connectedNodes(node, EdgeLabel.REFERENCES);
     }
 
+    @Override
+    public Set<String> slices() {
+        return this.internalGraph.nodes().stream().flatMap(n -> n.getTypes().stream()).collect(Collectors.toSet());
+    }
+
+    @Override
     public Network<Node, Edge> slice(final String name) {
 
         final var sliceNodes = this.internalGraph.nodes().stream()

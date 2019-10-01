@@ -1,5 +1,6 @@
 package de.obqo.decycle.graph;
 
+import static de.obqo.decycle.model.SimpleNode.CLASS;
 import static de.obqo.decycle.model.SimpleNode.PACKAGE;
 import static de.obqo.decycle.model.SimpleNode.classNode;
 import static de.obqo.decycle.model.SimpleNode.packageNode;
@@ -55,5 +56,14 @@ class GraphSliceTest {
 
         assertThat(g.slice(PACKAGE).edges()).containsOnly(
                 new Graph.Edge(packageNode("p.one"), packageNode("p.two"), Graph.EdgeLabel.REFERENCES));
+    }
+
+    @Test
+    void shouldReturnSetOfContainedNodeTypesAsSlices() {
+        final var g = new Graph(new PackageCategorizer());
+        g.connect(classNode("package.one.class"), classNode("package.two.class"));
+        g.add(simpleNode("x", "x"));
+
+        assertThat(g.slices()).containsOnly(CLASS, PACKAGE, "x");
     }
 }
