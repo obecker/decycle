@@ -1,7 +1,7 @@
-package de.obqo.decycle.analyze;
+package de.obqo.decycle.analysis;
 
-import static de.obqo.decycle.analyze.VisitorSupport.classNode;
-import static de.obqo.decycle.analyze.VisitorSupport.classNodeFromDescriptor;
+import static de.obqo.decycle.analysis.VisitorSupport.classNode;
+import static de.obqo.decycle.analysis.VisitorSupport.classNodeFromDescriptor;
 
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassVisitor;

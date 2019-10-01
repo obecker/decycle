@@ -1,4 +1,4 @@
-package de.obqo.decycle.analyze;
+package de.obqo.decycle.analysis;
 
 import java.io.File;
 import java.util.function.Function;

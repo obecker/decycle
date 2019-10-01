@@ -1,4 +1,4 @@
-package de.obqo.decycle.analyze;
+package de.obqo.decycle.analysis;
 
 import java.io.BufferedInputStream;
 import java.io.File;
