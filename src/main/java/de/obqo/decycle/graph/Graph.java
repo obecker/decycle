@@ -1,5 +1,7 @@
 package de.obqo.decycle.graph;
 
+import static de.obqo.decycle.graph.Edge.EdgeLabel.CONTAINS;
+import static de.obqo.decycle.graph.Edge.EdgeLabel.REFERENCES;
 import static de.obqo.decycle.util.ObjectUtils.defaultValue;
 
 import java.util.Objects;
@@ -14,25 +16,8 @@ import com.google.common.graph.NetworkBuilder;
 import de.obqo.decycle.model.Node;
 import de.obqo.decycle.model.SimpleNode;
 import de.obqo.decycle.slicer.Categorizer;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 public class Graph implements SliceSource {
-
-    enum EdgeLabel {
-        CONTAINS, REFERENCES
-    }
-
-    @RequiredArgsConstructor
-    @EqualsAndHashCode
-    @Getter
-    static class Edge {
-
-        private final Node from;
-        private final Node to;
-        private final EdgeLabel label;
-    }
 
     private final Categorizer categorizer;
     private final Predicate<Node> filter;
@@ -68,7 +53,7 @@ public class Graph implements SliceSource {
 
     private void addEdge(final Node a, final Node b) {
         if (this.filter.test(a) && this.filter.test(b) && this.edgeFilter.test(a, b)) {
-            this.internalGraph.addEdge(a, b, new Edge(a, b, EdgeLabel.REFERENCES));
+            this.internalGraph.addEdge(a, b, new Edge(a, b, REFERENCES));
         }
     }
 
@@ -89,7 +74,7 @@ public class Graph implements SliceSource {
     }
 
     private void addNodeToSlice(final Node node, final Node cat) {
-        this.internalGraph.addEdge(cat, node, new Edge(cat, node, EdgeLabel.CONTAINS));
+        this.internalGraph.addEdge(cat, node, new Edge(cat, node, CONTAINS));
     }
 
     public Set<Node> allNodes() {
@@ -99,7 +84,7 @@ public class Graph implements SliceSource {
     public Set<Node> topNodes() {
         return this.internalGraph.nodes().stream()
                                  .filter(n -> this.internalGraph.inEdges(n).stream()
-                                                                .allMatch(e -> e.label != EdgeLabel.CONTAINS))
+                                                                .allMatch(e -> e.getLabel() != CONTAINS))
                                  .collect(Collectors.toSet());
     }
 
@@ -107,19 +92,19 @@ public class Graph implements SliceSource {
         return this.internalGraph.nodes().contains(node) ? this.internalGraph.outEdges(node) : Set.of();
     }
 
-    private Set<Node> connectedNodes(final Node node, final EdgeLabel label) {
+    private Set<Node> connectedNodes(final Node node, final Edge.EdgeLabel label) {
         return outEdges(node).stream()
-                             .filter(e -> e.label == label)
-                             .map(e -> e.to)
+                             .filter(e -> e.getLabel() == label)
+                             .map(Edge::getTo)
                              .collect(Collectors.toSet());
     }
 
     public Set<Node> contentsOf(final Node group) {
-        return connectedNodes(group, EdgeLabel.CONTAINS);
+        return connectedNodes(group, CONTAINS);
     }
 
     public Set<Node> connectionsOf(final Node node) {
-        return connectedNodes(node, EdgeLabel.REFERENCES);
+        return connectedNodes(node, REFERENCES);
     }
 
     @Override
@@ -141,15 +126,15 @@ public class Graph implements SliceSource {
 
         //---------------
         final var edges = this.internalGraph.edges().stream()
-                                            .filter(e -> e.label == EdgeLabel.REFERENCES)
+                                            .filter(e -> e.getLabel() == REFERENCES)
                                             .collect(Collectors.toSet());
 
         for (final Edge edge : edges) {
-            final var s1 = sliceNodeFinder.lift(edge.from);
-            final var s2 = sliceNodeFinder.lift(edge.to);
+            final var s1 = sliceNodeFinder.lift(edge.getFrom());
+            final var s2 = sliceNodeFinder.lift(edge.getTo());
             s1.ifPresent(n1 ->
                     s2.ifPresent(n2 ->
-                            sliceGraph.addEdge(n1, n2, new Edge(n1, n2, EdgeLabel.REFERENCES))));
+                            sliceGraph.addEdge(n1, n2, new Edge(n1, n2, REFERENCES))));
         }
 
         return sliceGraph;

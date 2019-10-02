@@ -37,7 +37,7 @@ class GraphSliceTest {
         g.connect(classNode("p.one.Class"), classNode("p.two.Class"));
 
         assertThat(g.slice(PACKAGE).edges()).containsOnly(
-                new Graph.Edge(packageNode("p.one"), packageNode("p.two"), Graph.EdgeLabel.REFERENCES));
+                new Edge(packageNode("p.one"), packageNode("p.two"), Edge.EdgeLabel.REFERENCES));
     }
 
     @Test
@@ -55,7 +55,7 @@ class GraphSliceTest {
         g.connect(classNode("p.one.Class$Inner"), classNode("p.two.Class$Inner"));
 
         assertThat(g.slice(PACKAGE).edges()).containsOnly(
-                new Graph.Edge(packageNode("p.one"), packageNode("p.two"), Graph.EdgeLabel.REFERENCES));
+                new Edge(packageNode("p.one"), packageNode("p.two"), Edge.EdgeLabel.REFERENCES));
     }
 
     @Test

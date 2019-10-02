@@ -19,19 +19,19 @@ class SliceNodeFinderTest {
         return simpleNode(s, s);
     }
 
-    private MutableNetwork<Node, Graph.Edge> graph() {
+    private MutableNetwork<Node, Edge> graph() {
         return NetworkBuilder.directed().build();
     }
 
-    private MutableNetwork<Node, Graph.Edge> graph(final Node n) {
-        final MutableNetwork<Node, Graph.Edge> g = graph();
+    private MutableNetwork<Node, Edge> graph(final Node n) {
+        final MutableNetwork<Node, Edge> g = graph();
         g.addNode(n);
         return g;
     }
 
-    private MutableNetwork<Node, Graph.Edge> graph(final Node from, final Node to, final Graph.EdgeLabel label) {
-        final MutableNetwork<Node, Graph.Edge> g = graph();
-        final Graph.Edge edge = new Graph.Edge(from, to, label);
+    private MutableNetwork<Node, Edge> graph(final Node from, final Node to, final Edge.EdgeLabel label) {
+        final MutableNetwork<Node, Edge> g = graph();
+        final Edge edge = new Edge(from, to, label);
         g.addEdge(from, to, edge);
         return g;
     }
@@ -97,7 +97,7 @@ class SliceNodeFinderTest {
     @Test
     void traversesContainsRelationship() {
         final var p = packageNode("p");
-        final var g = graph(p, n("x"), Graph.EdgeLabel.CONTAINS);
+        final var g = graph(p, n("x"), Edge.EdgeLabel.CONTAINS);
         final var finder = new SliceNodeFinder(SimpleNode.PACKAGE, g);
 
         assertThat(finder.isDefinedAt(n("x"))).isTrue();
@@ -108,7 +108,7 @@ class SliceNodeFinderTest {
     void shouldReturnCorrectElementFromSlicesRelationship() {
         final var p = packageNode("p");
         final var c = classNode("p.c");
-        final var g = graph(p, c, Graph.EdgeLabel.CONTAINS);
+        final var g = graph(p, c, Edge.EdgeLabel.CONTAINS);
         final var finder = new SliceNodeFinder(SimpleNode.PACKAGE, g);
 
         assertThat(finder.isDefinedAt(c)).isTrue();

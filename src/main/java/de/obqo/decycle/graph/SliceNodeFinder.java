@@ -14,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 class SliceNodeFinder implements Function<Node, SimpleNode> {
 
     private final String slice;
-    private final Network<Node, Graph.Edge> graph;
+    private final Network<Node, Edge> graph;
 
     private boolean contains(final ParentAwareNode pan) {
         return pan.getVals().stream().anyMatch(n ->
@@ -28,14 +28,14 @@ class SliceNodeFinder implements Function<Node, SimpleNode> {
                   .findFirst().get();
     }
 
-    private Set<Graph.Edge> inEdges(final Node node) {
+    private Set<Edge> inEdges(final Node node) {
         return this.graph.nodes().contains(node) ? this.graph.inEdges(node) : Set.of();
     }
 
     private Optional<Node> container(final Node n) {
         return inEdges(n).stream()
-                         .filter(e -> e.getLabel() == Graph.EdgeLabel.CONTAINS)
-                         .map(Graph.Edge::getFrom)
+                         .filter(e -> e.getLabel() == Edge.EdgeLabel.CONTAINS)
+                         .map(Edge::getFrom)
                          .findFirst();
     }
 

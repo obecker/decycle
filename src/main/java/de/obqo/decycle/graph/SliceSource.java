@@ -9,6 +9,6 @@ public interface SliceSource {
 
     Set<String> slices();
 
-    Network<Node, Graph.Edge> slice(String name);
+    Network<Node, Edge> slice(String name);
 
 }
