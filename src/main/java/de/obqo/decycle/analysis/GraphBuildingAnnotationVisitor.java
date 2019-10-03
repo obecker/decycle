@@ -23,18 +23,18 @@ class GraphBuildingAnnotationVisitor extends AnnotationVisitor {
     @Override
     public void visit(final String name, final Object value) {
         if (value instanceof Type) {
-            graph.connect(currentClass, classNodeFromSingleType(((Type) value).getClassName()));
+            this.graph.connect(this.currentClass, classNodeFromSingleType(((Type) value).getClassName()));
         }
     }
 
     @Override
     public void visitEnum(final String name, final String descriptor, final String value) {
-        classNodeFromDescriptor(descriptor).forEach(node -> graph.connect(currentClass, node));
+        classNodeFromDescriptor(descriptor).forEach(node -> this.graph.connect(this.currentClass, node));
     }
 
     @Override
     public AnnotationVisitor visitAnnotation(final String name, final String descriptor) {
-        classNodeFromDescriptor(descriptor).forEach(node -> graph.connect(currentClass, node));
+        classNodeFromDescriptor(descriptor).forEach(node -> this.graph.connect(this.currentClass, node));
         return this;
     }
 

@@ -15,6 +15,7 @@ import de.obqo.decycle.graph.Graph;
 import de.obqo.decycle.model.Node;
 import de.obqo.decycle.model.SimpleNode;
 import de.obqo.decycle.slicer.PackageCategorizer;
+import de.obqo.decycle.slicer.ParallelCategorizer;
 
 class CycleFreeTest {
 
@@ -51,6 +52,20 @@ class CycleFreeTest {
     @Test
     void graphWithCyclicDependenciesBetweenPackagesShouldBeReportedAsCyclic() {
         final var g = new Graph(new PackageCategorizer());
+        g.connect(classNode("de.p1.A1"), classNode("de.p2.B2"));
+        g.connect(classNode("de.p2.B1"), classNode("de.p3.C2"));
+        g.connect(classNode("de.p3.C1"), classNode("de.p1.A2"));
+
+        assertThat(dependenciesIn(this.cycleFree.violations(g))).containsOnly(
+                e("de.p1", "de.p2"),
+                e("de.p2", "de.p3"),
+                e("de.p3", "de.p1")
+        );
+    }
+
+    @Test
+    void shouldDetectCycleWithCombinedSlices() {
+        final var g = new Graph(new ParallelCategorizer(new PackageCategorizer(), __ -> SimpleNode.simpleNode("tld", "de")));
         g.connect(classNode("de.p1.A1"), classNode("de.p2.B2"));
         g.connect(classNode("de.p2.B1"), classNode("de.p3.C2"));
         g.connect(classNode("de.p3.C1"), classNode("de.p1.A2"));

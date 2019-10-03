@@ -50,12 +50,6 @@ public class GraphBuildingClassVisitor extends ClassVisitor {
     }
 
     @Override
-    public void visitNestHost(final String nestHost) {
-        // TODO
-        super.visitNestHost(nestHost);
-    }
-
-    @Override
     public void visitOuterClass(final String owner, final String name, final String descriptor) {
         graph.add(classNode(owner));
         classNodeFromDescriptor(descriptor).forEach(node -> graph.add(node));
@@ -72,12 +66,6 @@ public class GraphBuildingClassVisitor extends ClassVisitor {
                                                  final boolean visible) {
         classNodeFromDescriptor(descriptor).forEach(node -> graph.connect(currentClass, node));
         return new GraphBuildingAnnotationVisitor(api, graph, currentClass);
-    }
-
-    @Override
-    public void visitNestMember(final String nestMember) {
-        // TODO
-        super.visitNestMember(nestMember);
     }
 
     @Override

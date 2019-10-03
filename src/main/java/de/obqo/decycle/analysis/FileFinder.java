@@ -15,7 +15,7 @@ class FileFinder {
      * @return a {@link Stream} of all {@code *.class} and {@code *.jar} files in the directory specified by {@code
      * rootPath} and its sub directories
      */
-    static Stream<File> find(String rootPath) {
+    static Stream<File> find(final String rootPath) {
         return singleDirFind(new File(rootPath));
     }
 
@@ -26,16 +26,16 @@ class FileFinder {
             final String[] filenames = root.list();
             assert filenames != null;
 
-            Stream<File> classFiles = Stream.of(filenames).filter(FileFinder::isClassFile).map(toFile);
-            Stream<File> dirs = Stream.of(filenames).map(toFile).filter(File::isDirectory);
-            Stream<File> nestedClassFiles = dirs.flatMap(FileFinder::singleDirFind);
+            final Stream<File> classFiles = Stream.of(filenames).filter(FileFinder::isClassFile).map(toFile);
+            final Stream<File> dirs = Stream.of(filenames).map(toFile).filter(File::isDirectory);
+            final Stream<File> nestedClassFiles = dirs.flatMap(FileFinder::singleDirFind);
             return Stream.concat(classFiles, nestedClassFiles);
         } else {
             return Stream.of(root).filter(file -> isClassFile(file.getName()));
         }
     }
 
-    private static boolean isClassFile(String name) {
+    private static boolean isClassFile(final String name) {
         return name.endsWith(".class") || name.endsWith(".jar");
     }
 }

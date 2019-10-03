@@ -12,11 +12,11 @@ class VisitorSupport {
     private static Pattern singlePattern = Pattern.compile("\\[*L([\\w/$]+);");
     private static Pattern multiPattern = Pattern.compile("(?<=L)([\\w/$]+)(?=[;<])");
 
-    static SimpleNode classNode(String slashSeparatedName) {
+    static SimpleNode classNode(final String slashSeparatedName) {
         return SimpleNode.classNode(slashSeparatedName.replace('/', '.'));
     }
 
-    static SimpleNode classNodeFromSingleType(String singleTypeDescription) {
+    static SimpleNode classNodeFromSingleType(final String singleTypeDescription) {
         final Matcher matcher = singlePattern.matcher(singleTypeDescription);
         if (matcher.matches()) {
             return classNode(matcher.group(1));
@@ -25,7 +25,7 @@ class VisitorSupport {
         }
     }
 
-    static Set<SimpleNode> classNodeFromDescriptor(String desc) {
+    static Set<SimpleNode> classNodeFromDescriptor(final String desc) {
         if (desc == null || desc.isEmpty()) {
             return Set.of();
         } else {

@@ -84,4 +84,34 @@ class StronglyConnectedComponentsFinderTest {
 
         assertThat(components).containsOnly(Set.of(e(a, b), e(b, c), e(c, a)), Set.of(e(y, z), e(z, y)));
     }
+
+    @Test
+    void shouldFindAllEdgesOfConnectedComponents() {
+        final Node a = n("a");
+        final Node b = n("b");
+        final Node c = n("c");
+        final Node d = n("d");
+        final Node x = n("x");
+        final Node y = n("y");
+        final Node z = n("z");
+
+        final var g = new Graph();
+        g.connect(a, b);
+        g.connect(b, c);
+        g.connect(c, d);
+        g.connect(d, a);
+        g.connect(a, c);
+        g.connect(d, b);
+
+        g.connect(x, y);
+        g.connect(y, z);
+        g.connect(z, x);
+        g.connect(y, x);
+
+        final var components = StronglyConnectedComponentsFinder.findComponents(g.slice(SimpleNode.PACKAGE));
+
+        assertThat(components).containsOnly(
+                Set.of(e(a, b), e(b, c), e(c, d), e(d, a), e(a, c), e(d, b)),
+                Set.of(e(x, y), e(y, z), e(z, x), e(y, x)));
+    }
 }

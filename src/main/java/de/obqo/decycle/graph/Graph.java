@@ -133,8 +133,11 @@ public class Graph implements SliceSource {
             final var s1 = sliceNodeFinder.lift(edge.getFrom());
             final var s2 = sliceNodeFinder.lift(edge.getTo());
             s1.ifPresent(n1 ->
-                    s2.ifPresent(n2 ->
-                            sliceGraph.addEdge(n1, n2, new Edge(n1, n2, REFERENCES))));
+                    s2.ifPresent(n2 -> {
+                        if (!Objects.equals(n1, n2)) {
+                            sliceGraph.addEdge(n1, n2, new Edge(n1, n2, REFERENCES));
+                        }
+                    }));
         }
 
         return sliceGraph;

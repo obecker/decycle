@@ -4,15 +4,24 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 
 @Getter
+@EqualsAndHashCode
+@ToString
 public class ParentAwareNode implements Node {
 
     private final List<Node> vals;
 
     public ParentAwareNode(final Node... vals) {
+        assert vals != null;
         this.vals = List.of(vals);
+    }
+
+    private ParentAwareNode(final List<Node> vals) {
+        this.vals = vals;
     }
 
     @Override
@@ -28,5 +37,17 @@ public class ParentAwareNode implements Node {
     @Override
     public String getName() {
         return this.vals.stream().map(Node::getName).collect(Collectors.joining(" x "));
+    }
+
+    public Node prune() {
+        return this.vals.size() == 1 ? this.vals.get(0) : this;
+    }
+
+    public ParentAwareNode next() {
+        return this.vals.size() > 1 ? new ParentAwareNode(this.vals.subList(1, this.vals.size())) : this;
+    }
+
+    public Node head() {
+        return this.vals.get(0);
     }
 }
