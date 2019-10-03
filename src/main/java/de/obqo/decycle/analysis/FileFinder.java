@@ -1,5 +1,7 @@
 package de.obqo.decycle.analysis;
 
+import de.obqo.decycle.util.Assert;
+
 import java.io.File;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -24,7 +26,7 @@ class FileFinder {
 
         if (root.isDirectory()) {
             final String[] filenames = root.list();
-            assert filenames != null;
+            Assert.notNull(filenames, "returned filenames must not be null");
 
             final Stream<File> classFiles = Stream.of(filenames).filter(FileFinder::isClassFile).map(toFile);
             final Stream<File> dirs = Stream.of(filenames).map(toFile).filter(File::isDirectory);

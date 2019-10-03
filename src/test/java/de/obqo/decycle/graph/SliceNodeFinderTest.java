@@ -5,13 +5,14 @@ import static de.obqo.decycle.model.SimpleNode.packageNode;
 import static de.obqo.decycle.model.SimpleNode.simpleNode;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.jupiter.api.Test;
-
-import com.google.common.graph.MutableNetwork;
-import com.google.common.graph.NetworkBuilder;
 import de.obqo.decycle.model.Node;
 import de.obqo.decycle.model.ParentAwareNode;
 import de.obqo.decycle.model.SimpleNode;
+
+import com.google.common.graph.MutableNetwork;
+import com.google.common.graph.NetworkBuilder;
+
+import org.junit.jupiter.api.Test;
 
 class SliceNodeFinderTest {
 

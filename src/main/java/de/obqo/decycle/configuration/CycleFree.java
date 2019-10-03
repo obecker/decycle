@@ -2,13 +2,13 @@ package de.obqo.decycle.configuration;
 
 import static de.obqo.decycle.graph.StronglyConnectedComponentsFinder.findComponents;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
 import de.obqo.decycle.graph.Edge;
 import de.obqo.decycle.graph.SliceSource;
 import de.obqo.decycle.model.SimpleNode;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 public class CycleFree implements Constraint {
 

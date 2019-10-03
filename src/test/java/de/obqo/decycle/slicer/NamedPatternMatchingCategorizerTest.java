@@ -3,9 +3,9 @@ package de.obqo.decycle.slicer;
 import static de.obqo.decycle.model.SimpleNode.classNode;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.jupiter.api.Test;
-
 import de.obqo.decycle.model.SimpleNode;
+
+import org.junit.jupiter.api.Test;
 
 class NamedPatternMatchingCategorizerTest {
 

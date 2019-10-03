@@ -4,18 +4,18 @@ import static de.obqo.decycle.model.SimpleNode.classNode;
 import static de.obqo.decycle.model.SimpleNode.packageNode;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.junit.jupiter.api.Test;
-
 import de.obqo.decycle.graph.Edge;
 import de.obqo.decycle.graph.Graph;
 import de.obqo.decycle.model.Node;
 import de.obqo.decycle.model.SimpleNode;
 import de.obqo.decycle.slicer.PackageCategorizer;
 import de.obqo.decycle.slicer.ParallelCategorizer;
+
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.junit.jupiter.api.Test;
 
 class CycleFreeTest {
 
@@ -65,7 +65,8 @@ class CycleFreeTest {
 
     @Test
     void shouldDetectCycleWithCombinedSlices() {
-        final var g = new Graph(new ParallelCategorizer(new PackageCategorizer(), __ -> SimpleNode.simpleNode("tld", "de")));
+        final var g =
+                new Graph(new ParallelCategorizer(new PackageCategorizer(), __ -> SimpleNode.simpleNode("tld", "de")));
         g.connect(classNode("de.p1.A1"), classNode("de.p2.B2"));
         g.connect(classNode("de.p2.B1"), classNode("de.p3.C2"));
         g.connect(classNode("de.p3.C1"), classNode("de.p1.A2"));

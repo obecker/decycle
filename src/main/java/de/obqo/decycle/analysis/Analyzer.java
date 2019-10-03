@@ -1,5 +1,9 @@
 package de.obqo.decycle.analysis;
 
+import de.obqo.decycle.graph.Graph;
+import de.obqo.decycle.model.Node;
+import de.obqo.decycle.slicer.Categorizer;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -9,9 +13,6 @@ import java.util.zip.ZipFile;
 
 import org.objectweb.asm.ClassReader;
 
-import de.obqo.decycle.graph.Graph;
-import de.obqo.decycle.model.Node;
-import de.obqo.decycle.slicer.Categorizer;
 import lombok.SneakyThrows;
 
 public class Analyzer {

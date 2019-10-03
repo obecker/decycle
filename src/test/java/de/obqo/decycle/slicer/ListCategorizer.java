@@ -1,8 +1,8 @@
 package de.obqo.decycle.slicer;
 
-import java.util.List;
-
 import de.obqo.decycle.model.Node;
+
+import java.util.List;
 
 /**
  * Represents a list of categories, so for example in {@code ListCategory.of(a, b, c)} the category of {@code a} is

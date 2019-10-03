@@ -3,11 +3,11 @@ package de.obqo.decycle.analysis;
 import static de.obqo.decycle.analysis.VisitorSupport.classNodeFromDescriptor;
 import static de.obqo.decycle.analysis.VisitorSupport.classNodeFromSingleType;
 
-import org.objectweb.asm.AnnotationVisitor;
-import org.objectweb.asm.Type;
-
 import de.obqo.decycle.graph.Graph;
 import de.obqo.decycle.model.SimpleNode;
+
+import org.objectweb.asm.AnnotationVisitor;
+import org.objectweb.asm.Type;
 
 class GraphBuildingAnnotationVisitor extends AnnotationVisitor {
 

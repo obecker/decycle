@@ -11,7 +11,8 @@ public class NamedPattern implements Pattern {
     public NamedPattern(final String pattern, final String name) {
 
         if (name.contains("*") || name.contains(".")) {
-            System.out.println("You use '" + name + "' as the NAME of a NamedPattern. Please note that the NAME comes last in such a pattern.");
+            System.out.println("You use '" + name +
+                    "' as the NAME of a NamedPattern. Please note that the NAME comes last in such a pattern.");
         }
 
         this.pattern = pattern;

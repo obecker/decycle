@@ -1,5 +1,7 @@
 package de.obqo.decycle.model;
 
+import de.obqo.decycle.util.Assert;
+
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -16,7 +18,7 @@ public class ParentAwareNode implements Node {
     private final List<Node> vals;
 
     public ParentAwareNode(final Node... vals) {
-        assert vals != null;
+        Assert.notNull(vals, "missing nodes for ParentAwareNode");
         this.vals = List.of(vals);
     }
 

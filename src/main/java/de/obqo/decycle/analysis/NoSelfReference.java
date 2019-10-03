@@ -1,10 +1,11 @@
 package de.obqo.decycle.analysis;
 
+import de.obqo.decycle.model.Node;
+import de.obqo.decycle.slicer.Categorizer;
+
 import java.util.Objects;
 import java.util.function.BiPredicate;
 
-import de.obqo.decycle.model.Node;
-import de.obqo.decycle.slicer.Categorizer;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor

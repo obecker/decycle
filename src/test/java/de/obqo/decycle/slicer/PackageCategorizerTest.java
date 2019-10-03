@@ -4,11 +4,11 @@ import static de.obqo.decycle.model.SimpleNode.classNode;
 import static de.obqo.decycle.model.SimpleNode.packageNode;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.jupiter.api.Test;
-
 import de.obqo.decycle.model.Node;
 import de.obqo.decycle.model.ParentAwareNode;
 import de.obqo.decycle.model.SimpleNode;
+
+import org.junit.jupiter.api.Test;
 
 class PackageCategorizerTest {
 

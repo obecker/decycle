@@ -3,10 +3,10 @@ package de.obqo.decycle.slicer;
 import static de.obqo.decycle.model.SimpleNode.classNode;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.jupiter.api.Test;
-
 import de.obqo.decycle.model.Node;
 import de.obqo.decycle.model.SimpleNode;
+
+import org.junit.jupiter.api.Test;
 
 class PatternMatchingCategorizerTest {
 
@@ -26,6 +26,7 @@ class PatternMatchingCategorizerTest {
     void shouldCategorizeMatchedGroup() {
         final var categorizer = new PatternMatchingCategorizer("type", "some.(package).Class");
 
-        assertThat(categorizer.apply(classNode("some.package.Class"))).isEqualTo(SimpleNode.simpleNode("type", "package"));
+        assertThat(categorizer.apply(classNode("some.package.Class")))
+                .isEqualTo(SimpleNode.simpleNode("type", "package"));
     }
 }

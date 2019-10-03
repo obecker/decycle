@@ -3,12 +3,12 @@ package de.obqo.decycle.graph;
 import static de.obqo.decycle.model.SimpleNode.packageNode;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import de.obqo.decycle.model.Node;
+import de.obqo.decycle.model.SimpleNode;
+
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
-
-import de.obqo.decycle.model.Node;
-import de.obqo.decycle.model.SimpleNode;
 
 class StronglyConnectedComponentsFinderTest {
 

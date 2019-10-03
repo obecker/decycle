@@ -2,10 +2,10 @@ package de.obqo.decycle.slicer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.jupiter.api.Test;
-
 import de.obqo.decycle.model.Node;
 import de.obqo.decycle.model.SimpleNode;
+
+import org.junit.jupiter.api.Test;
 
 class CombinedSlicerTest {
 
@@ -23,7 +23,8 @@ class CombinedSlicerTest {
 
     @Test
     void shouldIgnoreOtherSlicersIfTheFirstOneIsApplied() {
-        final var slicer = new CombinedSlicer(ListCategorizer.of(n("a"), n("b")), ListCategorizer.of(n("a"), n("c"), n("b"), n("c")));
+        final var slicer = new CombinedSlicer(ListCategorizer.of(n("a"), n("b")),
+                ListCategorizer.of(n("a"), n("c"), n("b"), n("c")));
 
         assertThat(slicer.apply(n("a"))).isEqualTo(n("b"));
     }

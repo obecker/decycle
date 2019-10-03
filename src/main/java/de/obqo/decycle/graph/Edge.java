@@ -1,6 +1,7 @@
 package de.obqo.decycle.graph;
 
 import de.obqo.decycle.model.Node;
+
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

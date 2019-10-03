@@ -1,11 +1,11 @@
 package de.obqo.decycle.analysis;
 
+import de.obqo.decycle.model.SimpleNode;
+
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import de.obqo.decycle.model.SimpleNode;
 
 class VisitorSupport {
 

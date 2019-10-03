@@ -2,12 +2,12 @@ package de.obqo.decycle.analysis;
 
 import static de.obqo.decycle.analysis.VisitorSupport.classNodeFromDescriptor;
 
+import de.obqo.decycle.graph.Graph;
+import de.obqo.decycle.model.SimpleNode;
+
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.TypePath;
-
-import de.obqo.decycle.graph.Graph;
-import de.obqo.decycle.model.SimpleNode;
 
 class GraphBuildingFieldVisitor extends FieldVisitor {
 
@@ -28,8 +28,8 @@ class GraphBuildingFieldVisitor extends FieldVisitor {
 
     @Override
     public AnnotationVisitor visitTypeAnnotation(final int typeRef, final TypePath typePath,
-                                                 final String descriptor,
-                                                 final boolean visible) {
+            final String descriptor,
+            final boolean visible) {
         classNodeFromDescriptor(descriptor).forEach(node -> this.graph.connect(this.currentClass, node));
         return new GraphBuildingAnnotationVisitor(this.api, this.graph, this.currentClass);
     }

@@ -3,6 +3,9 @@ package de.obqo.decycle.analysis;
 import static de.obqo.decycle.analysis.VisitorSupport.classNode;
 import static de.obqo.decycle.analysis.VisitorSupport.classNodeFromDescriptor;
 
+import de.obqo.decycle.graph.Graph;
+import de.obqo.decycle.model.SimpleNode;
+
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.FieldVisitor;
@@ -10,9 +13,6 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.ModuleVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.TypePath;
-
-import de.obqo.decycle.graph.Graph;
-import de.obqo.decycle.model.SimpleNode;
 
 public class GraphBuildingClassVisitor extends ClassVisitor {
 
@@ -26,7 +26,7 @@ public class GraphBuildingClassVisitor extends ClassVisitor {
 
     @Override
     public void visit(final int version, final int access, final String name, final String signature,
-                      final String superName, final String[] interfaces) {
+            final String superName, final String[] interfaces) {
 
         currentClass = classNode(name);
 
@@ -63,7 +63,7 @@ public class GraphBuildingClassVisitor extends ClassVisitor {
 
     @Override
     public AnnotationVisitor visitTypeAnnotation(final int typeRef, final TypePath typePath, final String descriptor,
-                                                 final boolean visible) {
+            final boolean visible) {
         classNodeFromDescriptor(descriptor).forEach(node -> graph.connect(currentClass, node));
         return new GraphBuildingAnnotationVisitor(api, graph, currentClass);
     }
@@ -80,7 +80,7 @@ public class GraphBuildingClassVisitor extends ClassVisitor {
 
     @Override
     public FieldVisitor visitField(final int access, final String name, final String descriptor, final String signature,
-                                   final Object value) {
+            final Object value) {
         classNodeFromDescriptor(signature).forEach(node -> graph.connect(currentClass, node));
         classNodeFromDescriptor(descriptor).forEach(node -> graph.connect(currentClass, node));
         return new GraphBuildingFieldVisitor(api, graph, currentClass);
@@ -88,8 +88,8 @@ public class GraphBuildingClassVisitor extends ClassVisitor {
 
     @Override
     public MethodVisitor visitMethod(final int access, final String name, final String descriptor,
-                                     final String signature,
-                                     final String[] exceptions) {
+            final String signature,
+            final String[] exceptions) {
         classNodeFromDescriptor(signature).forEach(node -> graph.connect(currentClass, node));
 
         classNodeFromDescriptor(descriptor).forEach(node -> graph.connect(currentClass, node));

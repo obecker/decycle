@@ -4,6 +4,10 @@ import static de.obqo.decycle.graph.Edge.EdgeLabel.CONTAINS;
 import static de.obqo.decycle.graph.Edge.EdgeLabel.REFERENCES;
 import static de.obqo.decycle.util.ObjectUtils.defaultValue;
 
+import de.obqo.decycle.model.Node;
+import de.obqo.decycle.model.SimpleNode;
+import de.obqo.decycle.slicer.Categorizer;
+
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.BiPredicate;
@@ -13,9 +17,6 @@ import java.util.stream.Collectors;
 import com.google.common.graph.MutableNetwork;
 import com.google.common.graph.Network;
 import com.google.common.graph.NetworkBuilder;
-import de.obqo.decycle.model.Node;
-import de.obqo.decycle.model.SimpleNode;
-import de.obqo.decycle.slicer.Categorizer;
 
 public class Graph implements SliceSource {
 
@@ -39,7 +40,7 @@ public class Graph implements SliceSource {
     }
 
     public Graph(final Categorizer categorizer, final Predicate<Node> filter,
-                 final BiPredicate<Node, Node> edgeFilter) {
+            final BiPredicate<Node, Node> edgeFilter) {
         this.categorizer = defaultValue(categorizer, n -> n);
         this.filter = defaultValue(filter, __ -> true);
         this.edgeFilter = defaultValue(edgeFilter, (n, m) -> !Objects.equals(n, m));
@@ -83,9 +84,9 @@ public class Graph implements SliceSource {
 
     public Set<Node> topNodes() {
         return this.internalGraph.nodes().stream()
-                                 .filter(n -> this.internalGraph.inEdges(n).stream()
-                                                                .allMatch(e -> e.getLabel() != CONTAINS))
-                                 .collect(Collectors.toSet());
+                .filter(n -> this.internalGraph.inEdges(n).stream()
+                        .allMatch(e -> e.getLabel() != CONTAINS))
+                .collect(Collectors.toSet());
     }
 
     private Set<Edge> outEdges(final Node node) {
@@ -94,9 +95,9 @@ public class Graph implements SliceSource {
 
     private Set<Node> connectedNodes(final Node node, final Edge.EdgeLabel label) {
         return outEdges(node).stream()
-                             .filter(e -> e.getLabel() == label)
-                             .map(Edge::getTo)
-                             .collect(Collectors.toSet());
+                .filter(e -> e.getLabel() == label)
+                .map(Edge::getTo)
+                .collect(Collectors.toSet());
     }
 
     public Set<Node> contentsOf(final Node group) {
@@ -116,8 +117,8 @@ public class Graph implements SliceSource {
     public Network<Node, Edge> slice(final String name) {
 
         final var sliceNodes = this.internalGraph.nodes().stream()
-                                                 .filter(n -> n instanceof SimpleNode && n.getTypes().contains(name))
-                                                 .collect(Collectors.toSet());
+                .filter(n -> n instanceof SimpleNode && n.getTypes().contains(name))
+                .collect(Collectors.toSet());
 
         final var sliceNodeFinder = new SliceNodeFinder(name, this.internalGraph);
 
@@ -126,8 +127,8 @@ public class Graph implements SliceSource {
 
         //---------------
         final var edges = this.internalGraph.edges().stream()
-                                            .filter(e -> e.getLabel() == REFERENCES)
-                                            .collect(Collectors.toSet());
+                .filter(e -> e.getLabel() == REFERENCES)
+                .collect(Collectors.toSet());
 
         for (final Edge edge : edges) {
             final var s1 = sliceNodeFinder.lift(edge.getFrom());

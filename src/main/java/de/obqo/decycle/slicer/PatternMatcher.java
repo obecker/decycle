@@ -17,7 +17,6 @@ class PatternMatcher {
         return matcher.find() ? Optional.of(name.substring(matcher.start(1), matcher.end(1))) : Optional.empty();
     }
 
-
     private static String ensureParens(final String p) {
         return Pattern.matches(".*\\(.*\\).*", p) ? p : "(" + p + ")";
     }

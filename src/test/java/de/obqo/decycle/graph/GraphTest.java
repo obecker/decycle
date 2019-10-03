@@ -2,13 +2,13 @@ package de.obqo.decycle.graph;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Set;
-
-import org.junit.jupiter.api.Test;
-
 import de.obqo.decycle.model.Node;
 import de.obqo.decycle.model.SimpleNode;
 import de.obqo.decycle.slicer.ListCategorizer;
+
+import java.util.Set;
+
+import org.junit.jupiter.api.Test;
 
 class GraphTest {
 
@@ -134,7 +134,8 @@ class GraphTest {
 
     @Test
     void allNodesInAGraphWithCategoriesShouldContainTheNodesAndAllCategories() {
-        final var g = new Graph(ListCategorizer.of(n("a"), n("b"), n("c")).combine(ListCategorizer.of(n("23"), n("42"), n("c"))));
+        final var g = new Graph(
+                ListCategorizer.of(n("a"), n("b"), n("c")).combine(ListCategorizer.of(n("23"), n("42"), n("c"))));
         g.add(n("a"));
         g.add(n("23"));
 

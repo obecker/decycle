@@ -2,10 +2,10 @@ package de.obqo.decycle.slicer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.jupiter.api.Test;
-
 import de.obqo.decycle.model.Node;
 import de.obqo.decycle.model.SimpleNode;
+
+import org.junit.jupiter.api.Test;
 
 class MultiCategorizerTest {
 
@@ -32,7 +32,8 @@ class MultiCategorizerTest {
 
     @Test
     void shouldCombine() {
-        final Categorizer cat = new MultiCategorizer(ListCategorizer.of(n("a"), n("b")), ListCategorizer.of(n("b"), n("c")));
+        final Categorizer cat =
+                new MultiCategorizer(ListCategorizer.of(n("a"), n("b")), ListCategorizer.of(n("b"), n("c")));
 
         assertThat(cat.apply(n("b"))).isEqualTo(n("c"));
     }

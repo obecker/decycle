@@ -1,16 +1,17 @@
 package de.obqo.decycle.slicer;
 
-import java.util.List;
-
 import de.obqo.decycle.model.Node;
 import de.obqo.decycle.model.ParentAwareNode;
+import de.obqo.decycle.util.Assert;
+
+import java.util.List;
 
 public class ParallelCategorizer implements Categorizer {
 
     private final List<Categorizer> cs;
 
     public ParallelCategorizer(final Categorizer... cs) {
-        assert cs != null;
+        Assert.notNull(cs, "Missing categorizers for ParallelCategorizer");
         this.cs = List.of(cs);
     }
 
