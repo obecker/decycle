@@ -1,13 +1,13 @@
 package de.obqo.decycle.analysis;
 
 import de.obqo.decycle.graph.Graph;
-import de.obqo.decycle.model.Node;
 import de.obqo.decycle.slicer.Categorizer;
+import de.obqo.decycle.slicer.NodeFilter;
+import de.obqo.decycle.util.Assert;
 
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.function.Predicate;
 import java.util.stream.Stream;
 import java.util.zip.ZipFile;
 
@@ -17,7 +17,11 @@ import lombok.SneakyThrows;
 
 public class Analyzer {
 
-    public Graph analyze(final String sourceFolder, final Categorizer categorizer, final Predicate<Node> filter) {
+    public Graph analyze(final String sourceFolder, final Categorizer categorizer, final NodeFilter filter) {
+        Assert.notNull(sourceFolder, "classpath must not be null");
+        Assert.notNull(categorizer, "categorizer must not be null");
+        Assert.notNull(filter, "filter must not be null");
+
         final Graph graph = new Graph(categorizer, filter, new NoSelfReference(categorizer));
 
         final String[] libs = sourceFolder.split(System.getProperty("path.separator"));

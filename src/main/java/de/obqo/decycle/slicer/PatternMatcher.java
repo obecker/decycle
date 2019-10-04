@@ -1,5 +1,7 @@
 package de.obqo.decycle.slicer;
 
+import de.obqo.decycle.util.Assert;
+
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -9,6 +11,7 @@ class PatternMatcher {
     private final Pattern pattern;
 
     public PatternMatcher(final String pattern) {
+        Assert.notNull(pattern, "pattern string must not be null");
         this.pattern = Pattern.compile(ensureParens(escapeStars(escapeDots(pattern))));
     }
 

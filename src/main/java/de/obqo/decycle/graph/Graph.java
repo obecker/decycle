@@ -7,11 +7,11 @@ import static de.obqo.decycle.util.ObjectUtils.defaultValue;
 import de.obqo.decycle.model.Node;
 import de.obqo.decycle.model.SimpleNode;
 import de.obqo.decycle.slicer.Categorizer;
+import de.obqo.decycle.slicer.NodeFilter;
 
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.BiPredicate;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import com.google.common.graph.MutableNetwork;
@@ -21,7 +21,7 @@ import com.google.common.graph.NetworkBuilder;
 public class Graph implements SliceSource {
 
     private final Categorizer categorizer;
-    private final Predicate<Node> filter;
+    private final NodeFilter filter;
     private final BiPredicate<Node, Node> edgeFilter;
 
     private final MutableNetwork<Node, Edge> internalGraph =
@@ -35,11 +35,11 @@ public class Graph implements SliceSource {
         this(categorizer, null);
     }
 
-    public Graph(final Categorizer categorizer, final Predicate<Node> filter) {
+    public Graph(final Categorizer categorizer, final NodeFilter filter) {
         this(categorizer, filter, null);
     }
 
-    public Graph(final Categorizer categorizer, final Predicate<Node> filter,
+    public Graph(final Categorizer categorizer, final NodeFilter filter,
             final BiPredicate<Node, Node> edgeFilter) {
         this.categorizer = defaultValue(categorizer, n -> n);
         this.filter = defaultValue(filter, __ -> true);

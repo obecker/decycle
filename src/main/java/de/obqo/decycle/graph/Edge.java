@@ -5,10 +5,12 @@ import de.obqo.decycle.model.Node;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 @RequiredArgsConstructor
 @EqualsAndHashCode
 @Getter
+@ToString
 public class Edge {
 
     public enum EdgeLabel {
