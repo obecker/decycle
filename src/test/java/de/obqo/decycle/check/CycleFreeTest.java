@@ -1,4 +1,4 @@
-package de.obqo.decycle.configuration;
+package de.obqo.decycle.check;
 
 import static de.obqo.decycle.model.SimpleNode.classNode;
 import static de.obqo.decycle.model.SimpleNode.packageNode;

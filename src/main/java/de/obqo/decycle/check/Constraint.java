@@ -1,4 +1,4 @@
-package de.obqo.decycle.configuration;
+package de.obqo.decycle.check;
 
 import de.obqo.decycle.graph.Edge;
 import de.obqo.decycle.graph.SliceSource;

@@ -2,6 +2,8 @@ package de.obqo.decycle.configuration;
 
 import de.obqo.decycle.analysis.Analyzer;
 import de.obqo.decycle.analysis.IncludeExcludeFilter;
+import de.obqo.decycle.check.Constraint;
+import de.obqo.decycle.check.CycleFree;
 import de.obqo.decycle.graph.Graph;
 import de.obqo.decycle.slicer.Categorizer;
 import de.obqo.decycle.slicer.CombinedSlicer;
