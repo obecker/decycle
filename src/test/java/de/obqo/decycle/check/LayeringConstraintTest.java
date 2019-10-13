@@ -1,9 +1,12 @@
 package de.obqo.decycle.check;
 
+import static de.obqo.decycle.check.Layer.anyOf;
+import static de.obqo.decycle.check.Layer.oneOf;
 import static de.obqo.decycle.check.MockSliceSource.d;
 import static de.obqo.decycle.check.MockSliceSource.dependenciesIn;
-import static de.obqo.decycle.model.SimpleNode.simpleNode;
 import static org.assertj.core.api.Assertions.assertThat;
+
+import de.obqo.decycle.check.Constraint.Dependency;
 
 import java.util.List;
 
@@ -11,13 +14,10 @@ import org.junit.jupiter.api.Test;
 
 class LayeringConstraintTest {
 
-    private LayeringConstraint
-            c = new LayeringConstraint("t",
+    private LayeringConstraint c = new LayeringConstraint("t",
             List.of(new LenientLayer("a"), new LenientLayer("b"), new LenientLayer("c")));
 
-    @SafeVarargs
-    private List<Constraint.Violation> violations(final String slice,
-            final MockSliceSource.Dependency<String>... deps) {
+    private List<Constraint.Violation> violations(final String slice, final Dependency... deps) {
         return this.c.violations(new MockSliceSource(slice, deps));
     }
 
@@ -33,8 +33,7 @@ class LayeringConstraintTest {
 
     @Test
     void inverseDependencyShouldBeReported() {
-        assertThat(dependenciesIn(violations("t", d("b", "a")))).containsExactly(
-                d(simpleNode("b", "t"), simpleNode("a", "t")));
+        assertThat(dependenciesIn(violations("t", d("b", "a")))).containsExactly(d("b", "a"));
     }
 
     @Test
@@ -64,15 +63,13 @@ class LayeringConstraintTest {
 
     @Test
     void shouldProvideSimpleShortStringForSingleLayers() {
-        assertThat(new LayeringConstraint("type", List.of(new StrictLayer("a"), new LenientLayer("b")))
-                .getShortString())
+        assertThat(new LayeringConstraint("type", List.of(oneOf("a"), anyOf("b"))).getShortString())
                 .isEqualTo("a -> b");
     }
 
     @Test
     void shouldProvideShortStringForMultipleLayers() {
-        assertThat(new LayeringConstraint("type", List.of(new StrictLayer("a", "x"), new LenientLayer("b", "y")))
-                .getShortString())
+        assertThat(new LayeringConstraint("type", List.of(oneOf("a", "x"), anyOf("b", "y"))).getShortString())
                 .isEqualTo("[a, x] -> (b, y)");
     }
 }

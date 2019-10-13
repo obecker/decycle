@@ -1,10 +1,9 @@
 package de.obqo.decycle.check;
 
 import static de.obqo.decycle.model.SimpleNode.classNode;
-import static de.obqo.decycle.model.SimpleNode.packageNode;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import de.obqo.decycle.graph.Edge;
+import de.obqo.decycle.check.Constraint.Dependency;
 import de.obqo.decycle.graph.Graph;
 import de.obqo.decycle.model.Node;
 import de.obqo.decycle.model.SimpleNode;
@@ -23,11 +22,11 @@ class CycleFreeTest {
         return SimpleNode.simpleNode(s, s);
     }
 
-    private Edge e(final String from, final String to) {
-        return new Edge(packageNode(from), packageNode(to), Edge.EdgeLabel.REFERENCES);
+    private Dependency d(final String from, final String to) {
+        return new Dependency(from, to);
     }
 
-    private Set<Edge> dependenciesIn(final List<Constraint.Violation> violations) {
+    private Set<Dependency> dependenciesIn(final List<Constraint.Violation> violations) {
         return violations.stream().flatMap(v -> v.getDependencies().stream()).collect(Collectors.toSet());
     }
 
@@ -57,9 +56,9 @@ class CycleFreeTest {
         g.connect(classNode("de.p3.C1"), classNode("de.p1.A2"));
 
         assertThat(dependenciesIn(this.cycleFree.violations(g))).containsOnly(
-                e("de.p1", "de.p2"),
-                e("de.p2", "de.p3"),
-                e("de.p3", "de.p1")
+                d("de.p1", "de.p2"),
+                d("de.p2", "de.p3"),
+                d("de.p3", "de.p1")
         );
     }
 
@@ -72,9 +71,9 @@ class CycleFreeTest {
         g.connect(classNode("de.p3.C1"), classNode("de.p1.A2"));
 
         assertThat(dependenciesIn(this.cycleFree.violations(g))).containsOnly(
-                e("de.p1", "de.p2"),
-                e("de.p2", "de.p3"),
-                e("de.p3", "de.p1")
+                d("de.p1", "de.p2"),
+                d("de.p2", "de.p3"),
+                d("de.p3", "de.p1")
         );
     }
 }

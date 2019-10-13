@@ -14,8 +14,7 @@ public abstract class SlicedConstraint implements Constraint {
     final List<Layer> slices;
     private final String arrow;
 
-    SlicedConstraint(final String sliceType, final List<Layer> slices,
-            final String arrow) {
+    SlicedConstraint(final String sliceType, final List<Layer> slices, final String arrow) {
         this.sliceType = sliceType;
         this.slices = slices;
         this.arrow = arrow;
@@ -43,22 +42,20 @@ public abstract class SlicedConstraint implements Constraint {
     @Override
     public List<Violation> violations(final SliceSource sliceSource) {
         final var sg = sliceSource.slice(this.sliceType);
-        final var deps =
-                sg.edges().stream().filter(e -> isViolatedBy(e.getFrom(), e.getTo())).collect(Collectors.toSet());
+        final var deps = sg.edges().stream()
+                .filter(e -> isViolatedBy(e.getFrom(), e.getTo()))
+                .map(Dependency::of)
+                .collect(Collectors.toSet());
         return deps.isEmpty() ? List.of() : List.of(new Violation(this.sliceType, getShortString(), deps));
     }
 
     @Override
     public String getShortString() {
-        return mkString(this.slices.stream().map(l -> {
-            if (l instanceof LenientLayer) {
-                return layersToString(((LenientLayer) l).getSlices(), "(", ")");
-            } else if (l instanceof StrictLayer) {
-                return layersToString(((StrictLayer) l).getSlices(), "[", "]");
-            } else {
-                return l.toString();
-            }
-        }).collect(Collectors.toList()), "", " " + this.arrow + " ", "");
+        return mkString(this.slices.stream()
+                .map(l -> l.denyDependenciesWithinLayer()
+                        ? layersToString(l.getSlices(), "[", "]")
+                        : layersToString(l.getSlices(), "(", ")"))
+                .collect(Collectors.toList()), "", " " + this.arrow + " ", "");
     }
 
     private String layersToString(final Collection<String> ls, final String start, final String end) {

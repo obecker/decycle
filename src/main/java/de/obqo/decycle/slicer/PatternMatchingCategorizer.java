@@ -41,7 +41,7 @@ public class PatternMatchingCategorizer implements Categorizer {
         return Optional.of(node)
                 .filter(n -> n instanceof SimpleNode)
                 .flatMap(n -> this.matcher.matches(n.getName()))
-                .map(match -> (Node) SimpleNode.simpleNode(this.targetType, match))
+                .map(match -> (Node) SimpleNode.simpleNode(match, this.targetType))
                 .orElse(node);
     }
 }

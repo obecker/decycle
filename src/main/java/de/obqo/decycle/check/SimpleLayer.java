@@ -2,20 +2,28 @@ package de.obqo.decycle.check;
 
 import java.util.List;
 
-public abstract class SimpleLayer implements Layer {
+abstract class SimpleLayer implements Layer {
 
-    private List<String> eSet;
+    private final boolean denyDependenciesWithinLayer;
+    private final List<String> eSet;
 
-    SimpleLayer(final String... es) {
+    SimpleLayer(final boolean denyDependenciesWithinLayer, final String... es) {
+        this.denyDependenciesWithinLayer = denyDependenciesWithinLayer;
         this.eSet = List.of(es);
     }
 
-    List<String> getSlices() {
+    @Override
+    public List<String> getSlices() {
         return this.eSet;
     }
 
     @Override
     public boolean contains(final String elem) {
         return this.eSet.contains(elem);
+    }
+
+    @Override
+    public boolean denyDependenciesWithinLayer() {
+        return this.denyDependenciesWithinLayer;
     }
 }

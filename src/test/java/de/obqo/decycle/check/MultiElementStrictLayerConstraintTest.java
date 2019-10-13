@@ -1,8 +1,8 @@
 package de.obqo.decycle.check;
 
+import static de.obqo.decycle.check.Layer.oneOf;
 import static de.obqo.decycle.check.MockSliceSource.d;
 import static de.obqo.decycle.check.MockSliceSource.dependenciesIn;
-import static de.obqo.decycle.model.SimpleNode.simpleNode;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
@@ -14,8 +14,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 class MultiElementStrictLayerConstraintTest {
 
     private static Stream<Constraint> constraints() {
-        final List<Layer> layers =
-                List.of(new StrictLayer("a"), new StrictLayer("b", "c", "d"), new StrictLayer("e"));
+        final List<Layer> layers = List.of(oneOf("a"), oneOf("b", "c", "d"), oneOf("e"));
         return Stream.of(new LayeringConstraint("t", layers), new DirectLayeringConstraint("t", layers));
     }
 
@@ -35,18 +34,14 @@ class MultiElementStrictLayerConstraintTest {
     @MethodSource("constraints")
     void dependenciesWithinAMultiElementLayerShouldNotBeOk(final Constraint constraint) {
         assertThat(dependenciesIn(constraint.violations(new MockSliceSource("t", d("b", "c"), d("b", "d")))))
-                .containsOnly(d(simpleNode("b", "t"), simpleNode("c", "t")),
-                        d(simpleNode("b", "t"), simpleNode("d", "t"))
-                );
+                .containsOnly(d("b", "c"), d("b", "d"));
     }
 
     @ParameterizedTest
     @MethodSource("constraints")
     void inverseDependenciesWithinAMultiElementLayerShouldNotBeOk(final Constraint constraint) {
         assertThat(dependenciesIn(constraint.violations(new MockSliceSource("t", d("c", "b"), d("d", "b")))))
-                .containsOnly(d(simpleNode("c", "t"), simpleNode("b", "t")),
-                        d(simpleNode("d", "t"), simpleNode("b", "t"))
-                );
+                .containsOnly(d("c", "b"), d("d", "b"));
     }
 
     @ParameterizedTest

@@ -1,9 +1,12 @@
 package de.obqo.decycle.check;
 
+import static de.obqo.decycle.check.Layer.anyOf;
+import static de.obqo.decycle.check.Layer.oneOf;
 import static de.obqo.decycle.check.MockSliceSource.d;
 import static de.obqo.decycle.check.MockSliceSource.dependenciesIn;
-import static de.obqo.decycle.model.SimpleNode.simpleNode;
 import static org.assertj.core.api.Assertions.assertThat;
+
+import de.obqo.decycle.check.Constraint.Dependency;
 
 import java.util.List;
 
@@ -11,13 +14,10 @@ import org.junit.jupiter.api.Test;
 
 class DirectLayeringConstraintTest {
 
-    private DirectLayeringConstraint
-            c = new DirectLayeringConstraint("t",
+    private DirectLayeringConstraint c = new DirectLayeringConstraint("t",
             List.of(new LenientLayer("a"), new LenientLayer("b"), new LenientLayer("c")));
 
-    @SafeVarargs
-    private List<Constraint.Violation> violations(final String slice,
-            final MockSliceSource.Dependency<String>... deps) {
+    private List<Constraint.Violation> violations(final String slice, final Dependency... deps) {
         return this.c.violations(new MockSliceSource(slice, deps));
     }
 
@@ -28,14 +28,13 @@ class DirectLayeringConstraintTest {
 
     @Test
     void skippingLayersShouldBeReported() {
-        assertThat(dependenciesIn(violations("t", d("a", "c")))).containsExactly(
-                d(simpleNode("a", "t"), simpleNode("c", "t")));
+        assertThat(dependenciesIn(violations("t", d("a", "c")))).containsExactly(d("a", "c"));
     }
 
     @Test
     void inverseDependencyShouldBeReported() {
         assertThat(dependenciesIn(violations("t", d("b", "a")))).containsExactly(
-                d(simpleNode("b", "t"), simpleNode("a", "t")));
+                d("b", "a"));
     }
 
     @Test
@@ -55,26 +54,24 @@ class DirectLayeringConstraintTest {
 
     @Test
     void dependencyToUnknownInTheMiddleShouldBeReported() {
-        assertThat(dependenciesIn(violations("t", d("b", "x")))).containsExactly(
-                d(simpleNode("b", "t"), simpleNode("x", "t")));
+        assertThat(dependenciesIn(violations("t", d("b", "x")))).containsExactly(d("b", "x"));
     }
 
     @Test
     void dependencyFromUnknownInTheMiddleShouldBeReported() {
-        assertThat(dependenciesIn(violations("t", d("x", "b")))).containsExactly(
-                d(simpleNode("x", "t"), simpleNode("b", "t")));
+        assertThat(dependenciesIn(violations("t", d("x", "b")))).containsExactly(d("x", "b"));
     }
 
     @Test
     void shouldProvideSimpleShortStringForSingleLayers() {
-        assertThat(new DirectLayeringConstraint("type", List.of(new StrictLayer("a"), new LenientLayer("b")))
+        assertThat(new DirectLayeringConstraint("type", List.of(oneOf("a"), anyOf("b")))
                 .getShortString())
                 .isEqualTo("a => b");
     }
 
     @Test
     void shouldProvideShortStringForMultipleLayers() {
-        assertThat(new DirectLayeringConstraint("type", List.of(new StrictLayer("a", "x"), new LenientLayer("b", "y")))
+        assertThat(new DirectLayeringConstraint("type", List.of(oneOf("a", "x"), anyOf("b", "y")))
                 .getShortString())
                 .isEqualTo("[a, x] => (b, y)");
     }

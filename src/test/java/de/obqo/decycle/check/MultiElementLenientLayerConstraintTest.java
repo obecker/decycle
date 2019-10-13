@@ -1,5 +1,6 @@
 package de.obqo.decycle.check;
 
+import static de.obqo.decycle.check.Layer.anyOf;
 import static de.obqo.decycle.check.MockSliceSource.d;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -12,8 +13,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 class MultiElementLenientLayerConstraintTest {
 
     private static Stream<Constraint> constraints() {
-        final List<Layer> layers =
-                List.of(new LenientLayer("a"), new LenientLayer("b", "c", "d"), new LenientLayer("e"));
+        final List<Layer> layers = List.of(anyOf("a"), anyOf("b", "c", "d"), anyOf("e"));
         return Stream.of(new LayeringConstraint("t", layers), new DirectLayeringConstraint("t", layers));
     }
 

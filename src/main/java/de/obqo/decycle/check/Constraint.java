@@ -11,11 +11,26 @@ import lombok.Value;
 public interface Constraint {
 
     @Value
+    class Dependency {
+
+        private String from;
+        private String to;
+
+        static Dependency of(final Edge edge) {
+            return new Dependency(edge.getFrom().getName(), edge.getTo().getName());
+        }
+
+        public String toString() {
+            return this.from + " -> " + this.to;
+        }
+    }
+
+    @Value
     class Violation {
 
         private String sliceType;
         private String name;
-        private Set<Edge> dependencies;
+        private Set<Dependency> dependencies;
     }
 
     String getShortString();

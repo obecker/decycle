@@ -3,6 +3,7 @@ package de.obqo.decycle.configuration;
 import de.obqo.decycle.analysis.Analyzer;
 import de.obqo.decycle.analysis.IncludeExcludeFilter;
 import de.obqo.decycle.check.Constraint;
+import de.obqo.decycle.check.Constraint.Violation;
 import de.obqo.decycle.check.CycleFree;
 import de.obqo.decycle.graph.Graph;
 import de.obqo.decycle.slicer.Categorizer;
@@ -14,6 +15,7 @@ import de.obqo.decycle.slicer.PackageCategorizer;
 import de.obqo.decycle.slicer.ParallelCategorizer;
 import de.obqo.decycle.slicer.PatternMatchingFilter;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -57,13 +59,14 @@ public class Configuration {
                 this.excludes.stream().map(PatternMatchingFilter::new).collect(Collectors.toSet()));
     }
 
-    public Graph createGraph() {
+    private Graph createGraph() {
         return new Analyzer().analyze(this.classpath, buildCategorizer(), buildFilter());
     }
 
-    public List<Constraint.Violation> check() {
+    public List<Violation> check() {
         final var g = createGraph();
-        return this.constraints.stream().flatMap(c -> c.violations(g).stream()).collect(Collectors.toList());
+        return this.constraints.stream().flatMap(c -> c.violations(g).stream())
+                .sorted(Comparator.comparing(Violation::getSliceType).thenComparing(Violation::getName))
+                .collect(Collectors.toList());
     }
-
 }
