@@ -46,7 +46,7 @@ public class Configuration {
                 this.categories.entrySet().stream().map(entry -> buildCategorizer(entry.getKey(), entry.getValue()));
         final var slicersWithPackages = Stream.concat(Stream.of(new PackageCategorizer()), slicers);
         final var cat = new ParallelCategorizer(slicersWithPackages.toArray(Categorizer[]::new));
-        return new MultiCategorizer(new InternalClassCategorizer(), cat);
+        return MultiCategorizer.combine(new InternalClassCategorizer(), cat);
     }
 
     private Categorizer buildCategorizer(final String slicing, final List<Pattern> groupings) {

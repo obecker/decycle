@@ -1,5 +1,6 @@
 package de.obqo.decycle.slicer;
 
+import static de.obqo.decycle.slicer.MultiCategorizer.combine;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import de.obqo.decycle.model.Node;
@@ -17,7 +18,7 @@ class MultiCategorizerTest {
 
     @Test
     void combineWithASingleIdentityCategorizerShouldReturnTheArgument() {
-        final Categorizer cat = new MultiCategorizer(this.id);
+        final Categorizer cat = combine(this.id);
         final Node x = n("x");
 
         assertThat(cat.apply(x)).isEqualTo(x);
@@ -25,7 +26,7 @@ class MultiCategorizerTest {
 
     @Test
     void combineWithASingleCategorizerShouldReturnCategoryOfTheArgument() {
-        final Categorizer cat = new MultiCategorizer(ListCategorizer.of(n("a"), n("b"), n("c")));
+        final Categorizer cat = combine(ListCategorizer.of(n("a"), n("b"), n("c")));
 
         assertThat(cat.apply(n("b"))).isEqualTo(n("c"));
     }
@@ -33,7 +34,7 @@ class MultiCategorizerTest {
     @Test
     void shouldCombine() {
         final Categorizer cat =
-                new MultiCategorizer(ListCategorizer.of(n("a"), n("b")), ListCategorizer.of(n("b"), n("c")));
+                combine(ListCategorizer.of(n("a"), n("b")), ListCategorizer.of(n("b"), n("c")));
 
         assertThat(cat.apply(n("b"))).isEqualTo(n("c"));
     }

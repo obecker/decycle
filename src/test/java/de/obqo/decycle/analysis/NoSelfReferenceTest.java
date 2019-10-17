@@ -1,6 +1,7 @@
 package de.obqo.decycle.analysis;
 
 import static de.obqo.decycle.model.SimpleNode.simpleNode;
+import static de.obqo.decycle.slicer.MultiCategorizer.combine;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import de.obqo.decycle.model.Node;
@@ -44,7 +45,7 @@ class NoSelfReferenceTest {
 
     @Test
     void shouldBeTrueForUnrelatedNodesWithCommonCategory() {
-        assertThat(new NoSelfReference(ListCategorizer.of(n("a"), n("x")).combine(ListCategorizer.of(n("b"), n("x"))))
+        assertThat(new NoSelfReference(combine(ListCategorizer.of(n("a"), n("x")), ListCategorizer.of(n("b"), n("x"))))
                 .test(n("a"), n("b"))).isTrue();
     }
 }

@@ -5,10 +5,10 @@ import static de.obqo.decycle.model.SimpleNode.PACKAGE;
 import static de.obqo.decycle.model.SimpleNode.classNode;
 import static de.obqo.decycle.model.SimpleNode.packageNode;
 import static de.obqo.decycle.model.SimpleNode.simpleNode;
+import static de.obqo.decycle.slicer.MultiCategorizer.combine;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import de.obqo.decycle.slicer.InternalClassCategorizer;
-import de.obqo.decycle.slicer.MultiCategorizer;
 import de.obqo.decycle.slicer.PackageCategorizer;
 
 import org.junit.jupiter.api.Test;
@@ -52,7 +52,7 @@ class GraphSliceTest {
     void packageSliceOfAnInnerClassShouldBeItsPackage() {
         // since the slice node will appear anyway we use an edge between to inner classes, to test that they get
         // projected on the correct slice
-        final var g = new Graph(new MultiCategorizer(new InternalClassCategorizer(), new PackageCategorizer()));
+        final var g = new Graph(combine(new InternalClassCategorizer(), new PackageCategorizer()));
         g.connect(classNode("p.one.Class$Inner"), classNode("p.two.Class$Inner"));
 
         assertThat(g.slice(PACKAGE).edges()).containsOnly(

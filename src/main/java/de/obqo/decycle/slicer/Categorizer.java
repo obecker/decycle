@@ -6,7 +6,4 @@ import java.util.function.UnaryOperator;
 
 public interface Categorizer extends UnaryOperator<Node> {
 
-    default Categorizer combine(final Categorizer other) {
-        return node -> other.apply(apply(node));
-    }
 }

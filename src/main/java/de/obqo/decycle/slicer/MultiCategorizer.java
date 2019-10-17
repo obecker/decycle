@@ -5,17 +5,21 @@ import de.obqo.decycle.util.Assert;
 
 import java.util.Objects;
 
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+
 /**
  * Combines multiple Categorizers to a single one by applying one after the other until one succeeds to categorize the
  * node.
  */
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class MultiCategorizer implements Categorizer {
 
     private final Categorizer[] categorizers;
 
-    public MultiCategorizer(final Categorizer... categorizers) {
-        Assert.notNull(categorizers, "Missing categorizers for MultiCategorizer");
-        this.categorizers = categorizers;
+    public static Categorizer combine(final Categorizer... categorizers) {
+        Assert.notNull(categorizers, "Missing categorizers for combine");
+        return new MultiCategorizer(categorizers);
     }
 
     @Override

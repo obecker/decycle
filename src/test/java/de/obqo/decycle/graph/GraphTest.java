@@ -1,5 +1,6 @@
 package de.obqo.decycle.graph;
 
+import static de.obqo.decycle.slicer.MultiCategorizer.combine;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import de.obqo.decycle.model.Node;
@@ -134,8 +135,8 @@ class GraphTest {
 
     @Test
     void allNodesInAGraphWithCategoriesShouldContainTheNodesAndAllCategories() {
-        final var g = new Graph(
-                ListCategorizer.of(n("a"), n("b"), n("c")).combine(ListCategorizer.of(n("23"), n("42"), n("c"))));
+        final var g = new Graph(combine(
+                ListCategorizer.of(n("a"), n("b"), n("c")), ListCategorizer.of(n("23"), n("42"), n("c"))));
         g.add(n("a"));
         g.add(n("23"));
 
