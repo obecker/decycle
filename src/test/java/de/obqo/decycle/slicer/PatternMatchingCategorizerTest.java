@@ -27,6 +27,6 @@ class PatternMatchingCategorizerTest {
         final var categorizer = new PatternMatchingCategorizer("type", "some.(package).Class");
 
         assertThat(categorizer.apply(classNode("some.package.Class")))
-                .isEqualTo(SimpleNode.simpleNode("package", "type"));
+                .isEqualTo(SimpleNode.simpleNode("type", "package"));
     }
 }

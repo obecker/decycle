@@ -28,7 +28,7 @@ public class SimpleNode implements Node {
         return new SimpleNode(PACKAGE, name);
     }
 
-    public static SimpleNode simpleNode(final String name, final String type) {
+    public static SimpleNode simpleNode(final String type, final String name) {
         return new SimpleNode(type, name);
     }
 

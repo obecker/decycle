@@ -23,7 +23,7 @@ class PackageCategorizerTest {
 
     @Test
     void shouldNotCategorizeArbitraryTypes() {
-        final Node n = SimpleNode.simpleNode("alpha.beta", "x");
+        final Node n = SimpleNode.simpleNode("x", "alpha.beta");
 
         assertThat(this.categorizer.apply(n)).isEqualTo(n);
     }

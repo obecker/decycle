@@ -36,8 +36,8 @@ class MockSliceSource implements SliceSource {
 
         this.graph = NetworkBuilder.directed().allowsSelfLoops(true).build();
         for (final Dependency dep : deps) {
-            final SimpleNode from = simpleNode(dep.getFrom(), slice);
-            final SimpleNode to = simpleNode(dep.getTo(), slice);
+            final SimpleNode from = simpleNode(slice, dep.getFrom());
+            final SimpleNode to = simpleNode(slice, dep.getTo());
             this.graph.addEdge(from, to, new Edge(from, to, Edge.EdgeLabel.REFERENCES));
         }
     }

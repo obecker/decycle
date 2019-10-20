@@ -22,6 +22,13 @@ class PatternMatcherTest {
     }
 
     @Test
+    void shouldMatchEntirePattern() {
+        final var matcher = new PatternMatcher("(some.package.Class)");
+
+        assertThat(matcher.matches("tld.some.package.Class$Inner")).isEmpty();
+    }
+
+    @Test
     void shouldMatchEntirePatternIfNoParensArePresent() {
         final var matcher = new PatternMatcher("some.package.Class");
 
