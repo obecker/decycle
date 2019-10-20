@@ -3,6 +3,7 @@ package de.obqo.decycle.slicer;
 import de.obqo.decycle.model.Node;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Represents a list of categories, so for example in {@code ListCategory.of(a, b, c)} the category of {@code a} is
@@ -21,8 +22,8 @@ public class ListCategorizer implements Categorizer {
     }
 
     @Override
-    public Node apply(final Node node) {
+    public Set<Node> apply(final Node node) {
         final int index = this.nodes.indexOf(node);
-        return index >= 0 && index < this.nodes.size() - 1 ? this.nodes.get(index + 1) : node;
+        return index >= 0 && index < this.nodes.size() - 1 ? Set.of(this.nodes.get(index + 1)) : NONE;
     }
 }

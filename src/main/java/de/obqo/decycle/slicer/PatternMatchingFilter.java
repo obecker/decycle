@@ -1,7 +1,6 @@
 package de.obqo.decycle.slicer;
 
 import de.obqo.decycle.model.Node;
-import de.obqo.decycle.model.SimpleNode;
 
 public class PatternMatchingFilter implements NodeFilter {
 
@@ -13,6 +12,6 @@ public class PatternMatchingFilter implements NodeFilter {
 
     @Override
     public boolean test(final Node node) {
-        return !(node instanceof SimpleNode) || this.matcher.matches(node.getName()).isPresent();
+        return this.matcher.matches(node.getName()).isPresent();
     }
 }

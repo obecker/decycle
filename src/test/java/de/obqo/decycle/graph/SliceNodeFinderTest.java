@@ -1,13 +1,11 @@
 package de.obqo.decycle.graph;
 
-import static de.obqo.decycle.model.SimpleNode.classNode;
-import static de.obqo.decycle.model.SimpleNode.packageNode;
-import static de.obqo.decycle.model.SimpleNode.simpleNode;
+import static de.obqo.decycle.model.Node.classNode;
+import static de.obqo.decycle.model.Node.packageNode;
+import static de.obqo.decycle.model.Node.sliceNode;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import de.obqo.decycle.model.Node;
-import de.obqo.decycle.model.ParentAwareNode;
-import de.obqo.decycle.model.SimpleNode;
 
 import com.google.common.graph.MutableNetwork;
 import com.google.common.graph.NetworkBuilder;
@@ -17,7 +15,7 @@ import org.junit.jupiter.api.Test;
 class SliceNodeFinderTest {
 
     private Node n(final String s) {
-        return simpleNode(s, s);
+        return sliceNode(s, s);
     }
 
     private MutableNetwork<Node, Edge> graph() {
@@ -38,71 +36,37 @@ class SliceNodeFinderTest {
     }
 
     @Test
-    void shouldNotBeDefinedForAnEmptyGraph() {
+    void shouldFindNothingForAnEmptyGraph() {
         final var finder = new SliceNodeFinder("x", graph());
 
-        assertThat(finder.isDefinedAt(n("z"))).isFalse();
+        assertThat(finder.find(n("z"))).isEmpty();
     }
 
     @Test
     void shouldReturnTheNodeForASliceNode() {
         final var p = packageNode("p");
         final var g = graph(p);
-        final var finder = new SliceNodeFinder(SimpleNode.PACKAGE, g);
+        final var finder = new SliceNodeFinder(Node.PACKAGE, g);
 
-        assertThat(finder.isDefinedAt(p)).isTrue();
-        assertThat(finder.apply(p)).isEqualTo(p);
+        assertThat(finder.find(p)).hasValue(p);
     }
 
     @Test
-    void shouldNotBeDefinedIfNodeIsOfADifferentSlice() {
+    void shouldFindNothingIfNodeIsOfADifferentSlice() {
         final var p = packageNode("p");
         final var g = graph(p);
         final var finder = new SliceNodeFinder("does not exist", g);
 
-        assertThat(finder.isDefinedAt(p)).isFalse();
+        assertThat(finder.find(p)).isEmpty();
     }
 
     @Test
-    void shouldReturnTheContentOfAParentAwareNode() {
-        final var p = packageNode("p");
-        final var n = new ParentAwareNode(p);
-        final var g = graph(n);
-        final var finder = new SliceNodeFinder(SimpleNode.PACKAGE, g);
-
-        assertThat(finder.isDefinedAt(n)).isTrue();
-        assertThat(finder.apply(n)).isEqualTo(p);
-    }
-
-    @Test
-    void shouldNotBeDefinedIfParentAwareNodeDoesNotContainTheCorrectSlice() {
-        final var p = packageNode("p");
-        final var n = new ParentAwareNode(p);
-        final var g = graph(n);
-        final var finder = new SliceNodeFinder("does not exist", g);
-
-        assertThat(finder.isDefinedAt(n)).isFalse();
-    }
-
-    @Test
-    void shouldReturnTheMatchingSliceFromTheContentOfAParentAwareNode() {
-        final var p = packageNode("p");
-        final var n = new ParentAwareNode(n("x"), p, n("y"));
-        final var g = graph(n);
-        final var finder = new SliceNodeFinder(SimpleNode.PACKAGE, g);
-
-        assertThat(finder.isDefinedAt(n)).isTrue();
-        assertThat(finder.apply(n)).isEqualTo(p);
-    }
-
-    @Test
-    void traversesContainsRelationship() {
+    void shouldTraverseContainsRelationship() {
         final var p = packageNode("p");
         final var g = graph(p, n("x"), Edge.EdgeLabel.CONTAINS);
-        final var finder = new SliceNodeFinder(SimpleNode.PACKAGE, g);
+        final var finder = new SliceNodeFinder(Node.PACKAGE, g);
 
-        assertThat(finder.isDefinedAt(n("x"))).isTrue();
-        assertThat(finder.apply(n("x"))).isEqualTo(p);
+        assertThat(finder.find(n("x"))).hasValue(p);
     }
 
     @Test
@@ -110,9 +74,8 @@ class SliceNodeFinderTest {
         final var p = packageNode("p");
         final var c = classNode("p.c");
         final var g = graph(p, c, Edge.EdgeLabel.CONTAINS);
-        final var finder = new SliceNodeFinder(SimpleNode.PACKAGE, g);
+        final var finder = new SliceNodeFinder(Node.PACKAGE, g);
 
-        assertThat(finder.isDefinedAt(c)).isTrue();
-        assertThat(finder.apply(c)).isEqualTo(p);
+        assertThat(finder.find(c)).hasValue(p);
     }
 }

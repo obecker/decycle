@@ -4,7 +4,7 @@ import static de.obqo.decycle.analysis.VisitorSupport.classNode;
 import static de.obqo.decycle.analysis.VisitorSupport.classNodeFromDescriptor;
 
 import de.obqo.decycle.graph.Graph;
-import de.obqo.decycle.model.SimpleNode;
+import de.obqo.decycle.model.Node;
 
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassVisitor;
@@ -17,9 +17,9 @@ import org.objectweb.asm.TypePath;
 public class GraphBuildingClassVisitor extends ClassVisitor {
 
     private final Graph graph;
-    private SimpleNode currentClass;
+    private Node currentClass;
 
-    GraphBuildingClassVisitor(Graph graph) {
+    GraphBuildingClassVisitor(final Graph graph) {
         super(Opcodes.ASM7);
         this.graph = graph;
     }

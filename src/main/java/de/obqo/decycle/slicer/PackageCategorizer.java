@@ -1,16 +1,17 @@
 package de.obqo.decycle.slicer;
 
 import de.obqo.decycle.model.Node;
-import de.obqo.decycle.model.SimpleNode;
+
+import java.util.Set;
 
 public class PackageCategorizer implements Categorizer {
 
     @Override
-    public Node apply(final Node node) {
-        if (node instanceof SimpleNode && node.getTypes().contains(SimpleNode.CLASS)) {
-            return SimpleNode.packageNode(packagePart(node.getName()));
+    public Set<Node> apply(final Node node) {
+        if (node.hasType(Node.CLASS)) {
+            return Set.of(Node.packageNode(packagePart(node.getName())));
         }
-        return node;
+        return NONE;
     }
 
     private String packagePart(final String name) {

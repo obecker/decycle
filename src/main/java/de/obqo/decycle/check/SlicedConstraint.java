@@ -2,7 +2,6 @@ package de.obqo.decycle.check;
 
 import de.obqo.decycle.graph.SliceSource;
 import de.obqo.decycle.model.Node;
-import de.obqo.decycle.model.SimpleNode;
 
 import java.util.Collection;
 import java.util.List;
@@ -23,16 +22,12 @@ public abstract class SlicedConstraint implements Constraint {
     abstract boolean isViolatedBy(Node n1, Node n2);
 
     int indexOf(final Node node) {
-        if (node instanceof SimpleNode) {
-            for (int i = 0; i < this.slices.size(); i++) {
-                if (this.slices.get(i).contains(node.getName())) {
-                    return i;
-                }
+        for (int i = 0; i < this.slices.size(); i++) {
+            if (this.slices.get(i).contains(node.getName())) {
+                return i;
             }
-            return -1;
-        } else {
-            throw new IllegalArgumentException("Should never happen");
         }
+        return -1;
     }
 
     boolean constraintContainsBothNodes(final int i, final int j) {

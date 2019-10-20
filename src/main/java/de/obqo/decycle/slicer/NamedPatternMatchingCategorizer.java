@@ -1,9 +1,9 @@
 package de.obqo.decycle.slicer;
 
 import de.obqo.decycle.model.Node;
-import de.obqo.decycle.model.SimpleNode;
 
 import java.util.Optional;
+import java.util.Set;
 
 public class NamedPatternMatchingCategorizer implements Categorizer {
 
@@ -18,11 +18,11 @@ public class NamedPatternMatchingCategorizer implements Categorizer {
     }
 
     @Override
-    public Node apply(final Node node) {
+    public Set<Node> apply(final Node node) {
         return Optional.of(node)
-                .filter(n -> n instanceof SimpleNode)
                 .flatMap(n -> this.matcher.matches(n.getName()))
-                .map(__ -> (Node) SimpleNode.simpleNode(this.targetType, this.name))
-                .orElse(node);
+                .map(__ -> Node.sliceNode(this.targetType, this.name))
+                .map(Set::of)
+                .orElse(Set.of());
     }
 }

@@ -1,10 +1,10 @@
 package de.obqo.decycle.graph;
 
-import static de.obqo.decycle.model.SimpleNode.CLASS;
-import static de.obqo.decycle.model.SimpleNode.PACKAGE;
-import static de.obqo.decycle.model.SimpleNode.classNode;
-import static de.obqo.decycle.model.SimpleNode.packageNode;
-import static de.obqo.decycle.model.SimpleNode.simpleNode;
+import static de.obqo.decycle.model.Node.CLASS;
+import static de.obqo.decycle.model.Node.PACKAGE;
+import static de.obqo.decycle.model.Node.classNode;
+import static de.obqo.decycle.model.Node.packageNode;
+import static de.obqo.decycle.model.Node.sliceNode;
 import static de.obqo.decycle.slicer.MultiCategorizer.combine;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -18,7 +18,7 @@ class GraphSliceTest {
     @Test
     void packageSliceOfAGraphWithoutPackageShouldBeEmpty() {
         final var g = new Graph();
-        g.add(simpleNode("x", "x"));
+        g.add(sliceNode("x", "x"));
 
         assertThat(g.slice(PACKAGE).nodes()).isEmpty();
     }
@@ -63,7 +63,7 @@ class GraphSliceTest {
     void shouldReturnSetOfContainedNodeTypesAsSlices() {
         final var g = new Graph(new PackageCategorizer());
         g.connect(classNode("package.one.class"), classNode("package.two.class"));
-        g.add(simpleNode("x", "x"));
+        g.add(sliceNode("x", "x"));
 
         assertThat(g.slices()).containsOnly(CLASS, PACKAGE, "x");
     }

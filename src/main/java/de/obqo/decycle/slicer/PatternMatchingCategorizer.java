@@ -1,9 +1,9 @@
 package de.obqo.decycle.slicer;
 
 import de.obqo.decycle.model.Node;
-import de.obqo.decycle.model.SimpleNode;
 
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Categorizes package nodes by matching them against ant like patterns.
@@ -37,11 +37,11 @@ public class PatternMatchingCategorizer implements Categorizer {
     }
 
     @Override
-    public Node apply(final Node node) {
+    public Set<Node> apply(final Node node) {
         return Optional.of(node)
-                .filter(n -> n instanceof SimpleNode)
                 .flatMap(n -> this.matcher.matches(n.getName()))
-                .map(match -> (Node) SimpleNode.simpleNode(this.targetType, match))
-                .orElse(node);
+                .map(match -> Node.sliceNode(this.targetType, match))
+                .map(Set::of)
+                .orElse(Set.of());
     }
 }
