@@ -4,7 +4,6 @@ import static de.obqo.decycle.slicer.MultiCategorizer.combine;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import de.obqo.decycle.model.Node;
-import de.obqo.decycle.model.SimpleNode;
 import de.obqo.decycle.slicer.ListCategorizer;
 
 import java.util.Set;
@@ -14,7 +13,7 @@ import org.junit.jupiter.api.Test;
 class GraphTest {
 
     private Node n(final String name) {
-        return SimpleNode.classNode(name);
+        return Node.classNode(name);
     }
 
     @Test
@@ -46,7 +45,7 @@ class GraphTest {
     void shouldAddCategoryForANode() {
         final var category = n("cat");
         final var node = n("n");
-        final var g = new Graph(__ -> category, null, null);
+        final var g = new Graph(__ -> Set.of(category));
         g.add(node);
 
         assertThat(g.topNodes()).contains(category);
@@ -56,7 +55,7 @@ class GraphTest {
     void categoryShouldContainNodesOfThatCategory() {
         final var category = n("cat");
         final var node = n("n");
-        final var g = new Graph(__ -> category, null, null);
+        final var g = new Graph(__ -> Set.of(category));
         g.add(node);
 
         assertThat(g.contentsOf(category)).contains(node);

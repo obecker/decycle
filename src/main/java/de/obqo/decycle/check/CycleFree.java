@@ -4,7 +4,7 @@ import static de.obqo.decycle.graph.StronglyConnectedComponentsFinder.findCompon
 
 import de.obqo.decycle.graph.Edge;
 import de.obqo.decycle.graph.SliceSource;
-import de.obqo.decycle.model.SimpleNode;
+import de.obqo.decycle.model.Node;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +22,7 @@ public class CycleFree implements Constraint {
     public List<Violation> violations(final SliceSource sliceSource) {
         final List<Violation> list = new ArrayList<>();
         for (final String sliceType : sliceSource.slices()) {
-            if (!SimpleNode.CLASS.equals(sliceType)) {
+            if (!Node.CLASS.equals(sliceType)) {
                 for (final Set<Edge> comp : findComponents(sliceSource.slice(sliceType))) {
                     list.add(new Violation(sliceType, getShortString(),
                             comp.stream().map(Dependency::of).collect(Collectors.toSet())));

@@ -3,7 +3,6 @@ package de.obqo.decycle.analysis;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import de.obqo.decycle.model.Node;
-import de.obqo.decycle.model.SimpleNode;
 import de.obqo.decycle.slicer.NodeFilter;
 
 import java.util.Set;
@@ -13,7 +12,7 @@ import org.junit.jupiter.api.Test;
 class IncludeExcludeFilterTest {
 
     private Node n(final String s) {
-        return SimpleNode.simpleNode(s, s);
+        return Node.sliceNode(s, s);
     }
 
     private NodeFilter f(final boolean result) {

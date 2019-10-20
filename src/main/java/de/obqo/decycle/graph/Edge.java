@@ -2,15 +2,9 @@ package de.obqo.decycle.graph;
 
 import de.obqo.decycle.model.Node;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+import lombok.Value;
 
-@RequiredArgsConstructor
-@EqualsAndHashCode
-@Getter
-@ToString
+@Value
 public class Edge {
 
     public enum EdgeLabel {

@@ -1,5 +1,7 @@
 package de.obqo.decycle.configuration;
 
+import static de.obqo.decycle.slicer.MultiCategorizer.combine;
+
 import de.obqo.decycle.analysis.Analyzer;
 import de.obqo.decycle.analysis.IncludeExcludeFilter;
 import de.obqo.decycle.check.Constraint;
@@ -7,9 +9,7 @@ import de.obqo.decycle.check.Constraint.Violation;
 import de.obqo.decycle.check.CycleFree;
 import de.obqo.decycle.graph.Graph;
 import de.obqo.decycle.slicer.Categorizer;
-import de.obqo.decycle.slicer.CombinedSlicer;
 import de.obqo.decycle.slicer.InternalClassCategorizer;
-import de.obqo.decycle.slicer.MultiCategorizer;
 import de.obqo.decycle.slicer.NodeFilter;
 import de.obqo.decycle.slicer.PackageCategorizer;
 import de.obqo.decycle.slicer.ParallelCategorizer;
@@ -46,11 +46,11 @@ public class Configuration {
                 this.categories.entrySet().stream().map(entry -> buildCategorizer(entry.getKey(), entry.getValue()));
         final var slicersWithPackages = Stream.concat(Stream.of(new PackageCategorizer()), slicers);
         final var cat = new ParallelCategorizer(slicersWithPackages.toArray(Categorizer[]::new));
-        return MultiCategorizer.combine(new InternalClassCategorizer(), cat);
+        return combine(new InternalClassCategorizer(), cat);
     }
 
     private Categorizer buildCategorizer(final String slicing, final List<Pattern> groupings) {
-        return new CombinedSlicer(groupings.stream().map(p -> p.toCategorizer(slicing)).toArray(Categorizer[]::new));
+        return combine(groupings.stream().map(p -> p.toCategorizer(slicing)).toArray(Categorizer[]::new));
     }
 
     private NodeFilter buildFilter() {

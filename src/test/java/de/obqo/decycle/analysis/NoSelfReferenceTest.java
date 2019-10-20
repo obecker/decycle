@@ -1,6 +1,6 @@
 package de.obqo.decycle.analysis;
 
-import static de.obqo.decycle.model.SimpleNode.simpleNode;
+import static de.obqo.decycle.model.Node.sliceNode;
 import static de.obqo.decycle.slicer.MultiCategorizer.combine;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 class NoSelfReferenceTest {
 
     private Node n(final String s) {
-        return simpleNode(s, s);
+        return sliceNode(s, s);
     }
 
     @Test

@@ -1,27 +1,25 @@
 package de.obqo.decycle.slicer;
 
 import de.obqo.decycle.model.Node;
-import de.obqo.decycle.model.ParentAwareNode;
 import de.obqo.decycle.util.Assert;
 
-import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class ParallelCategorizer implements Categorizer {
 
-    private final List<Categorizer> cs;
+    private final Categorizer[] cs;
 
     public ParallelCategorizer(final Categorizer... cs) {
         Assert.notNull(cs, "Missing categorizers for ParallelCategorizer");
-        this.cs = List.of(cs);
+        this.cs = cs;
     }
 
     @Override
-    public Node apply(final Node node) {
-        if (node instanceof ParentAwareNode) {
-            return ((ParentAwareNode) node).next();
-        }
-        return this.cs.isEmpty() ? node : new ParentAwareNode(
-                this.cs.stream().map(c -> c.apply(node)).toArray(Node[]::new)
-        ).prune();
+    public Set<Node> apply(final Node node) {
+        return Stream.of(this.cs)
+                .flatMap(categorizer -> categorizer.apply(node).stream())
+                .collect(Collectors.toSet());
     }
 }

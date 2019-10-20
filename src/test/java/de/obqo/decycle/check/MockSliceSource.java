@@ -1,12 +1,11 @@
 package de.obqo.decycle.check;
 
-import static de.obqo.decycle.model.SimpleNode.simpleNode;
+import static de.obqo.decycle.model.Node.sliceNode;
 
 import de.obqo.decycle.check.Constraint.Dependency;
 import de.obqo.decycle.graph.Edge;
 import de.obqo.decycle.graph.SliceSource;
 import de.obqo.decycle.model.Node;
-import de.obqo.decycle.model.SimpleNode;
 
 import java.util.List;
 import java.util.Set;
@@ -36,8 +35,8 @@ class MockSliceSource implements SliceSource {
 
         this.graph = NetworkBuilder.directed().allowsSelfLoops(true).build();
         for (final Dependency dep : deps) {
-            final SimpleNode from = simpleNode(slice, dep.getFrom());
-            final SimpleNode to = simpleNode(slice, dep.getTo());
+            final Node from = sliceNode(slice, dep.getFrom());
+            final Node to = sliceNode(slice, dep.getTo());
             this.graph.addEdge(from, to, new Edge(from, to, Edge.EdgeLabel.REFERENCES));
         }
     }

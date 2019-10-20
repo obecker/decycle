@@ -3,7 +3,7 @@ package de.obqo.decycle.slicer;
 import de.obqo.decycle.model.Node;
 import de.obqo.decycle.util.Assert;
 
-import java.util.Objects;
+import java.util.Set;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -23,13 +23,13 @@ public class MultiCategorizer implements Categorizer {
     }
 
     @Override
-    public Node apply(final Node node) {
+    public Set<Node> apply(final Node node) {
         for (final Categorizer categorizer : this.categorizers) {
-            final Node category = categorizer.apply(node);
-            if (!Objects.equals(category, node)) {
+            final Set<Node> category = categorizer.apply(node);
+            if (!category.isEmpty()) {
                 return category;
             }
         }
-        return node;
+        return NONE;
     }
 }

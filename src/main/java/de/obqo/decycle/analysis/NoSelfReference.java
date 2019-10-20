@@ -6,6 +6,8 @@ import de.obqo.decycle.slicer.Categorizer;
 import java.util.Objects;
 import java.util.function.BiPredicate;
 
+import com.google.common.annotations.VisibleForTesting;
+
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -13,8 +15,9 @@ public class NoSelfReference implements BiPredicate<Node, Node> {
 
     private final Categorizer categorizer;
 
-    public NoSelfReference() {
-        this(n -> n);
+    @VisibleForTesting
+    NoSelfReference() {
+        this(__ -> Categorizer.NONE);
     }
 
     @Override
@@ -23,7 +26,6 @@ public class NoSelfReference implements BiPredicate<Node, Node> {
     }
 
     private boolean findInCategory(final Node a, final Node b) {
-        final var next = this.categorizer.apply(a);
-        return Objects.equals(a, b) || (!Objects.equals(next, a) && findInCategory(next, b));
+        return Objects.equals(a, b) || this.categorizer.apply(a).stream().anyMatch(node -> findInCategory(node, b));
     }
 }
