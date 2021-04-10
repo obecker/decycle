@@ -27,19 +27,19 @@ import lombok.Builder;
 @Builder
 public class Configuration {
 
-    private String classpath;
+    private final String classpath;
 
     @Builder.Default
-    private List<String> includes = List.of();
+    private final List<String> includes = List.of();
 
     @Builder.Default
-    private List<String> excludes = List.of();
+    private final List<String> excludes = List.of();
 
     @Builder.Default
-    private Map<String, List<Pattern>> categories = Map.of();
+    private final Map<String, List<Pattern>> categories = Map.of();
 
     @Builder.Default
-    private Set<Constraint> constraints = Set.of(new CycleFree());
+    private final Set<Constraint> constraints = Set.of();
 
     private Categorizer buildCategorizer() {
         final var slicers =
@@ -65,7 +65,8 @@ public class Configuration {
 
     public List<Violation> check() {
         final var g = createGraph();
-        return this.constraints.stream().flatMap(c -> c.violations(g).stream())
+        final var allConstraints = Stream.concat(Stream.of(new CycleFree()), this.constraints.stream());
+        return allConstraints.flatMap(c -> c.violations(g).stream())
                 .sorted(Comparator.comparing(Violation::getSliceType).thenComparing(Violation::getName))
                 .collect(Collectors.toList());
     }

@@ -38,7 +38,7 @@ public class GraphBuildingClassVisitor extends ClassVisitor {
             this.graph.connect(this.currentClass, classNode(superName));
         }
 
-        for (String i : interfaces) {
+        for (final String i : interfaces) {
             this.graph.connect(this.currentClass, classNode(i));
         }
     }
@@ -52,7 +52,7 @@ public class GraphBuildingClassVisitor extends ClassVisitor {
     @Override
     public void visitOuterClass(final String owner, final String name, final String descriptor) {
         this.graph.add(classNode(owner));
-        classNodeFromDescriptor(descriptor).forEach(node -> this.graph.add(node));
+        classNodeFromDescriptor(descriptor).forEach(this.graph::add);
     }
 
     @Override
@@ -94,7 +94,7 @@ public class GraphBuildingClassVisitor extends ClassVisitor {
 
         classNodeFromDescriptor(descriptor).forEach(node -> this.graph.connect(this.currentClass, node));
         if (exceptions != null) {
-            for (String e : exceptions) {
+            for (final String e : exceptions) {
                 classNodeFromDescriptor(e).forEach(node -> this.graph.connect(this.currentClass, node));
             }
         }

@@ -9,8 +9,8 @@ import java.util.regex.Pattern;
 
 class VisitorSupport {
 
-    private static Pattern singlePattern = Pattern.compile("\\[*L([\\w/$]+);");
-    private static Pattern multiPattern = Pattern.compile("(?<=L)([\\w/$]+)(?=[;<])");
+    private static final Pattern singlePattern = Pattern.compile("\\[*L([\\w/$]+);");
+    private static final Pattern multiPattern = Pattern.compile("(?<=L)([\\w/$]+)(?=[;<])");
 
     static Node classNode(final String slashSeparatedName) {
         return Node.classNode(slashSeparatedName.replace('/', '.'));

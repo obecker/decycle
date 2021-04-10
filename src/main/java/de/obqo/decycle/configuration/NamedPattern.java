@@ -5,22 +5,22 @@ import de.obqo.decycle.slicer.NamedPatternMatchingCategorizer;
 
 public class NamedPattern implements Pattern {
 
-    private final String pattern;
     private final String name;
+    private final String pattern;
 
-    public NamedPattern(final String pattern, final String name) {
+    public NamedPattern(final String name, final String pattern) {
 
         if (name.contains("*") || name.contains(".")) {
             System.out.println("You use '" + name +
                     "' as the NAME of a NamedPattern. Please note that the NAME comes last in such a pattern.");
         }
 
-        this.pattern = pattern;
         this.name = name;
+        this.pattern = pattern;
     }
 
     @Override
     public Categorizer toCategorizer(final String slice) {
-        return new NamedPatternMatchingCategorizer(slice, this.pattern, this.name);
+        return new NamedPatternMatchingCategorizer(slice, this.name, this.pattern);
     }
 }

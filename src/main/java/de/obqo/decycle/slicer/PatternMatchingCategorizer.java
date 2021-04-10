@@ -14,7 +14,7 @@ import java.util.Set;
  *     <li>** matches any combination of letters and dots</li>
  * </ul>
  * <p>
- * The category of a matched node it that part of the match that is wrapped in parenthesis.
+ * The category of a matched node is that part of the match that is wrapped in parenthesis.
  * <p>
  * If no parenthesis are give the full name is returned as a category.
  * <p>

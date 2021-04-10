@@ -7,6 +7,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * Combines multiple categorizers by applying all of them and returns the union of all categories.
+ */
 public class ParallelCategorizer implements Categorizer {
 
     private final Categorizer[] cs;

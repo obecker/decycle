@@ -1,5 +1,6 @@
 plugins {
     java
+    `maven-publish`
 }
 
 group = "de.obqo.decycle"
@@ -9,8 +10,8 @@ repositories {
     mavenCentral()
 }
 
-val junitVersion by extra("5.5.2")
-val lombokVersion by extra("1.18.10")
+val junitVersion by extra("5.7.1")
+val lombokVersion by extra("1.18.20")
 
 dependencies {
     compileOnly("org.projectlombok:lombok:$lombokVersion")
@@ -18,13 +19,13 @@ dependencies {
     testAnnotationProcessor("org.projectlombok:lombok:$lombokVersion")
     annotationProcessor("org.projectlombok:lombok:$lombokVersion")
 
-    implementation("org.ow2.asm:asm:7.1")
-    implementation("com.google.guava:guava:28.1-jre")
+    implementation("org.ow2.asm:asm:7.3.1")
+    implementation("com.google.guava:guava:30.1.1-jre")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
     testImplementation("org.junit.jupiter:junit-jupiter-params:$junitVersion")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
-    testImplementation("org.assertj:assertj-core:3.13.2")
+    testImplementation("org.assertj:assertj-core:3.19.0")
 }
 
 configure<JavaPluginConvention> {
@@ -32,10 +33,18 @@ configure<JavaPluginConvention> {
 }
 
 tasks.wrapper {
-    gradleVersion = "5.6.2"
+    gradleVersion = "6.8.3"
     distributionType = Wrapper.DistributionType.ALL
 }
 
 tasks.test {
     useJUnitPlatform()
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            from(components["java"])
+        }
+    }
 }

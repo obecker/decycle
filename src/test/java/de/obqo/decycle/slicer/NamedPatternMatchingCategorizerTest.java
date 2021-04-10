@@ -11,14 +11,14 @@ class NamedPatternMatchingCategorizerTest {
 
     @Test
     void shouldReturnNodeOfTypeWithNameOfMatch() {
-        final var categorizer = new NamedPatternMatchingCategorizer("type", "(some.package.Class)", "name");
+        final var categorizer = new NamedPatternMatchingCategorizer("type", "name", "(some.package.Class)");
 
         assertThat(categorizer.apply(classNode("some.package.Class"))).containsOnly(Node.sliceNode("type", "name"));
     }
 
     @Test
     void shouldReturnNothingIfNotMatched() {
-        final var categorizer = new NamedPatternMatchingCategorizer("type", "(y)", "name");
+        final var categorizer = new NamedPatternMatchingCategorizer("type", "name", "(y)");
         final var x = classNode("x");
 
         assertThat(categorizer.apply(x)).isEmpty();
