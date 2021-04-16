@@ -23,4 +23,9 @@ public class NamedPattern implements Pattern {
     public Categorizer toCategorizer(final String slice) {
         return new NamedPatternMatchingCategorizer(slice, this.name, this.pattern);
     }
+
+    @Override
+    public String toString() {
+        return this.name + "=" + this.pattern;
+    }
 }

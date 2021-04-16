@@ -1,0 +1,65 @@
+.violations {
+    position: relative;
+    min-height: 3.75rem;
+}
+
+.violations > h1 {
+    position: absolute;
+    right: 0.75rem;
+}
+
+.violations > .name {
+    color: black;
+}
+
+.violations > .dependencies a {
+    font-weight: normal;
+}
+
+h2.slice {
+    text-transform: capitalize;
+}
+
+dl.slices {
+    background-color: aliceblue;
+}
+
+dt.error, dd.error {
+    background-color: lightyellow;
+}
+
+dd {
+    margin-bottom: 0;
+    padding-bottom: 0.5rem;
+}
+
+ul.references > li > a {
+    color: darkblue;
+    cursor: pointer;
+}
+ul.references > li > a:hover {
+    text-decoration: underline;
+}
+
+ul.references > li.error > span {
+    color: #721c24;
+}
+
+ul.class-references > li {
+    text-indent: -3rem;
+    padding-left: 3rem;
+}
+
+ul.class-references {
+    font-size: 90%;
+    color: dimgray;
+    display: none;
+}
+
+li.error > ul.class-references {
+    display: block;
+}
+
+dt.border-top:first-child, dd.border-top:first-of-type {
+    border: none !important;
+}

@@ -7,8 +7,12 @@ import de.obqo.decycle.check.Constraint;
 import de.obqo.decycle.check.DirectLayeringConstraint;
 import de.obqo.decycle.check.LayeringConstraint;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.StringWriter;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
@@ -22,7 +26,9 @@ class ConfigurationTest {
     }
 
     @Test
-    void violatedLayeringConstraintsShouldBeReported() {
+    void violatedLayeringConstraintsShouldBeReported() throws IOException {
+        final StringWriter writer = new StringWriter();
+
         final List<Constraint.Violation> violations = Configuration.builder()
                 .classpath("build")
                 .includes(List.of("de.obqo.decycle.**"))
@@ -32,7 +38,7 @@ class ConfigurationTest {
                         new DirectLayeringConstraint("subpackage", List.of(anyOf("model"), anyOf("util")))
                 ))
                 .build()
-                .check();
+                .checkAndReport(writer);
 
         assertThat(violations).hasSize(2).extracting(Constraint.Violation::getSliceType).allMatch("subpackage"::equals);
 
@@ -50,5 +56,28 @@ class ConfigurationTest {
                 new Constraint.Dependency("graph", "util"),
                 new Constraint.Dependency("slicer", "util")
         );
+
+        new FileWriter("build/output.html").append(writer.toString()).close();
+    }
+
+    @Test
+    void shouldWriteReport() throws IOException {
+        final StringWriter writer = new StringWriter();
+
+        final List<Constraint.Violation> violations = Configuration.builder()
+                .classpath(System.getProperty("java.class.path"))
+                .includes(List.of("j2html.**"))
+                .build()
+                .checkAndReport(writer);
+
+//        new FileWriter("build/test.html").append(writer.toString()).close();
+
+        final String expectedReport = readResource("ConfigurationTest-shouldWriteReport.html");
+        assertThat(writer.toString()).isEqualTo(expectedReport);
+    }
+
+    private String readResource(final String filename) {
+        final Scanner s = new Scanner(ConfigurationTest.class.getResourceAsStream(filename)).useDelimiter("\\A");
+        return s.hasNext() ? s.next() : "";
     }
 }

@@ -37,7 +37,7 @@ class MockSliceSource implements SliceSource {
         for (final Dependency dep : deps) {
             final Node from = sliceNode(slice, dep.getFrom());
             final Node to = sliceNode(slice, dep.getTo());
-            this.graph.addEdge(from, to, new Edge(from, to, Edge.EdgeLabel.REFERENCES));
+            this.graph.addEdge(from, to, Edge.references(from, to));
         }
     }
 

@@ -29,7 +29,7 @@ class SliceNodeFinder {
             return Stream.of(node);
         } else {
             return inEdges(node).stream()
-                    .filter(e -> e.getLabel() == Edge.EdgeLabel.CONTAINS)
+                    .filter(Edge::isContaining)
                     .map(Edge::getFrom)
                     .flatMap(this::allInNodesOfType);
         }

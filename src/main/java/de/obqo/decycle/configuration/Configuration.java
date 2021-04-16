@@ -1,6 +1,7 @@
 package de.obqo.decycle.configuration;
 
 import static de.obqo.decycle.slicer.MultiCategorizer.combine;
+import static java.util.Objects.requireNonNullElse;
 
 import de.obqo.decycle.analysis.Analyzer;
 import de.obqo.decycle.analysis.IncludeExcludeFilter;
@@ -8,6 +9,7 @@ import de.obqo.decycle.check.Constraint;
 import de.obqo.decycle.check.Constraint.Violation;
 import de.obqo.decycle.check.CycleFree;
 import de.obqo.decycle.graph.Graph;
+import de.obqo.decycle.report.HtmlReport;
 import de.obqo.decycle.slicer.Categorizer;
 import de.obqo.decycle.slicer.InternalClassCategorizer;
 import de.obqo.decycle.slicer.NodeFilter;
@@ -15,6 +17,7 @@ import de.obqo.decycle.slicer.PackageCategorizer;
 import de.obqo.decycle.slicer.ParallelCategorizer;
 import de.obqo.decycle.slicer.PatternMatchingFilter;
 
+import java.io.IOException;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -23,23 +26,41 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import lombok.Builder;
+import lombok.NonNull;
 
-@Builder
 public class Configuration {
 
+    @NonNull
     private final String classpath;
 
-    @Builder.Default
-    private final List<String> includes = List.of();
+    private final List<String> includes;
 
-    @Builder.Default
-    private final List<String> excludes = List.of();
+    private final List<String> excludes;
 
-    @Builder.Default
-    private final Map<String, List<Pattern>> categories = Map.of();
+    private final Map<String, List<Pattern>> categories;
 
-    @Builder.Default
-    private final Set<Constraint> constraints = Set.of();
+    private final Set<Constraint> constraints;
+
+    private final Graph graph;
+
+    @Builder
+    public Configuration(final String classpath,
+            final List<String> includes,
+            final List<String> excludes,
+            final Map<String, List<Pattern>> categories,
+            final Set<Constraint> constraints) {
+        this.classpath = classpath;
+        this.includes = requireNonNullElse(includes, List.of());
+        this.excludes = requireNonNullElse(excludes, List.of());
+        this.categories = requireNonNullElse(categories, Map.of());
+        this.constraints = requireNonNullElse(constraints, Set.of());
+
+        this.graph = createGraph();
+    }
+
+    private Graph createGraph() {
+        return new Analyzer().analyze(this.classpath, buildCategorizer(), buildFilter());
+    }
 
     private Categorizer buildCategorizer() {
         final var slicers =
@@ -59,15 +80,27 @@ public class Configuration {
                 this.excludes.stream().map(PatternMatchingFilter::new).collect(Collectors.toSet()));
     }
 
-    private Graph createGraph() {
-        return new Analyzer().analyze(this.classpath, buildCategorizer(), buildFilter());
-    }
-
     public List<Violation> check() {
-        final var g = createGraph();
         final var allConstraints = Stream.concat(Stream.of(new CycleFree()), this.constraints.stream());
-        return allConstraints.flatMap(c -> c.violations(g).stream())
+        return allConstraints.flatMap(c -> c.violations(this.graph).stream())
                 .sorted(Comparator.comparing(Violation::getSliceType).thenComparing(Violation::getName))
                 .collect(Collectors.toList());
+    }
+
+    public List<Violation> checkAndReport(final Appendable appendable) throws IOException {
+        final var violations = check();
+        new HtmlReport().writeReport(appendable, this.graph, violations);
+        return violations;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder builder = new StringBuilder("Decycle {\n");
+        builder.append("  classpath: ").append(this.classpath).append("\n");
+        builder.append("  including: ").append(this.includes).append("\n");
+        builder.append("  excluding: ").append(this.excludes).append("\n");
+        builder.append("  slicings: ").append(this.categories).append("\n");
+        builder.append("}");
+        return builder.toString();
     }
 }

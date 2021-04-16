@@ -17,14 +17,14 @@ import lombok.SneakyThrows;
 
 public class Analyzer {
 
-    public Graph analyze(final String sourceFolder, final Categorizer categorizer, final NodeFilter filter) {
-        Assert.notNull(sourceFolder, "classpath must not be null");
+    public Graph analyze(final String classpath, final Categorizer categorizer, final NodeFilter filter) {
+        Assert.notNull(classpath, "classpath must not be null");
         Assert.notNull(categorizer, "categorizer must not be null");
         Assert.notNull(filter, "filter must not be null");
 
         final Graph graph = new Graph(categorizer, filter, new NoSelfReference(categorizer));
 
-        final String[] libs = sourceFolder.split(System.getProperty("path.separator"));
+        final String[] libs = classpath.split(System.getProperty("path.separator"));
         Stream.of(libs).flatMap(FileFinder::find).forEach(file -> analyze(file, graph));
 
         return graph;

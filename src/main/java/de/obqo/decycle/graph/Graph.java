@@ -8,10 +8,12 @@ import de.obqo.decycle.model.Node;
 import de.obqo.decycle.slicer.Categorizer;
 import de.obqo.decycle.slicer.NodeFilter;
 
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.google.common.graph.MutableNetwork;
 import com.google.common.graph.Network;
@@ -53,7 +55,7 @@ public class Graph implements SliceSource {
 
     private void addEdge(final Node a, final Node b) {
         if (this.filter.test(a) && this.filter.test(b) && this.edgeFilter.test(a, b)) {
-            this.internalGraph.addEdge(a, b, new Edge(a, b, REFERENCES));
+            this.internalGraph.addEdge(a, b, Edge.references(a, b));
         }
     }
 
@@ -78,7 +80,7 @@ public class Graph implements SliceSource {
     }
 
     private void addNodeToSlice(final Node node, final Node cat) {
-        this.internalGraph.addEdge(cat, node, new Edge(cat, node, CONTAINS));
+        this.internalGraph.addEdge(cat, node, Edge.contains(cat, node));
     }
 
     public Set<Node> allNodes() {
@@ -88,7 +90,7 @@ public class Graph implements SliceSource {
     public Set<Node> topNodes() {
         return this.internalGraph.nodes().stream()
                 .filter(n -> this.internalGraph.inEdges(n).stream()
-                        .allMatch(e -> e.getLabel() != CONTAINS))
+                        .allMatch(Edge::isReferencing))
                 .collect(Collectors.toSet());
     }
 
@@ -136,11 +138,38 @@ public class Graph implements SliceSource {
             sliceNodeFinder.find(edge.getFrom()).ifPresent(n1 ->
                     sliceNodeFinder.find(edge.getTo()).ifPresent(n2 -> {
                         if (!Objects.equals(n1, n2)) {
-                            sliceGraph.addEdge(n1, n2, new Edge(n1, n2, REFERENCES));
+                            sliceGraph.addEdge(n1, n2, Edge.references(n1, n2));
                         }
                     }));
         }
 
         return sliceGraph;
+    }
+
+    public Set<Edge> containingClassEdges(final Edge edge) {
+        if (edge.getLabel() != REFERENCES) {
+            return Set.of();
+        }
+        final Stream<Node> containingFromNodes = containingClassNodes(edge.getFrom());
+        final Set<Node> containingToNodes = containingClassNodes(edge.getTo()).collect(Collectors.toSet());
+
+        final Set<Edge> containingEdges = new HashSet<>();
+        containingFromNodes.forEach(from -> {
+            containingToNodes.forEach(to -> {
+                internalGraph.edgeConnecting(from, to).ifPresent(containingEdges::add);
+            });
+        });
+        return containingEdges;
+    }
+
+    private Stream<Node> containingClassNodes(final Node node) {
+        final Stream<Node> nodes = node.getType().equals(Node.CLASS) ? Stream.of(node) : Stream.empty();
+        // TODO check: this further recursion for CLASS nodes is needed because of inner classes
+        // Do we really need the InternalClassCategorizer?
+
+        return Stream.concat(nodes, internalGraph.outEdges(node)
+                .stream().filter(Edge::isContaining)
+                .map(Edge::getTo)
+                .flatMap(this::containingClassNodes));
     }
 }

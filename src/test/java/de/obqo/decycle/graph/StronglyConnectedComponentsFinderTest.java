@@ -20,7 +20,7 @@ class StronglyConnectedComponentsFinderTest {
     }
 
     private Edge e(final Node from, final Node to) {
-        return new Edge(from, to, Edge.EdgeLabel.REFERENCES);
+        return Edge.references(from, to);
     }
 
     @Test
