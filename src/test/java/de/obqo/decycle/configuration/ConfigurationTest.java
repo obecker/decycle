@@ -37,8 +37,9 @@ class ConfigurationTest {
                         new LayeringConstraint("subpackage", List.of(anyOf("util"), anyOf("graph", "slicer"))),
                         new DirectLayeringConstraint("subpackage", List.of(anyOf("model"), anyOf("util")))
                 ))
+                .report(writer)
                 .build()
-                .checkAndReport(writer);
+                .check();
 
         assertThat(violations).hasSize(2).extracting(Constraint.Violation::getSliceType).allMatch("subpackage"::equals);
 
@@ -67,10 +68,12 @@ class ConfigurationTest {
         final List<Constraint.Violation> violations = Configuration.builder()
                 .classpath(System.getProperty("java.class.path"))
                 .includes(List.of("j2html.**"))
+                .report(writer)
+                .minifyReport(false)
                 .build()
-                .checkAndReport(writer);
+                .check();
 
-//        new FileWriter("build/test.html").append(writer.toString()).close();
+        new FileWriter("build/test.html").append(writer.toString()).close();
 
         final String expectedReport = readResource("ConfigurationTest-shouldWriteReport.html");
         assertThat(writer.toString()).isEqualTo(expectedReport);

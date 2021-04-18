@@ -1,1 +1,618 @@
-<html lang="en"><head><meta charset="UTF-8"><title>Decycle Report</title><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css"><style>.violations{min-height:3.75rem;position:relative}.violations>h1{position:absolute;right:0.75rem}.violations>.name{color:#000}.violations>.dependencies a{font-weight:400}h2.slice{text-transform:capitalize}dl.slices{background-color:#f0f8ff}dt.error,dd.error{background-color:#ffffe0}dd{margin-bottom:0;padding-bottom:0.5rem}ul.references>li>a{color:#00008b;cursor:pointer}ul.references>li>a:hover{text-decoration:underline}ul.references>li.error>span{color:#721c24}ul.class-references>li{padding-left:3rem;text-indent:-3rem}ul.class-references{color:dimgray;display:none;font-size:90%}li.error>ul.class-references{display:block}dt.border-top:first-child,dd.border-top:first-of-type{border:none!important}</style><script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script><script>$(function(){$('ul.references > li > a').click(function(){$(this).parent().find('ul.class-references').slideToggle();});let h=function(span,color,weight){$('span.class-node[data-name="'+$(span).data('name')+'"]').css('color',color).css('font-weight',weight);};$('span.class-node').mouseover(function(){h(this,'black','bold');}).mouseout(function(){h(this,'dimgray','normal')})});</script></head><body><div class="container mx-auto p-3"><h1 class="mb-4">Decycle Report</h1><div class="violations border rounded-lg pb-1 mb-3 alert-danger row"><h1 class="m-0 pt-2"><i class="bi bi-exclamation-triangle-fill"></i></h1><div class="col-4 name mt-1"><b>no cycles</b></div><div class="col-8 dependencies mt-1"><div><a href="#Package-j2html" class="alert-link">j2html -&gt; j2html.attributes</a></div><div><a href="#Package-j2html" class="alert-link">j2html -&gt; j2html.tags</a></div><div><a href="#Package-j2html.attributes" class="alert-link">j2html.attributes -&gt; j2html.tags</a></div><div><a href="#Package-j2html.attributes" class="alert-link">j2html.attributes -&gt; j2html</a></div><div><a href="#Package-j2html.tags" class="alert-link">j2html.tags -&gt; j2html</a></div><div><a href="#Package-j2html.tags" class="alert-link">j2html.tags -&gt; j2html.attributes</a></div></div></div><div class="pt-2"><h2 class="slice mt-2">Package</h2><dl class="slices row border rounded-lg py-1"><dt class="col-sm-4 border-top py-1 text-truncate error" title="j2html"><a name="Package-j2html">j2html</a></dt><dd class="col-sm-8 border-top pt-1 error"><ul class="references list-unstyled mb-0"><li class="pb-1 error"><a class="mr-2">j2html.attributes </a><span><i class="bi bi-exclamation-triangle-fill"></i> (no cycles)</span><ul class="class-references list-unstyled"><li><span class="class-node" data-name="j2html.TagCreator">j2html.TagCreator</span> &rarr;&nbsp;<span class="class-node" data-name="j2html.attributes.Attr">j2html.attributes.Attr</span></li><li><span class="class-node" data-name="j2html.TagCreator">j2html.TagCreator</span> &rarr;&nbsp;<span class="class-node" data-name="j2html.attributes.Attr$ShortForm">j2html.attributes.Attr$ShortForm</span></li></ul></li><li class="pb-1 error"><a class="mr-2">j2html.tags </a><span><i class="bi bi-exclamation-triangle-fill"></i> (no cycles)</span><ul class="class-references list-unstyled"><li><span class="class-node" data-name="j2html.TagCreator">j2html.TagCreator</span> &rarr;&nbsp;<span class="class-node" data-name="j2html.tags.ContainerTag">j2html.tags.ContainerTag</span></li><li><span class="class-node" data-name="j2html.TagCreator">j2html.TagCreator</span> &rarr;&nbsp;<span class="class-node" data-name="j2html.tags.DomContent">j2html.tags.DomContent</span></li><li><span class="class-node" data-name="j2html.TagCreator">j2html.TagCreator</span> &rarr;&nbsp;<span class="class-node" data-name="j2html.tags.DomContentJoiner">j2html.tags.DomContentJoiner</span></li><li><span class="class-node" data-name="j2html.TagCreator">j2html.TagCreator</span> &rarr;&nbsp;<span class="class-node" data-name="j2html.tags.EmptyTag">j2html.tags.EmptyTag</span></li><li><span class="class-node" data-name="j2html.TagCreator">j2html.TagCreator</span> &rarr;&nbsp;<span class="class-node" data-name="j2html.tags.InlineStaticResource">j2html.tags.InlineStaticResource</span></li><li><span class="class-node" data-name="j2html.TagCreator">j2html.TagCreator</span> &rarr;&nbsp;<span class="class-node" data-name="j2html.tags.InlineStaticResource$TargetFormat">j2html.tags.InlineStaticResource$TargetFormat</span></li><li><span class="class-node" data-name="j2html.TagCreator">j2html.TagCreator</span> &rarr;&nbsp;<span class="class-node" data-name="j2html.tags.Tag">j2html.tags.Tag</span></li><li><span class="class-node" data-name="j2html.TagCreator">j2html.TagCreator</span> &rarr;&nbsp;<span class="class-node" data-name="j2html.tags.Text">j2html.tags.Text</span></li><li><span class="class-node" data-name="j2html.TagCreator">j2html.TagCreator</span> &rarr;&nbsp;<span class="class-node" data-name="j2html.tags.UnescapedText">j2html.tags.UnescapedText</span></li></ul></li><li class="pb-1"><a class="mr-2">j2html.utils </a><ul class="class-references list-unstyled"><li><span class="class-node" data-name="j2html.Config">j2html.Config</span> &rarr;&nbsp;<span class="class-node" data-name="j2html.utils.Indenter">j2html.utils.Indenter</span></li><li><span class="class-node" data-name="j2html.Config">j2html.Config</span> &rarr;&nbsp;<span class="class-node" data-name="j2html.utils.Minifier">j2html.utils.Minifier</span></li><li><span class="class-node" data-name="j2html.Config">j2html.Config</span> &rarr;&nbsp;<span class="class-node" data-name="j2html.utils.TextEscaper">j2html.utils.TextEscaper</span></li></ul></li></ul></dd><dt class="col-sm-4 border-top py-1 text-truncate error" title="j2html.attributes"><a name="Package-j2html.attributes">j2html.attributes</a></dt><dd class="col-sm-8 border-top pt-1 error"><ul class="references list-unstyled mb-0"><li class="pb-1 error"><a class="mr-2">j2html </a><span><i class="bi bi-exclamation-triangle-fill"></i> (no cycles)</span><ul class="class-references list-unstyled"><li><span class="class-node" data-name="j2html.attributes.Attribute">j2html.attributes.Attribute</span> &rarr;&nbsp;<span class="class-node" data-name="j2html.Config">j2html.Config</span></li></ul></li><li class="pb-1 error"><a class="mr-2">j2html.tags </a><span><i class="bi bi-exclamation-triangle-fill"></i> (no cycles)</span><ul class="class-references list-unstyled"><li><span class="class-node" data-name="j2html.attributes.Attr">j2html.attributes.Attr</span> &rarr;&nbsp;<span class="class-node" data-name="j2html.tags.Tag">j2html.tags.Tag</span></li><li><span class="class-node" data-name="j2html.attributes.Attribute">j2html.attributes.Attribute</span> &rarr;&nbsp;<span class="class-node" data-name="j2html.tags.Renderable">j2html.tags.Renderable</span></li></ul></li><li class="pb-1"><a class="mr-2">j2html.utils </a><ul class="class-references list-unstyled"><li><span class="class-node" data-name="j2html.attributes.Attribute">j2html.attributes.Attribute</span> &rarr;&nbsp;<span class="class-node" data-name="j2html.utils.TextEscaper">j2html.utils.TextEscaper</span></li></ul></li></ul></dd><dt class="col-sm-4 border-top py-1 text-truncate error" title="j2html.tags"><a name="Package-j2html.tags">j2html.tags</a></dt><dd class="col-sm-8 border-top pt-1 error"><ul class="references list-unstyled mb-0"><li class="pb-1 error"><a class="mr-2">j2html </a><span><i class="bi bi-exclamation-triangle-fill"></i> (no cycles)</span><ul class="class-references list-unstyled"><li><span class="class-node" data-name="j2html.tags.ContainerTag">j2html.tags.ContainerTag</span> &rarr;&nbsp;<span class="class-node" data-name="j2html.Config">j2html.Config</span></li><li><span class="class-node" data-name="j2html.tags.EmptyTag">j2html.tags.EmptyTag</span> &rarr;&nbsp;<span class="class-node" data-name="j2html.Config">j2html.Config</span></li><li><span class="class-node" data-name="j2html.tags.InlineStaticResource">j2html.tags.InlineStaticResource</span> &rarr;&nbsp;<span class="class-node" data-name="j2html.Config">j2html.Config</span></li><li><span class="class-node" data-name="j2html.tags.InlineStaticResource">j2html.tags.InlineStaticResource</span> &rarr;&nbsp;<span class="class-node" data-name="j2html.TagCreator">j2html.TagCreator</span></li><li><span class="class-node" data-name="j2html.tags.Text">j2html.tags.Text</span> &rarr;&nbsp;<span class="class-node" data-name="j2html.Config">j2html.Config</span></li></ul></li><li class="pb-1 error"><a class="mr-2">j2html.attributes </a><span><i class="bi bi-exclamation-triangle-fill"></i> (no cycles)</span><ul class="class-references list-unstyled"><li><span class="class-node" data-name="j2html.tags.EmptyTag">j2html.tags.EmptyTag</span> &rarr;&nbsp;<span class="class-node" data-name="j2html.attributes.Attribute">j2html.attributes.Attribute</span></li><li><span class="class-node" data-name="j2html.tags.Tag">j2html.tags.Tag</span> &rarr;&nbsp;<span class="class-node" data-name="j2html.attributes.Attribute">j2html.attributes.Attribute</span></li></ul></li><li class="pb-1"><a class="mr-2">j2html.utils </a><ul class="class-references list-unstyled"><li><span class="class-node" data-name="j2html.tags.ContainerTag">j2html.tags.ContainerTag</span> &rarr;&nbsp;<span class="class-node" data-name="j2html.utils.Indenter">j2html.utils.Indenter</span></li><li><span class="class-node" data-name="j2html.tags.InlineStaticResource">j2html.tags.InlineStaticResource</span> &rarr;&nbsp;<span class="class-node" data-name="j2html.utils.Minifier">j2html.utils.Minifier</span></li><li><span class="class-node" data-name="j2html.tags.Text">j2html.tags.Text</span> &rarr;&nbsp;<span class="class-node" data-name="j2html.utils.TextEscaper">j2html.utils.TextEscaper</span></li></ul></li></ul></dd><dt class="col-sm-4 border-top py-1 text-truncate" title="j2html.utils"><a name="Package-j2html.utils">j2html.utils</a></dt><dd class="col-sm-8 border-top pt-1"><ul class="references list-unstyled mb-0"></ul></dd></dl></div></div></body></html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>
+            Decycle Report
+        </title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css">
+        <style>
+            .violations {
+    position: relative;
+    min-height: 3.75rem;
+}
+
+.violations > h1 {
+    position: absolute;
+    right: 0.75rem;
+}
+
+.violations > .name {
+    color: black;
+}
+
+.violations > .dependencies a {
+    font-weight: normal;
+}
+
+h2.slice {
+    text-transform: capitalize;
+}
+
+dl.slices {
+    background-color: aliceblue;
+}
+
+dt.error, dd.error {
+    background-color: lightyellow;
+}
+
+dd {
+    margin-bottom: 0;
+    padding-bottom: 0.5rem;
+}
+
+ul.references > li > a {
+    color: darkblue;
+    cursor: pointer;
+}
+ul.references > li > a:hover {
+    text-decoration: underline;
+}
+
+ul.references > li.error > span {
+    color: #721c24;
+}
+
+ul.class-references > li {
+    text-indent: -3rem;
+    padding-left: 3rem;
+}
+
+ul.class-references {
+    font-size: 90%;
+    color: dimgray;
+    display: none;
+}
+
+li.error > ul.class-references {
+    display: block;
+}
+
+dt.border-top:first-child, dd.border-top:first-of-type {
+    border: none !important;
+}
+
+        </style>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous">
+        </script>
+        <script>
+            $(function() {
+  $('ul.references > li > a').click(function() {
+    $(this).parent().find('ul.class-references').slideToggle();
+  });
+
+  let h = function(span, color, weight) {
+    $('span.class-node[data-name="' + $(span).data('name') + '"]').css('color', color).css('font-weight', weight);
+  };
+
+  $('span.class-node').mouseover(function() {
+    h(this, 'black', 'bold');
+  }).mouseout(function() {
+    h(this, 'dimgray', 'normal')
+  })
+});
+
+        </script>
+    </head>
+    <body>
+        <div class="container mx-auto p-3">
+            <svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="208" height="72" fill="currentColor" viewBox="0 0 52 18">
+  <defs>
+    <path id="arrow"
+          d="M0 0
+             l-1 -2
+             a.15.15 0 0 1 .15-.2
+             l.88.2.88-.2
+             a.15.15 0 0 1 .15.2z" />
+    <g id="D">
+      <path fill-rule="evenodd"
+            d="M0 0
+               a6.2 6.2 0 1 1 0 12
+               v-8z
+               M.5.5
+               a5.615 5.615 0 1 1 0 11z" />
+      <use xlink:href="#arrow" x="0.25" y="12" />
+      <use xlink:href="#arrow" x="0.25" y="12" transform="rotate(95 .25 11.75)" />
+    </g>
+    <g id="e">
+      <path fill-rule="evenodd"
+            d="M8 4.25
+               a4 4 0 1 0-4 3.75
+               v-.5
+               a3.5 3.5 0 0 1 -3.49-3.25z
+               m-.51-.5
+               a3.5 3.5 0 0 0-6.98 0z"
+            transform="rotate(-45 4 4)" />
+      <use xlink:href="#arrow" x="7.1" y="6.36" transform="rotate(-127 7.1 6.36)" />
+      <use xlink:href="#arrow" x="1.2" y="6.76" transform="rotate(45 1.2 6.76)" />
+    </g>
+    <g id="c">
+      <path d="M8 4.25
+               a4 4 0 1 0-4 3.75
+               v-.5
+               a3.5 3.5 0 1 1 3.5-3.25z"
+            transform="rotate(-45 4 4) "/>
+      <use xlink:href="#arrow" x="7.1" y="6.36" transform="rotate(-127 7.1 6.36)" />
+    </g>
+    <g id="y">
+      <path d="M.7 12
+               Q5.5 8 7.5.5
+               h-.55
+               Q5 8 0 12z" />
+      <path d="M0 0
+               Q1.65 4 4.4 7.4
+               l.35-.35
+               Q2.0 3.65.55 0z" />
+      <use xlink:href="#arrow" x="7.5" y="-0.2" transform="rotate(-162 7.5 -.2)" />
+      <use xlink:href="#arrow" x="4.6" y="7.3" transform="rotate(-36 4.6 7.3)" />
+    </g>
+    <g id="l">
+      <path d="M0 0
+               v12
+               h2
+               v-.5
+               h-1.5
+               v-11.5z" />
+      <use xlink:href="#arrow" x="3" y="11.75" transform="rotate(-90 3 11.75)" />
+    </g>
+  </defs>
+
+  <use xlink:href="#D" x="2" y="1" />
+  <use xlink:href="#e" x="10.5" y="5" />
+  <use xlink:href="#c" x="18" y="5" />
+  <use xlink:href="#y" x="25.5" y="5" />
+  <use xlink:href="#c" x="33.5" y="5" />
+  <use xlink:href="#l" x="41.5" y="1" />
+  <use xlink:href="#e" x="44" y="5" />
+
+</svg>
+
+            <hr class="mt-1">
+            <h1>
+                Violation Report
+            </h1>
+            <div class="violations border rounded-lg pb-1 mb-3 alert-danger row">
+                <h1 class="m-0 pt-2">
+                    <i class="bi bi-exclamation-triangle-fill">
+                    </i>
+                </h1>
+                            <div class="col-4 name mt-1">
+                    <b>
+                        no cycles
+                    </b>
+                </div>
+                <div class="col-8 dependencies mt-1">
+                    <div>
+                        <a href="#Package-j2html" class="alert-link">
+                            j2html -&gt; j2html.attributes
+                        </a>
+                    </div>
+                    <div>
+                        <a href="#Package-j2html" class="alert-link">
+                            j2html -&gt; j2html.tags
+                        </a>
+                    </div>
+                    <div>
+                        <a href="#Package-j2html.attributes" class="alert-link">
+                            j2html.attributes -&gt; j2html.tags
+                        </a>
+                    </div>
+                    <div>
+                        <a href="#Package-j2html.attributes" class="alert-link">
+                            j2html.attributes -&gt; j2html
+                        </a>
+                    </div>
+                    <div>
+                        <a href="#Package-j2html.tags" class="alert-link">
+                            j2html.tags -&gt; j2html
+                        </a>
+                    </div>
+                    <div>
+                        <a href="#Package-j2html.tags" class="alert-link">
+                            j2html.tags -&gt; j2html.attributes
+                        </a>
+                    </div>
+                </div>
+                        </div>
+                    <div class="pt-2">
+                <h2 class="slice mt-2">
+                    Package
+                </h2>
+                <dl class="slices row border rounded-lg py-1">
+                    <dt class="col-sm-4 border-top py-1 text-truncate error" title="j2html">
+                        <a name="Package-j2html">
+                            j2html
+                        </a>
+                    </dt>
+                    <dd class="col-sm-8 border-top pt-1 error">
+                        <ul class="references list-unstyled mb-0">
+                            <li class="pb-1 error">
+                                <a class="mr-2">
+                                    j2html.attributes 
+                                </a>
+                                <span>
+                                    <i class="bi bi-exclamation-triangle-fill">
+                                    </i>
+                                     (no cycles)
+                                </span>
+                                <ul class="class-references list-unstyled">
+                                    <li>
+                                        <span class="class-node" data-name="j2html.TagCreator">
+                                            j2html.TagCreator
+                                        </span>
+                                         &rarr;&nbsp;
+                                        <span class="class-node" data-name="j2html.attributes.Attr">
+                                            j2html.attributes.Attr
+                                        </span>
+                                    </li>
+                                    <li>
+                                        <span class="class-node" data-name="j2html.TagCreator">
+                                            j2html.TagCreator
+                                        </span>
+                                         &rarr;&nbsp;
+                                        <span class="class-node" data-name="j2html.attributes.Attr$ShortForm">
+                                            j2html.attributes.Attr$ShortForm
+                                        </span>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="pb-1 error">
+                                <a class="mr-2">
+                                    j2html.tags 
+                                </a>
+                                <span>
+                                    <i class="bi bi-exclamation-triangle-fill">
+                                    </i>
+                                     (no cycles)
+                                </span>
+                                <ul class="class-references list-unstyled">
+                                    <li>
+                                        <span class="class-node" data-name="j2html.TagCreator">
+                                            j2html.TagCreator
+                                        </span>
+                                         &rarr;&nbsp;
+                                        <span class="class-node" data-name="j2html.tags.ContainerTag">
+                                            j2html.tags.ContainerTag
+                                        </span>
+                                    </li>
+                                    <li>
+                                        <span class="class-node" data-name="j2html.TagCreator">
+                                            j2html.TagCreator
+                                        </span>
+                                         &rarr;&nbsp;
+                                        <span class="class-node" data-name="j2html.tags.DomContent">
+                                            j2html.tags.DomContent
+                                        </span>
+                                    </li>
+                                    <li>
+                                        <span class="class-node" data-name="j2html.TagCreator">
+                                            j2html.TagCreator
+                                        </span>
+                                         &rarr;&nbsp;
+                                        <span class="class-node" data-name="j2html.tags.DomContentJoiner">
+                                            j2html.tags.DomContentJoiner
+                                        </span>
+                                    </li>
+                                    <li>
+                                        <span class="class-node" data-name="j2html.TagCreator">
+                                            j2html.TagCreator
+                                        </span>
+                                         &rarr;&nbsp;
+                                        <span class="class-node" data-name="j2html.tags.EmptyTag">
+                                            j2html.tags.EmptyTag
+                                        </span>
+                                    </li>
+                                    <li>
+                                        <span class="class-node" data-name="j2html.TagCreator">
+                                            j2html.TagCreator
+                                        </span>
+                                         &rarr;&nbsp;
+                                        <span class="class-node" data-name="j2html.tags.InlineStaticResource">
+                                            j2html.tags.InlineStaticResource
+                                        </span>
+                                    </li>
+                                    <li>
+                                        <span class="class-node" data-name="j2html.TagCreator">
+                                            j2html.TagCreator
+                                        </span>
+                                         &rarr;&nbsp;
+                                        <span class="class-node" data-name="j2html.tags.InlineStaticResource$TargetFormat">
+                                            j2html.tags.InlineStaticResource$TargetFormat
+                                        </span>
+                                    </li>
+                                    <li>
+                                        <span class="class-node" data-name="j2html.TagCreator">
+                                            j2html.TagCreator
+                                        </span>
+                                         &rarr;&nbsp;
+                                        <span class="class-node" data-name="j2html.tags.Tag">
+                                            j2html.tags.Tag
+                                        </span>
+                                    </li>
+                                    <li>
+                                        <span class="class-node" data-name="j2html.TagCreator">
+                                            j2html.TagCreator
+                                        </span>
+                                         &rarr;&nbsp;
+                                        <span class="class-node" data-name="j2html.tags.Text">
+                                            j2html.tags.Text
+                                        </span>
+                                    </li>
+                                    <li>
+                                        <span class="class-node" data-name="j2html.TagCreator">
+                                            j2html.TagCreator
+                                        </span>
+                                         &rarr;&nbsp;
+                                        <span class="class-node" data-name="j2html.tags.UnescapedText">
+                                            j2html.tags.UnescapedText
+                                        </span>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="pb-1">
+                                <a class="mr-2">
+                                    j2html.utils 
+                                </a>
+                                <ul class="class-references list-unstyled">
+                                    <li>
+                                        <span class="class-node" data-name="j2html.Config">
+                                            j2html.Config
+                                        </span>
+                                         &rarr;&nbsp;
+                                        <span class="class-node" data-name="j2html.utils.Indenter">
+                                            j2html.utils.Indenter
+                                        </span>
+                                    </li>
+                                    <li>
+                                        <span class="class-node" data-name="j2html.Config">
+                                            j2html.Config
+                                        </span>
+                                         &rarr;&nbsp;
+                                        <span class="class-node" data-name="j2html.utils.Minifier">
+                                            j2html.utils.Minifier
+                                        </span>
+                                    </li>
+                                    <li>
+                                        <span class="class-node" data-name="j2html.Config">
+                                            j2html.Config
+                                        </span>
+                                         &rarr;&nbsp;
+                                        <span class="class-node" data-name="j2html.utils.TextEscaper">
+                                            j2html.utils.TextEscaper
+                                        </span>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </dd>
+                    <dt class="col-sm-4 border-top py-1 text-truncate error" title="j2html.attributes">
+                        <a name="Package-j2html.attributes">
+                            j2html.attributes
+                        </a>
+                    </dt>
+                    <dd class="col-sm-8 border-top pt-1 error">
+                        <ul class="references list-unstyled mb-0">
+                            <li class="pb-1 error">
+                                <a class="mr-2">
+                                    j2html 
+                                </a>
+                                <span>
+                                    <i class="bi bi-exclamation-triangle-fill">
+                                    </i>
+                                     (no cycles)
+                                </span>
+                                <ul class="class-references list-unstyled">
+                                    <li>
+                                        <span class="class-node" data-name="j2html.attributes.Attribute">
+                                            j2html.attributes.Attribute
+                                        </span>
+                                         &rarr;&nbsp;
+                                        <span class="class-node" data-name="j2html.Config">
+                                            j2html.Config
+                                        </span>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="pb-1 error">
+                                <a class="mr-2">
+                                    j2html.tags 
+                                </a>
+                                <span>
+                                    <i class="bi bi-exclamation-triangle-fill">
+                                    </i>
+                                     (no cycles)
+                                </span>
+                                <ul class="class-references list-unstyled">
+                                    <li>
+                                        <span class="class-node" data-name="j2html.attributes.Attr">
+                                            j2html.attributes.Attr
+                                        </span>
+                                         &rarr;&nbsp;
+                                        <span class="class-node" data-name="j2html.tags.Tag">
+                                            j2html.tags.Tag
+                                        </span>
+                                    </li>
+                                    <li>
+                                        <span class="class-node" data-name="j2html.attributes.Attribute">
+                                            j2html.attributes.Attribute
+                                        </span>
+                                         &rarr;&nbsp;
+                                        <span class="class-node" data-name="j2html.tags.Renderable">
+                                            j2html.tags.Renderable
+                                        </span>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="pb-1">
+                                <a class="mr-2">
+                                    j2html.utils 
+                                </a>
+                                <ul class="class-references list-unstyled">
+                                    <li>
+                                        <span class="class-node" data-name="j2html.attributes.Attribute">
+                                            j2html.attributes.Attribute
+                                        </span>
+                                         &rarr;&nbsp;
+                                        <span class="class-node" data-name="j2html.utils.TextEscaper">
+                                            j2html.utils.TextEscaper
+                                        </span>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </dd>
+                    <dt class="col-sm-4 border-top py-1 text-truncate error" title="j2html.tags">
+                        <a name="Package-j2html.tags">
+                            j2html.tags
+                        </a>
+                    </dt>
+                    <dd class="col-sm-8 border-top pt-1 error">
+                        <ul class="references list-unstyled mb-0">
+                            <li class="pb-1 error">
+                                <a class="mr-2">
+                                    j2html 
+                                </a>
+                                <span>
+                                    <i class="bi bi-exclamation-triangle-fill">
+                                    </i>
+                                     (no cycles)
+                                </span>
+                                <ul class="class-references list-unstyled">
+                                    <li>
+                                        <span class="class-node" data-name="j2html.tags.ContainerTag">
+                                            j2html.tags.ContainerTag
+                                        </span>
+                                         &rarr;&nbsp;
+                                        <span class="class-node" data-name="j2html.Config">
+                                            j2html.Config
+                                        </span>
+                                    </li>
+                                    <li>
+                                        <span class="class-node" data-name="j2html.tags.EmptyTag">
+                                            j2html.tags.EmptyTag
+                                        </span>
+                                         &rarr;&nbsp;
+                                        <span class="class-node" data-name="j2html.Config">
+                                            j2html.Config
+                                        </span>
+                                    </li>
+                                    <li>
+                                        <span class="class-node" data-name="j2html.tags.InlineStaticResource">
+                                            j2html.tags.InlineStaticResource
+                                        </span>
+                                         &rarr;&nbsp;
+                                        <span class="class-node" data-name="j2html.Config">
+                                            j2html.Config
+                                        </span>
+                                    </li>
+                                    <li>
+                                        <span class="class-node" data-name="j2html.tags.InlineStaticResource">
+                                            j2html.tags.InlineStaticResource
+                                        </span>
+                                         &rarr;&nbsp;
+                                        <span class="class-node" data-name="j2html.TagCreator">
+                                            j2html.TagCreator
+                                        </span>
+                                    </li>
+                                    <li>
+                                        <span class="class-node" data-name="j2html.tags.Text">
+                                            j2html.tags.Text
+                                        </span>
+                                         &rarr;&nbsp;
+                                        <span class="class-node" data-name="j2html.Config">
+                                            j2html.Config
+                                        </span>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="pb-1 error">
+                                <a class="mr-2">
+                                    j2html.attributes 
+                                </a>
+                                <span>
+                                    <i class="bi bi-exclamation-triangle-fill">
+                                    </i>
+                                     (no cycles)
+                                </span>
+                                <ul class="class-references list-unstyled">
+                                    <li>
+                                        <span class="class-node" data-name="j2html.tags.EmptyTag">
+                                            j2html.tags.EmptyTag
+                                        </span>
+                                         &rarr;&nbsp;
+                                        <span class="class-node" data-name="j2html.attributes.Attribute">
+                                            j2html.attributes.Attribute
+                                        </span>
+                                    </li>
+                                    <li>
+                                        <span class="class-node" data-name="j2html.tags.Tag">
+                                            j2html.tags.Tag
+                                        </span>
+                                         &rarr;&nbsp;
+                                        <span class="class-node" data-name="j2html.attributes.Attribute">
+                                            j2html.attributes.Attribute
+                                        </span>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="pb-1">
+                                <a class="mr-2">
+                                    j2html.utils 
+                                </a>
+                                <ul class="class-references list-unstyled">
+                                    <li>
+                                        <span class="class-node" data-name="j2html.tags.ContainerTag">
+                                            j2html.tags.ContainerTag
+                                        </span>
+                                         &rarr;&nbsp;
+                                        <span class="class-node" data-name="j2html.utils.Indenter">
+                                            j2html.utils.Indenter
+                                        </span>
+                                    </li>
+                                    <li>
+                                        <span class="class-node" data-name="j2html.tags.InlineStaticResource">
+                                            j2html.tags.InlineStaticResource
+                                        </span>
+                                         &rarr;&nbsp;
+                                        <span class="class-node" data-name="j2html.utils.Minifier">
+                                            j2html.utils.Minifier
+                                        </span>
+                                    </li>
+                                    <li>
+                                        <span class="class-node" data-name="j2html.tags.Text">
+                                            j2html.tags.Text
+                                        </span>
+                                         &rarr;&nbsp;
+                                        <span class="class-node" data-name="j2html.utils.TextEscaper">
+                                            j2html.utils.TextEscaper
+                                        </span>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </dd>
+                    <dt class="col-sm-4 border-top py-1 text-truncate" title="j2html.utils">
+                        <a name="Package-j2html.utils">
+                            j2html.utils
+                        </a>
+                    </dt>
+                    <dd class="col-sm-8 border-top pt-1">
+                        <ul class="references list-unstyled mb-0">
+                        </ul>
+                    </dd>
+                </dl>
+            </div>
+                    <hr>
+            <div>
+                <small>
+                    Generated by Decycle null
+                </small>
+            </div>
+        </div>
+    </body>
+</html>
+

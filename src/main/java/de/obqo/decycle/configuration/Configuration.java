@@ -17,7 +17,6 @@ import de.obqo.decycle.slicer.PackageCategorizer;
 import de.obqo.decycle.slicer.ParallelCategorizer;
 import de.obqo.decycle.slicer.PatternMatchingFilter;
 
-import java.io.IOException;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -41,19 +40,28 @@ public class Configuration {
 
     private final Set<Constraint> constraints;
 
+    private final Appendable report;
+
+    private final boolean minifyReport;
+
     private final Graph graph;
 
     @Builder
-    public Configuration(final String classpath,
+    public Configuration(
+            final String classpath,
             final List<String> includes,
             final List<String> excludes,
             final Map<String, List<Pattern>> categories,
-            final Set<Constraint> constraints) {
+            final Set<Constraint> constraints,
+            final Appendable report,
+            final Boolean minifyReport) {
         this.classpath = classpath;
         this.includes = requireNonNullElse(includes, List.of());
         this.excludes = requireNonNullElse(excludes, List.of());
         this.categories = requireNonNullElse(categories, Map.of());
         this.constraints = requireNonNullElse(constraints, Set.of());
+        this.report = report;
+        this.minifyReport = !Boolean.FALSE.equals(minifyReport); // null -> true
 
         this.graph = createGraph();
     }
@@ -82,14 +90,12 @@ public class Configuration {
 
     public List<Violation> check() {
         final var allConstraints = Stream.concat(Stream.of(new CycleFree()), this.constraints.stream());
-        return allConstraints.flatMap(c -> c.violations(this.graph).stream())
+        final var violations = allConstraints.flatMap(c -> c.violations(this.graph).stream())
                 .sorted(Comparator.comparing(Violation::getSliceType).thenComparing(Violation::getName))
                 .collect(Collectors.toList());
-    }
-
-    public List<Violation> checkAndReport(final Appendable appendable) throws IOException {
-        final var violations = check();
-        new HtmlReport().writeReport(appendable, this.graph, violations);
+        if (this.report != null) {
+            new HtmlReport().writeReport(this.graph, violations, this.report, this.minifyReport);
+        }
         return violations;
     }
 

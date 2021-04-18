@@ -44,6 +44,12 @@ tasks.test {
     useJUnitPlatform()
 }
 
+tasks.jar {
+    manifest {
+        attributes["Implementation-Version"] = project.version
+    }
+}
+
 publishing {
     publications {
         create<MavenPublication>("maven") {
