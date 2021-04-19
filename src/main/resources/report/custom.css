@@ -1,3 +1,7 @@
+html {
+    font-size: 14px;
+}
+
 .violations {
     position: relative;
     min-height: 3.75rem;
@@ -16,21 +20,12 @@
     font-weight: normal;
 }
 
-h2.slice {
-    text-transform: capitalize;
-}
-
 dl.slices {
     background-color: aliceblue;
 }
 
 dt.error, dd.error {
     background-color: lightyellow;
-}
-
-dd {
-    margin-bottom: 0;
-    padding-bottom: 0.5rem;
 }
 
 ul.references > li > a {
@@ -62,4 +57,9 @@ li.error > ul.class-references {
 
 dt.border-top:first-child, dd.border-top:first-of-type {
     border: none !important;
+}
+
+div.footer a {
+    color: darkblue;
+    text-decoration: underline;
 }

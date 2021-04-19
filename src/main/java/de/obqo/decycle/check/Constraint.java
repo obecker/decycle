@@ -25,7 +25,7 @@ public interface Constraint {
         }
 
         public String toString() {
-            return this.from + " -> " + this.to;
+            return this.from + " → " + this.to;
         }
 
         @Override

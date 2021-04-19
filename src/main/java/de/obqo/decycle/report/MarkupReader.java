@@ -9,12 +9,12 @@ import j2html.tags.DomContent;
 
 class MarkupReader {
 
-    static DomContent inlineMarkup(final String path) {
+    static DomContent rawHtmlWithInlineFile(final String path) {
         final String contentAsString = getFileAsString(path);
         return rawHtml(contentAsString);
     }
 
-    static DomContent inlineMarkup_min(final String path) {
+    static DomContent rawHtmlWithInlineFile_min(final String path) {
         final String contentAsString = getFileAsString(path);
         return rawHtml(minifyMarkup(contentAsString));
     }
