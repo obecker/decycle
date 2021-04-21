@@ -7,8 +7,8 @@ import java.util.Objects;
 
 public class DirectLayeringConstraint extends SlicedConstraint {
 
-    public DirectLayeringConstraint(final String sliceType, final List<Layer> slices) {
-        super(sliceType, slices, "=>");
+    public DirectLayeringConstraint(final String sliceType, final List<Layer> layers) {
+        super(sliceType, layers, " => ");
     }
 
     @Override
@@ -18,8 +18,8 @@ public class DirectLayeringConstraint extends SlicedConstraint {
         return (constraintContainsBothNodes(i1, i2) &&
                 (i1 > i2 ||
                         i2 - i1 > 1 ||
-                        (!Objects.equals(n1, n2) && i1 == i2 && this.slices.get(i1).denyDependenciesWithinLayer()))) ||
+                        (!Objects.equals(n1, n2) && i1 == i2 && this.layers.get(i1).denyDependenciesWithinLayer()))) ||
                 (i1 < 0 && i2 > 0) ||
-                (i1 >= 0 && i1 < this.slices.size() - 1 && i2 < 0);
+                (i1 >= 0 && i1 < this.layers.size() - 1 && i2 < 0);
     }
 }

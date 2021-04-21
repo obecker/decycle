@@ -7,8 +7,8 @@ import java.util.Objects;
 
 public class LayeringConstraint extends SlicedConstraint {
 
-    public LayeringConstraint(final String sliceType, final List<Layer> slices) {
-        super(sliceType, slices, "->");
+    public LayeringConstraint(final String sliceType, final List<Layer> layers) {
+        super(sliceType, layers, " -> ");
     }
 
     @Override
@@ -17,6 +17,6 @@ public class LayeringConstraint extends SlicedConstraint {
         final var i2 = indexOf(n2);
         return constraintContainsBothNodes(i1, i2) &&
                 (i1 > i2 ||
-                        !Objects.equals(n1, n2) && i1 == i2 && this.slices.get(i1).denyDependenciesWithinLayer());
+                        !Objects.equals(n1, n2) && i1 == i2 && this.layers.get(i1).denyDependenciesWithinLayer());
     }
 }

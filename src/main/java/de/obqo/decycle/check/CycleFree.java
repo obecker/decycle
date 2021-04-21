@@ -9,6 +9,7 @@ import de.obqo.decycle.model.Node;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 public class CycleFree implements Constraint {
@@ -25,7 +26,7 @@ public class CycleFree implements Constraint {
             if (!Node.CLASS.equals(sliceType)) {
                 for (final Set<Edge> comp : findComponents(sliceSource.slice(sliceType))) {
                     list.add(new Violation(sliceType, getShortString(),
-                            comp.stream().map(Dependency::of).collect(Collectors.toSet())));
+                            comp.stream().map(Dependency::of).collect(Collectors.toCollection(TreeSet::new))));
                 }
             }
         }

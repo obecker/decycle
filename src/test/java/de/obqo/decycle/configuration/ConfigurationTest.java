@@ -32,7 +32,7 @@ class ConfigurationTest {
         final List<Constraint.Violation> violations = Configuration.builder()
                 .classpath("build")
                 .includes(List.of("de.obqo.decycle.**"))
-                .categories(Map.of("subpackage", List.of(new UnnamedPattern("de.obqo.decycle.(*).**"))))
+                .slicings(Map.of("subpackage", List.of(new UnnamedPattern("de.obqo.decycle.(*).**"))))
                 .constraints(Set.of(
                         new LayeringConstraint("subpackage", List.of(anyOf("util"), anyOf("graph", "slicer"))),
                         new DirectLayeringConstraint("subpackage", List.of(anyOf("model"), anyOf("util")))
@@ -40,6 +40,8 @@ class ConfigurationTest {
                 .report(writer)
                 .build()
                 .check();
+
+        new FileWriter("build/output.html").append(writer.toString()).close();
 
         assertThat(violations).hasSize(2).extracting(Constraint.Violation::getSliceType).allMatch("subpackage"::equals);
 
@@ -57,8 +59,6 @@ class ConfigurationTest {
                 new Constraint.Dependency("graph", "util"),
                 new Constraint.Dependency("slicer", "util")
         );
-
-        new FileWriter("build/output.html").append(writer.toString()).close();
     }
 
     @Test

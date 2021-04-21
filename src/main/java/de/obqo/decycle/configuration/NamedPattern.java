@@ -20,8 +20,8 @@ public class NamedPattern implements Pattern {
     }
 
     @Override
-    public Categorizer toCategorizer(final String slice) {
-        return new NamedPatternMatchingCategorizer(slice, this.name, this.pattern);
+    public Categorizer toCategorizer(final String sliceType) {
+        return new NamedPatternMatchingCategorizer(sliceType, this.name, this.pattern);
     }
 
     @Override

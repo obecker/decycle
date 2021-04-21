@@ -24,12 +24,12 @@ import java.util.Set;
  */
 public class NamedPatternMatchingCategorizer implements Categorizer {
 
-    private final String targetType;
+    private final String sliceType;
     private final PatternMatcher matcher;
     private final String name;
 
-    public NamedPatternMatchingCategorizer(final String targetType, final String name, final String pattern) {
-        this.targetType = targetType;
+    public NamedPatternMatchingCategorizer(final String sliceType, final String name, final String pattern) {
+        this.sliceType = sliceType;
         this.name = name;
         this.matcher = new PatternMatcher(pattern);
     }
@@ -38,7 +38,7 @@ public class NamedPatternMatchingCategorizer implements Categorizer {
     public Set<Node> apply(final Node node) {
         return Optional.of(node)
                 .flatMap(n -> this.matcher.matches(n.getName()))
-                .map(__ -> Node.sliceNode(this.targetType, this.name))
+                .map(__ -> Node.sliceNode(this.sliceType, this.name))
                 .map(Set::of)
                 .orElse(Set.of());
     }

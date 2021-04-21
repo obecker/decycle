@@ -147,12 +147,16 @@ public class HtmlReport {
 
     private Stream<ContainerTag> getViolationDivColumns(final Constraint.Violation v) {
         return Stream.of(
-                div().withClass("col-4 name mt-1").with(b(v.getName())),
+                div().withClass("col-4 name mt-1").with(b(replaceArrows(v.getName()))),
                 div().withClass("col-8 dependencies mt-1")
-                        .with(v.getDependencies().stream().sorted().map(dependency ->
+                        .with(v.getDependencies().stream().map(dependency ->
                                 div(a(dependency.toString())
                                         .withHref("#" + v.getSliceType() + "-" + dependency.getFrom())
                                         .withClass("alert-link")))));
+    }
+
+    private String replaceArrows(final String name) {
+        return name.replace("->", "→").replace("=>", "⇨");
     }
 
     private DomContent renderSliceSection(final Graph graph, final List<Constraint.Violation> violations,
@@ -197,14 +201,14 @@ public class HtmlReport {
                 .sorted()
                 .map(edge -> {
                     final List<String> toViolations = fromViolations.getOrDefault(edge.getTo().getName(), List.of());
+                    final boolean hasViolations = !toViolations.isEmpty();
                     return li()
-                            .withClasses("pb-1", toViolations.isEmpty() ? "" : "error")
+                            .withClasses("pb-1", iff(hasViolations, "error"))
                             .with(
                                     a(edge.getTo().getName() + " ").withClass("mr-2"),
-                                    iff(!toViolations.isEmpty(),
-                                            span(
-                                                    i().withClass("bi bi-exclamation-triangle-fill"),
-                                                    text(toViolations.stream().collect(joining(", ", " (", ")"))))),
+                                    iff(hasViolations, span(
+                                            i().withClass("bi bi-exclamation-triangle-fill"),
+                                            text(toViolations.stream().collect(joining(", ", " (", ")"))))),
                                     ul().withClass("class-references list-unstyled")
                                             .with(graph.containingClassEdges(edge)
                                                     .stream()

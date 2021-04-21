@@ -28,11 +28,11 @@ import java.util.Set;
  */
 public class PatternMatchingCategorizer implements Categorizer {
 
-    private final String targetType;
+    private final String sliceType;
     private final PatternMatcher matcher;
 
-    public PatternMatchingCategorizer(final String targetType, final String pattern) {
-        this.targetType = targetType;
+    public PatternMatchingCategorizer(final String sliceType, final String pattern) {
+        this.sliceType = sliceType;
         this.matcher = new PatternMatcher(pattern);
     }
 
@@ -40,7 +40,7 @@ public class PatternMatchingCategorizer implements Categorizer {
     public Set<Node> apply(final Node node) {
         return Optional.of(node)
                 .flatMap(n -> this.matcher.matches(n.getName()))
-                .map(match -> Node.sliceNode(this.targetType, match))
+                .map(match -> Node.sliceNode(this.sliceType, match))
                 .map(Set::of)
                 .orElse(Set.of());
     }

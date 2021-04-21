@@ -11,8 +11,8 @@ public class UnnamedPattern implements Pattern {
     private final String pattern;
 
     @Override
-    public Categorizer toCategorizer(final String slice) {
-        return new PatternMatchingCategorizer(slice, this.pattern);
+    public Categorizer toCategorizer(final String sliceType) {
+        return new PatternMatchingCategorizer(sliceType, this.pattern);
     }
 
     @Override

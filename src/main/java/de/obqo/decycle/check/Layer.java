@@ -6,15 +6,15 @@ public interface Layer {
 
     List<String> getSlices();
 
-    boolean contains(String elem);
+    boolean contains(String slice);
 
     boolean denyDependenciesWithinLayer();
 
-    static Layer anyOf(final String... es) {
-        return new LenientLayer(es);
+    static Layer anyOf(final String... slices) {
+        return new LenientLayer(slices);
     }
 
-    static Layer oneOf(final String... es) {
-        return new StrictLayer(es);
+    static Layer oneOf(final String... slices) {
+        return new StrictLayer(slices);
     }
 }

@@ -13,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 class SliceNodeFinder {
 
-    private final String slice;
+    private final String sliceType;
     private final Network<Node, Edge> graph;
 
     public Optional<Node> find(final Node node) {
@@ -25,7 +25,7 @@ class SliceNodeFinder {
     }
 
     private Stream<Node> allInNodesOfType(final Node node) {
-        if (node.hasType(this.slice)) {
+        if (node.hasType(this.sliceType)) {
             return Stream.of(node);
         } else {
             return inEdges(node).stream()

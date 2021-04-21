@@ -5,21 +5,21 @@ import java.util.List;
 abstract class SimpleLayer implements Layer {
 
     private final boolean denyDependenciesWithinLayer;
-    private final List<String> eSet;
+    private final List<String> slices;
 
-    SimpleLayer(final boolean denyDependenciesWithinLayer, final String... es) {
+    SimpleLayer(final boolean denyDependenciesWithinLayer, final String... slices) {
         this.denyDependenciesWithinLayer = denyDependenciesWithinLayer;
-        this.eSet = List.of(es);
+        this.slices = List.of(slices);
     }
 
     @Override
     public List<String> getSlices() {
-        return this.eSet;
+        return this.slices;
     }
 
     @Override
-    public boolean contains(final String elem) {
-        return this.eSet.contains(elem);
+    public boolean contains(final String slice) {
+        return this.slices.contains(slice);
     }
 
     @Override

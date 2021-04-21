@@ -36,7 +36,7 @@ public class Configuration {
 
     private final List<String> excludes;
 
-    private final Map<String, List<Pattern>> categories;
+    private final Map<String, List<Pattern>> slicings;
 
     private final Set<Constraint> constraints;
 
@@ -51,19 +51,29 @@ public class Configuration {
             final String classpath,
             final List<String> includes,
             final List<String> excludes,
-            final Map<String, List<Pattern>> categories,
+            final Map<String, List<Pattern>> slicings,
             final Set<Constraint> constraints,
             final Appendable report,
             final Boolean minifyReport) {
         this.classpath = classpath;
         this.includes = requireNonNullElse(includes, List.of());
         this.excludes = requireNonNullElse(excludes, List.of());
-        this.categories = requireNonNullElse(categories, Map.of());
+        this.slicings = requireNonNullElse(slicings, Map.of());
         this.constraints = requireNonNullElse(constraints, Set.of());
         this.report = report;
         this.minifyReport = !Boolean.FALSE.equals(minifyReport); // null -> true
 
+        validate();
+
         this.graph = createGraph();
+    }
+
+    private void validate() {
+        this.slicings.forEach((sliceType, patterns) -> {
+            if (patterns.isEmpty()) {
+                throw new IllegalArgumentException("Slicing '" + sliceType + "' has no pattern definition");
+            }
+        });
     }
 
     private Graph createGraph() {
@@ -72,14 +82,14 @@ public class Configuration {
 
     private Categorizer buildCategorizer() {
         final var slicers =
-                this.categories.entrySet().stream().map(entry -> buildCategorizer(entry.getKey(), entry.getValue()));
+                this.slicings.entrySet().stream().map(entry -> buildSlicing(entry.getKey(), entry.getValue()));
         final var slicersWithPackages = Stream.concat(Stream.of(new PackageCategorizer()), slicers);
         final var cat = new ParallelCategorizer(slicersWithPackages.toArray(Categorizer[]::new));
         return combine(new InternalClassCategorizer(), cat);
     }
 
-    private Categorizer buildCategorizer(final String slicing, final List<Pattern> groupings) {
-        return combine(groupings.stream().map(p -> p.toCategorizer(slicing)).toArray(Categorizer[]::new));
+    private Categorizer buildSlicing(final String sliceType, final List<Pattern> patterns) {
+        return combine(patterns.stream().map(p -> p.toCategorizer(sliceType)).toArray(Categorizer[]::new));
     }
 
     private NodeFilter buildFilter() {
@@ -105,7 +115,7 @@ public class Configuration {
         builder.append("  classpath: ").append(this.classpath).append("\n");
         builder.append("  including: ").append(this.includes).append("\n");
         builder.append("  excluding: ").append(this.excludes).append("\n");
-        builder.append("  slicings: ").append(this.categories).append("\n");
+        builder.append("  slicings: ").append(this.slicings).append("\n");
         builder.append("}");
         return builder.toString();
     }

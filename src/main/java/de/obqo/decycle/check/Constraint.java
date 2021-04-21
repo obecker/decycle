@@ -15,7 +15,7 @@ public interface Constraint {
     class Dependency implements Comparable<Dependency> {
 
         private static Comparator<Dependency> COMPARATOR =
-                Comparator.comparing(Dependency::getFrom).thenComparing(Dependency::getFrom);
+                Comparator.comparing(Dependency::getFrom).thenComparing(Dependency::getTo);
 
         private String from;
         private String to;

@@ -25,7 +25,7 @@ class MarkupReader {
         final StringBuilder builder = new StringBuilder();
 
         String line;
-        while(scanner.hasNext()) {
+        while (scanner.hasNext()) {
             line = scanner.nextLine().trim();
             if (line.isEmpty()) {
                 continue;
