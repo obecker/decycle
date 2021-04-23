@@ -33,7 +33,7 @@ public class PatternMatchingCategorizer implements Categorizer {
 
     public PatternMatchingCategorizer(final String sliceType, final String pattern) {
         this.sliceType = sliceType;
-        this.matcher = new PatternMatcher(pattern);
+        this.matcher = new PatternMatcher(pattern, true);
     }
 
     @Override

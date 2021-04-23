@@ -11,8 +11,12 @@ class PatternMatcher {
     private final Pattern pattern;
 
     public PatternMatcher(final String pattern) {
+        this(pattern, false);
+    }
+
+    public PatternMatcher(final String pattern, final boolean strict) {
         Assert.notNull(pattern, "pattern string must not be null");
-        this.pattern = Pattern.compile(ensureParens(escapeStars(escapeDots(pattern))));
+        this.pattern = Pattern.compile(ensureParens(escapeStars(escapeDots(pattern)), strict));
     }
 
     public Optional<String> matches(final String name) {
@@ -20,7 +24,11 @@ class PatternMatcher {
         return matcher.matches() ? Optional.of(name.substring(matcher.start(1), matcher.end(1))) : Optional.empty();
     }
 
-    private static String ensureParens(final String p) {
+    private static String ensureParens(final String p, final boolean strict) {
+        if (strict && Pattern.matches(".*\\(.*\\(.*", p)) {
+            throw new IllegalArgumentException("More than one pair of parentheses is not a supported pattern.");
+        }
+
         return Pattern.matches(".*\\(.*\\).*", p) ? p : "(" + p + ")";
     }
 

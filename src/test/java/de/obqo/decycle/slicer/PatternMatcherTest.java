@@ -1,7 +1,8 @@
 package de.obqo.decycle.slicer;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 import org.junit.jupiter.api.Test;
 
@@ -80,8 +81,34 @@ class PatternMatcherTest {
 
     @Test
     void threeStarsShouldThrowAnException() {
-        assertThatExceptionOfType(IllegalArgumentException.class)
+        assertThatIllegalArgumentException()
                 .isThrownBy(() -> new PatternMatcher("invalid***pattern"))
                 .withMessage("More than two '*'s in a row is not a supported pattern.");
+    }
+
+    @Test
+    void twoPairsOfParensInStrictModeShouldThrowAnException() {
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> new PatternMatcher("de.(one|two).(*).**", true))
+                .withMessage("More than one pair of parentheses is not a supported pattern.");
+    }
+
+    @Test
+    void nestedParensInStrictModeShouldThrowAnException() {
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> new PatternMatcher("de.(one.(*)).**", true))
+                .withMessage("More than one pair of parentheses is not a supported pattern.");
+    }
+
+    @Test
+    void multipleParensInDefaultModeAreFine() {
+        assertThatCode(() -> new PatternMatcher("de.(one.(*)).**"))
+                .doesNotThrowAnyException();
+    }
+
+    @Test
+    void nestedParensInDefaultModeAreFine() {
+        assertThatCode(() -> new PatternMatcher("de.(one|two).(*).**"))
+                .doesNotThrowAnyException();
     }
 }
