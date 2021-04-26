@@ -3,6 +3,9 @@ package de.obqo.decycle.configuration;
 import de.obqo.decycle.slicer.Categorizer;
 import de.obqo.decycle.slicer.NamedPatternMatchingCategorizer;
 
+import lombok.extern.java.Log;
+
+@Log
 public class NamedPattern implements Pattern {
 
     private final String name;
@@ -11,8 +14,8 @@ public class NamedPattern implements Pattern {
     public NamedPattern(final String name, final String pattern) {
 
         if (name.contains("*") || name.contains(".")) {
-            System.out.println("You use '" + name +
-                    "' as the NAME of a NamedPattern. Please note that the NAME comes last in such a pattern.");
+            log.warning("Looks like you use the pattern '" + name +
+                    "' as the NAME of a NamedPattern. Please note that the NAME comes first in such a pattern.");
         }
 
         this.name = name;
