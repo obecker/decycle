@@ -40,6 +40,7 @@ import static java.util.stream.Collectors.toList;
 import de.obqo.decycle.check.Constraint.Violation;
 import de.obqo.decycle.graph.Graph;
 import de.obqo.decycle.graph.Slicing;
+import de.obqo.decycle.graph.Topological;
 import de.obqo.decycle.model.Node;
 
 import java.io.IOException;
@@ -50,6 +51,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import j2html.TagCreator;
 import j2html.rendering.FlatHtml;
@@ -176,11 +178,15 @@ public class HtmlReport {
 
         final Slicing slicing = graph.slicing(sliceType);
 
+        final Iterable<Node> order = new Topological(slicing).order();
+        final Stream<Node> stream = StreamSupport.stream(order.spliterator(), false);
+
         return div().withClass("pt-2").with(
                 h2(sliceType).withClass("slice text-capitalize mt-2"),
                 dl().withClass("slices row border rounded-lg py-1").with(
-                        slicing.nodes().stream()
-                                .sorted()
+//                        slicing.nodes().stream()
+//                                .sorted()
+                        stream
                                 .flatMap(node -> renderNodeTableRow(graph, slicing, violationsIndex, node))));
     }
 
