@@ -5,7 +5,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import de.obqo.decycle.check.Constraint.Dependency;
 import de.obqo.decycle.graph.Graph;
+import de.obqo.decycle.model.EdgeFilter;
 import de.obqo.decycle.model.Node;
+import de.obqo.decycle.model.NodeFilter;
+import de.obqo.decycle.slicer.IgnoredDependenciesFilter;
+import de.obqo.decycle.slicer.IgnoredDependency;
 import de.obqo.decycle.slicer.PackageCategorizer;
 import de.obqo.decycle.slicer.ParallelCategorizer;
 
@@ -75,5 +79,16 @@ class CycleFreeTest {
                 d("de.p2", "de.p3"),
                 d("de.p3", "de.p1")
         );
+    }
+
+    @Test
+    void ignoredEdgesInCycleShouldBeReportedCycleFree() {
+        final var g = new Graph(new PackageCategorizer(), NodeFilter.ALL, EdgeFilter.ALL,
+                new IgnoredDependenciesFilter(Set.of(new IgnoredDependency("de.p3.*", "de.p1.*"))));
+        g.connect(classNode("de.p1.A1"), classNode("de.p2.B2"));
+        g.connect(classNode("de.p2.B1"), classNode("de.p3.C2"));
+        g.connect(classNode("de.p3.C1"), classNode("de.p1.A2"));
+
+        assertThat(dependenciesIn(this.cycleFree.violations(g))).isEmpty();
     }
 }

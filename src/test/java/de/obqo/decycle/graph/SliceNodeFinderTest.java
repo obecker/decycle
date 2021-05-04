@@ -5,6 +5,7 @@ import static de.obqo.decycle.model.Node.packageNode;
 import static de.obqo.decycle.model.Node.sliceNode;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import de.obqo.decycle.model.Edge;
 import de.obqo.decycle.model.Node;
 
 import com.google.common.graph.MutableNetwork;

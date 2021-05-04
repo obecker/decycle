@@ -1,6 +1,9 @@
 package de.obqo.decycle.check;
 
+import static java.util.function.Predicate.not;
+
 import de.obqo.decycle.graph.SliceSource;
+import de.obqo.decycle.model.Edge;
 import de.obqo.decycle.model.Node;
 
 import java.util.List;
@@ -35,6 +38,7 @@ public abstract class SlicedConstraint implements Constraint {
     public List<Violation> violations(final SliceSource sliceSource) {
         final var sg = sliceSource.slice(this.sliceType);
         final var deps = sg.edges().stream()
+                .filter(not(Edge::isIgnored))
                 .filter(e -> isViolatedBy(e.getFrom(), e.getTo()))
                 .map(Dependency::of)
                 .collect(Collectors.toCollection(TreeSet::new));
@@ -55,5 +59,10 @@ public abstract class SlicedConstraint implements Constraint {
         return layer.denyDependenciesWithinLayer()
                 ? slices.stream().collect(Collectors.joining(", ", "[", "]"))
                 : slices.stream().collect(Collectors.joining(", ", "(", ")"));
+    }
+
+    @Override
+    public String toString() {
+        return getShortString();
     }
 }

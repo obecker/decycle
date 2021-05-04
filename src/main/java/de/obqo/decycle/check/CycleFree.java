@@ -2,8 +2,8 @@ package de.obqo.decycle.check;
 
 import static de.obqo.decycle.graph.StronglyConnectedComponentsFinder.findComponents;
 
-import de.obqo.decycle.graph.Edge;
 import de.obqo.decycle.graph.SliceSource;
+import de.obqo.decycle.model.Edge;
 import de.obqo.decycle.model.Node;
 
 import java.util.ArrayList;

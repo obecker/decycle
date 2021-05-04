@@ -1,5 +1,6 @@
 package de.obqo.decycle.graph;
 
+import de.obqo.decycle.model.Edge;
 import de.obqo.decycle.model.Node;
 import de.obqo.decycle.util.Assert;
 
@@ -136,11 +137,13 @@ public class StronglyConnectedComponentsFinder {
             this.low.put(node, min);
             stack.push(node);
             for (final Edge edge : this.graph.outEdges(node)) {
-                final Node next = edge.getTo();
-                if (!this.marked.contains(next)) {
-                    depthFirstSearch(next, stack);
+                if (!edge.isIgnored()) {
+                    final Node next = edge.getTo();
+                    if (!this.marked.contains(next)) {
+                        depthFirstSearch(next, stack);
+                    }
+                    min = Math.min(this.low.get(next), min);
                 }
-                min = Math.min(this.low.get(next), min);
             }
             if (min < this.low.get(node)) {
                 this.low.put(node, min);

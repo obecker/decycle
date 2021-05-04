@@ -3,8 +3,8 @@ package de.obqo.decycle.check;
 import static de.obqo.decycle.model.Node.sliceNode;
 
 import de.obqo.decycle.check.Constraint.Dependency;
-import de.obqo.decycle.graph.Edge;
 import de.obqo.decycle.graph.SliceSource;
+import de.obqo.decycle.model.Edge;
 import de.obqo.decycle.model.Node;
 
 import java.util.List;

@@ -1,23 +1,23 @@
 package de.obqo.decycle.analysis;
 
+import de.obqo.decycle.model.EdgeFilter;
 import de.obqo.decycle.model.Node;
 import de.obqo.decycle.slicer.Categorizer;
 
 import java.util.Objects;
-import java.util.function.BiPredicate;
 
 import com.google.common.annotations.VisibleForTesting;
 
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class NoSelfReference implements BiPredicate<Node, Node> {
+public class NoSelfReference implements EdgeFilter {
 
     private final Categorizer categorizer;
 
     @VisibleForTesting
     NoSelfReference() {
-        this(__ -> Categorizer.NONE);
+        this(Categorizer.EMPTY);
     }
 
     @Override

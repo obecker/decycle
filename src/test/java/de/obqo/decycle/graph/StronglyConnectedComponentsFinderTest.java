@@ -3,6 +3,7 @@ package de.obqo.decycle.graph;
 import static de.obqo.decycle.model.Node.packageNode;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import de.obqo.decycle.model.Edge;
 import de.obqo.decycle.model.Node;
 
 import java.util.Set;

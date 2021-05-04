@@ -1,8 +1,9 @@
 package de.obqo.decycle.analysis;
 
 import de.obqo.decycle.graph.Graph;
+import de.obqo.decycle.model.EdgeFilter;
+import de.obqo.decycle.model.NodeFilter;
 import de.obqo.decycle.slicer.Categorizer;
-import de.obqo.decycle.slicer.NodeFilter;
 import de.obqo.decycle.util.Assert;
 
 import java.io.BufferedInputStream;
@@ -17,12 +18,14 @@ import lombok.SneakyThrows;
 
 public class Analyzer {
 
-    public Graph analyze(final String classpath, final Categorizer categorizer, final NodeFilter filter) {
+    public Graph analyze(final String classpath, final Categorizer categorizer, final NodeFilter filter,
+            final EdgeFilter ignoredEdgesFilter) {
         Assert.notNull(classpath, "classpath must not be null");
         Assert.notNull(categorizer, "categorizer must not be null");
         Assert.notNull(filter, "filter must not be null");
+        Assert.notNull(ignoredEdgesFilter, "ignoredEdgesFilter must not be null");
 
-        final Graph graph = new Graph(categorizer, filter, new NoSelfReference(categorizer));
+        final Graph graph = new Graph(categorizer, filter, new NoSelfReference(categorizer), ignoredEdgesFilter);
 
         final String[] libs = classpath.split(System.getProperty("path.separator"));
         Stream.of(libs).flatMap(FileFinder::find).forEach(file -> analyze(file, graph));
@@ -56,5 +59,4 @@ public class Analyzer {
             e.printStackTrace();
         }
     }
-
 }

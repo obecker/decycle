@@ -1,5 +1,6 @@
 package de.obqo.decycle.graph;
 
+import de.obqo.decycle.model.Edge;
 import de.obqo.decycle.model.Node;
 
 import java.util.Optional;
@@ -20,10 +21,6 @@ class SliceNodeFinder {
         return allInNodesOfType(node).findFirst();
     }
 
-    private Set<Edge> inEdges(final Node node) {
-        return this.graph.nodes().contains(node) ? this.graph.inEdges(node) : Set.of();
-    }
-
     private Stream<Node> allInNodesOfType(final Node node) {
         if (node.hasType(this.sliceType)) {
             return Stream.of(node);
@@ -33,5 +30,9 @@ class SliceNodeFinder {
                     .map(Edge::getFrom)
                     .flatMap(this::allInNodesOfType);
         }
+    }
+
+    private Set<Edge> inEdges(final Node node) {
+        return this.graph.nodes().contains(node) ? this.graph.inEdges(node) : Set.of();
     }
 }

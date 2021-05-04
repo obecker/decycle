@@ -6,6 +6,7 @@ import static j2html.TagCreator.a;
 import static j2html.TagCreator.b;
 import static j2html.TagCreator.body;
 import static j2html.TagCreator.dd;
+import static j2html.TagCreator.del;
 import static j2html.TagCreator.div;
 import static j2html.TagCreator.dl;
 import static j2html.TagCreator.dt;
@@ -17,6 +18,7 @@ import static j2html.TagCreator.hr;
 import static j2html.TagCreator.html;
 import static j2html.TagCreator.i;
 import static j2html.TagCreator.iff;
+import static j2html.TagCreator.iffElse;
 import static j2html.TagCreator.li;
 import static j2html.TagCreator.link;
 import static j2html.TagCreator.meta;
@@ -37,8 +39,8 @@ import static java.util.stream.Collectors.mapping;
 import static java.util.stream.Collectors.toList;
 
 import de.obqo.decycle.check.Constraint;
-import de.obqo.decycle.graph.Edge;
 import de.obqo.decycle.graph.Graph;
+import de.obqo.decycle.model.Edge;
 import de.obqo.decycle.model.Node;
 
 import java.io.IOException;
@@ -205,8 +207,12 @@ public class HtmlReport {
                     return li()
                             .withClasses("pb-1", iff(hasViolations, "error"))
                             .with(
-                                    a(edge.getTo().getName() + " ").withClass("mr-2"),
+                                    a().withClass("mr-2")
+                                            .with(iffElse(edge.isIgnored(),
+                                                    del(edge.getTo().getName()),
+                                                    text(edge.getTo().getName()))),
                                     iff(hasViolations, span(
+                                            text(" "),
                                             i().withClass("bi bi-exclamation-triangle-fill"),
                                             text(toViolations.stream().collect(joining(", ", " (", ")"))))),
                                     ul().withClass("class-references list-unstyled")

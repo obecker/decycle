@@ -3,7 +3,7 @@ package de.obqo.decycle.analysis;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import de.obqo.decycle.model.Node;
-import de.obqo.decycle.slicer.NodeFilter;
+import de.obqo.decycle.model.NodeFilter;
 
 import java.util.Set;
 

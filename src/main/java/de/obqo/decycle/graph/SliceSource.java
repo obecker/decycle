@@ -1,5 +1,6 @@
 package de.obqo.decycle.graph;
 
+import de.obqo.decycle.model.Edge;
 import de.obqo.decycle.model.Node;
 
 import java.util.Set;

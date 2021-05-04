@@ -1,12 +1,13 @@
 package de.obqo.decycle.slicer;
 
 import de.obqo.decycle.model.Node;
+import de.obqo.decycle.model.NodeFilter;
 
-public class PatternMatchingFilter implements NodeFilter {
+public class PatternMatchingNodeFilter implements NodeFilter {
 
     private final PatternMatcher matcher;
 
-    public PatternMatchingFilter(final String pattern) {
+    public PatternMatchingNodeFilter(final String pattern) {
         this.matcher = new PatternMatcher(pattern);
     }
 

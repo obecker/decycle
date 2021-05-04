@@ -1,9 +1,8 @@
-package de.obqo.decycle.slicer;
-
-import de.obqo.decycle.model.Node;
+package de.obqo.decycle.model;
 
 import java.util.function.Predicate;
 
 public interface NodeFilter extends Predicate<Node> {
 
+    NodeFilter ALL = node -> true;
 }

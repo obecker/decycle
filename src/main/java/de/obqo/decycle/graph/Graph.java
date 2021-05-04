@@ -1,12 +1,14 @@
 package de.obqo.decycle.graph;
 
-import static de.obqo.decycle.graph.Edge.EdgeLabel.CONTAINS;
-import static de.obqo.decycle.graph.Edge.EdgeLabel.REFERENCES;
-import static de.obqo.decycle.util.ObjectUtils.defaultValue;
+import static de.obqo.decycle.model.Edge.EdgeLabel.CONTAINS;
+import static de.obqo.decycle.model.Edge.EdgeLabel.REFERENCES;
+import static java.util.Objects.requireNonNullElse;
 
+import de.obqo.decycle.model.Edge;
+import de.obqo.decycle.model.EdgeFilter;
 import de.obqo.decycle.model.Node;
+import de.obqo.decycle.model.NodeFilter;
 import de.obqo.decycle.slicer.Categorizer;
-import de.obqo.decycle.slicer.NodeFilter;
 
 import java.util.HashSet;
 import java.util.Objects;
@@ -24,6 +26,7 @@ public class Graph implements SliceSource {
     private final Categorizer categorizer;
     private final NodeFilter filter;
     private final BiPredicate<Node, Node> edgeFilter;
+    private final EdgeFilter ignoredEdgesFilter;
 
     private final MutableNetwork<Node, Edge> internalGraph =
             NetworkBuilder.directed().allowsParallelEdges(true).build();
@@ -37,14 +40,15 @@ public class Graph implements SliceSource {
     }
 
     public Graph(final Categorizer categorizer, final NodeFilter filter) {
-        this(categorizer, filter, null);
+        this(categorizer, filter, null, null);
     }
 
     public Graph(final Categorizer categorizer, final NodeFilter filter,
-            final BiPredicate<Node, Node> edgeFilter) {
-        this.categorizer = defaultValue(categorizer, __ -> Categorizer.NONE);
-        this.filter = defaultValue(filter, __ -> true);
-        this.edgeFilter = defaultValue(edgeFilter, (n, m) -> !Objects.equals(n, m));
+            final EdgeFilter edgeFilter, final EdgeFilter ignoredEdgesFilter) {
+        this.categorizer = requireNonNullElse(categorizer, Categorizer.EMPTY);
+        this.filter = requireNonNullElse(filter, NodeFilter.ALL);
+        this.edgeFilter = requireNonNullElse(edgeFilter, (n, m) -> !Objects.equals(n, m));
+        this.ignoredEdgesFilter = requireNonNullElse(ignoredEdgesFilter, EdgeFilter.NONE);
     }
 
     public void connect(final Node a, final Node b) {
@@ -55,7 +59,8 @@ public class Graph implements SliceSource {
 
     private void addEdge(final Node a, final Node b) {
         if (this.filter.test(a) && this.filter.test(b) && this.edgeFilter.test(a, b)) {
-            this.internalGraph.addEdge(a, b, Edge.references(a, b));
+            final boolean ignored = this.ignoredEdgesFilter.test(a, b);
+            this.internalGraph.addEdge(a, b, Edge.references(a, b, ignored));
         }
     }
 
@@ -125,8 +130,6 @@ public class Graph implements SliceSource {
                 .filter(n -> n.hasType(name))
                 .collect(Collectors.toSet());
 
-        final var sliceNodeFinder = new SliceNodeFinder(name, this.internalGraph);
-
         final var sliceGraph = NetworkBuilder.directed().allowsParallelEdges(true).<Node, Edge>build();
         sliceNodes.forEach(sliceGraph::addNode);
 
@@ -134,11 +137,16 @@ public class Graph implements SliceSource {
                 .filter(e -> e.getLabel() == REFERENCES)
                 .collect(Collectors.toSet());
 
+        final var sliceNodeFinder = new SliceNodeFinder(name, this.internalGraph);
         for (final Edge edge : edges) {
             sliceNodeFinder.find(edge.getFrom()).ifPresent(n1 ->
                     sliceNodeFinder.find(edge.getTo()).ifPresent(n2 -> {
                         if (!Objects.equals(n1, n2)) {
-                            sliceGraph.addEdge(n1, n2, Edge.references(n1, n2));
+                            sliceGraph.edgeConnecting(n1, n2).ifPresentOrElse(
+                                    // if present, set/toggle ignored flag
+                                    slideEdge -> slideEdge.ignore(edge.isIgnored()),
+                                    // else add new slice edge
+                                    () -> sliceGraph.addEdge(n1, n2, Edge.references(n1, n2, edge.isIgnored())));
                         }
                     }));
         }
@@ -156,7 +164,7 @@ public class Graph implements SliceSource {
         final Set<Edge> containingEdges = new HashSet<>();
         containingFromNodes.forEach(from -> {
             containingToNodes.forEach(to -> {
-                internalGraph.edgeConnecting(from, to).ifPresent(containingEdges::add);
+                this.internalGraph.edgeConnecting(from, to).ifPresent(containingEdges::add);
             });
         });
         return containingEdges;
@@ -167,7 +175,7 @@ public class Graph implements SliceSource {
         // TODO check: this further recursion for CLASS nodes is needed because of inner classes
         // Do we really need the InternalClassCategorizer?
 
-        return Stream.concat(nodes, internalGraph.outEdges(node)
+        return Stream.concat(nodes, this.internalGraph.outEdges(node)
                 .stream().filter(Edge::isContaining)
                 .map(Edge::getTo)
                 .flatMap(this::containingClassNodes));

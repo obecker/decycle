@@ -1,7 +1,7 @@
 package de.obqo.decycle.check;
 
-import de.obqo.decycle.graph.Edge;
 import de.obqo.decycle.graph.SliceSource;
+import de.obqo.decycle.model.Edge;
 
 import java.util.Comparator;
 import java.util.List;

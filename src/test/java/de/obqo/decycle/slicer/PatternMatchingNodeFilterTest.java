@@ -7,11 +7,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 
-class PatternMatchingFilterTest {
+class PatternMatchingNodeFilterTest {
 
     @Test
     void shouldMatchTheNameOfASimpleNode() {
-        final var matcher = new PatternMatchingFilter("x.*y.abc.**");
+        final var matcher = new PatternMatchingNodeFilter("x.*y.abc.**");
 
         assertThat(matcher.test(packageNode("x.y.abc.x"))).isTrue();
         assertThat(matcher.test(classNode("x.blay.abc.x.yz.D"))).isTrue();

@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import de.obqo.decycle.check.Constraint;
 import de.obqo.decycle.check.DirectLayeringConstraint;
 import de.obqo.decycle.check.LayeringConstraint;
+import de.obqo.decycle.slicer.IgnoredDependency;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -32,6 +33,8 @@ class ConfigurationTest {
         final List<Constraint.Violation> violations = Configuration.builder()
                 .classpath("build")
                 .includes(List.of("de.obqo.decycle.**"))
+                .ignoredDependencies(
+                        List.of(new IgnoredDependency("de.obqo.decycle.analysis.*", "de.obqo.decycle.util.*")))
                 .slicings(Map.of("subpackage", List.of(new UnnamedPattern("de.obqo.decycle.(*).**"))))
                 .constraints(Set.of(
                         new LayeringConstraint("subpackage", List.of(anyOf("util"), anyOf("graph", "slicer"))),
@@ -48,7 +51,6 @@ class ConfigurationTest {
         final var violation1 = violations.get(0);
         assertThat(violation1.getName()).isEqualTo("model => util");
         assertThat(violation1.getDependencies()).containsOnly(
-                new Constraint.Dependency("analysis", "util"),
                 new Constraint.Dependency("graph", "util"),
                 new Constraint.Dependency("slicer", "util")
         );

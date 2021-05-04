@@ -17,4 +17,9 @@ public interface Categorizer extends Function<Node, Set<Node>> {
      */
     Set<Node> NONE = Set.of();
 
+    /**
+     * Convenience constant for a {@link de.obqo.decycle.slicer.Categorizer} that never returns any categories
+     */
+    Categorizer EMPTY = __ -> NONE;
+
 }
