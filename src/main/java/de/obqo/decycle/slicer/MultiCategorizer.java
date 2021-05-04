@@ -1,9 +1,10 @@
 package de.obqo.decycle.slicer;
 
 import de.obqo.decycle.model.Node;
-import de.obqo.decycle.util.Assert;
 
 import java.util.Set;
+
+import com.google.common.base.Preconditions;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +19,7 @@ public class MultiCategorizer implements Categorizer {
     private final Categorizer[] categorizers;
 
     public static Categorizer combine(final Categorizer... categorizers) {
-        Assert.notNull(categorizers, "Missing categorizers for combine");
+        Preconditions.checkNotNull(categorizers, "Missing categorizers for combine");
         return new MultiCategorizer(categorizers);
     }
 

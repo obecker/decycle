@@ -2,7 +2,6 @@ package de.obqo.decycle.graph;
 
 import de.obqo.decycle.model.Edge;
 import de.obqo.decycle.model.Node;
-import de.obqo.decycle.util.Assert;
 
 import java.util.Deque;
 import java.util.HashMap;
@@ -13,6 +12,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.google.common.base.Preconditions;
 import com.google.common.graph.Network;
 
 import lombok.AccessLevel;
@@ -112,7 +112,7 @@ public class StronglyConnectedComponentsFinder {
          * @param graph the directed graph
          */
         TarjansAlgorithm(final Network<Node, Edge> graph) {
-            Assert.isTrue(graph.isDirected(), "Graph must be a directed graph");
+            Preconditions.checkState(graph.isDirected(), "Graph must be a directed graph");
             this.graph = graph;
             final Set<Node> nodes = graph.nodes();
             this.nodeCount = nodes.size();
