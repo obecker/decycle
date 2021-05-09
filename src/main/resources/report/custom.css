@@ -63,3 +63,12 @@ div.footer a {
     color: darkblue;
     text-decoration: underline;
 }
+
+span.class-node {
+    padding: 2px;
+}
+
+span.class-node.highlight {
+    color: white;
+    background-color: darkblue;
+}

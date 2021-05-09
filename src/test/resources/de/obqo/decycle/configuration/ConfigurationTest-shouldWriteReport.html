@@ -74,6 +74,15 @@ div.footer a {
     text-decoration: underline;
 }
 
+span.class-node {
+    padding: 2px;
+}
+
+span.class-node.highlight {
+    color: white;
+    background-color: darkblue;
+}
+
         </style>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous">
         </script>
@@ -83,15 +92,15 @@ div.footer a {
     $(this).parent().find('ul.class-references').slideToggle();
   });
 
-  let h = function(span, color, weight) {
-    $('span.class-node[data-name="' + $(span).data('name') + '"]').css('color', color).css('font-weight', weight);
+  let h = function(span) {
+    return $('span.class-node[data-name="' + $(span).data('name') + '"]');
   };
 
   $('span.class-node').mouseover(function() {
-    h(this, 'black', 'bold');
+    h(this).addClass('highlight');
   }).mouseout(function() {
-    h(this, 'dimgray', 'normal')
-  })
+    h(this).removeClass('highlight');
+  });
 });
 
         </script>
