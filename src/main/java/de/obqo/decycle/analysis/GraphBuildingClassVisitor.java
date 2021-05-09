@@ -95,9 +95,15 @@ public class GraphBuildingClassVisitor extends ClassVisitor {
         classNodeFromDescriptor(descriptor).forEach(node -> this.graph.connect(this.currentClass, node));
         if (exceptions != null) {
             for (final String e : exceptions) {
-                classNodeFromDescriptor(e).forEach(node -> this.graph.connect(this.currentClass, node));
+                this.graph.connect(this.currentClass, classNode(e));
             }
         }
         return new GraphBuildingMethodVisitor(this.api, this.graph, this.currentClass);
+    }
+
+    @Override
+    public void visitEnd() {
+        super.visitEnd();
+        // TODO read ClassReader.constantUtf8Values by reflection for finding missing method reference class
     }
 }

@@ -10,7 +10,6 @@ import de.obqo.decycle.slicer.IgnoredDependency;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.StringWriter;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -24,14 +23,31 @@ class ConfigurationTest {
     void projectConfigurationShouldHaveNoConstraintViolations() throws IOException {
         try (final FileWriter out = new FileWriter("build/main.html")) {
             assertThat(Configuration.builder()
-                    .classpath("build")
+                    .classpath("build/classes/java/main") // for gradle
+//                    .classpath("out/production/classes") // for IntelliJ
                     .includes(List.of("de.obqo.decycle.**"))
-                    .excludes(List.of("de.obqo.decycle.demo.**"))
                     .report(out)
                     .build()
                     .check())
                     .isEmpty();
         }
+    }
+
+    @Test
+    void shouldReportAllDependencies() throws IOException {
+        final StringBuilder out = new StringBuilder();
+        assertThat(Configuration.builder()
+                .classpath("build/classes/java/test")
+                .includes(List.of("de.obqo.decycle.demo.base.**"))
+                .report(out)
+                .minifyReport(false)
+                .build()
+                .check())
+                .isEmpty();
+        new FileWriter("build/demobase.html").append(out.toString()).close();
+
+        final String expectedReport = readResource("ConfigurationTest-shouldReportAllDependencies.html");
+        assertThat(out.toString()).isEqualTo(expectedReport);
     }
 
     @Test
@@ -72,20 +88,20 @@ class ConfigurationTest {
 
     @Test
     void shouldWriteReport() throws IOException {
-        final StringWriter writer = new StringWriter();
+        final StringBuilder out = new StringBuilder();
 
-        final List<Constraint.Violation> violations = Configuration.builder()
+        Configuration.builder()
                 .classpath(System.getProperty("java.class.path"))
                 .includes(List.of("j2html.**"))
-                .report(writer)
+                .report(out)
                 .minifyReport(false)
                 .build()
                 .check();
 
-        new FileWriter("build/test.html").append(writer.toString()).close();
+        new FileWriter("build/test.html").append(out.toString()).close();
 
         final String expectedReport = readResource("ConfigurationTest-shouldWriteReport.html");
-        assertThat(writer.toString()).isEqualTo(expectedReport);
+        assertThat(out.toString()).isEqualTo(expectedReport);
     }
 
     private String readResource(final String filename) {

@@ -1,0 +1,694 @@
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>
+            Decycle Report
+        </title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css">
+        <style>
+            html {
+    font-size: 14px;
+}
+
+.violations {
+    position: relative;
+    min-height: 3.75rem;
+}
+
+.violations > h1 {
+    position: absolute;
+    right: 0.75rem;
+}
+
+.violations > .name {
+    color: black;
+}
+
+.violations > .dependencies a {
+    font-weight: normal;
+}
+
+dl.slices {
+    background-color: aliceblue;
+}
+
+dt.error, dd.error {
+    background-color: lightyellow;
+}
+
+ul.references > li > a {
+    color: darkblue;
+    cursor: pointer;
+}
+ul.references > li > a:hover {
+    text-decoration: underline;
+}
+
+ul.references > li.error > span {
+    color: #721c24;
+}
+
+ul.class-references > li {
+    text-indent: -3rem;
+    padding-left: 3rem;
+}
+
+ul.class-references {
+    font-size: 90%;
+    color: dimgray;
+    display: none;
+}
+
+li.error > ul.class-references {
+    display: block;
+}
+
+dt.border-top:first-child, dd.border-top:first-of-type {
+    border: none !important;
+}
+
+div.footer a {
+    color: darkblue;
+    text-decoration: underline;
+}
+
+span.class-node {
+    padding: 2px;
+}
+
+span.class-node.highlight {
+    color: white;
+    background-color: darkblue;
+}
+
+        </style>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous">
+        </script>
+        <script>
+            $(function() {
+  $('ul.references > li > a').click(function() {
+    $(this).parent().find('ul.class-references').slideToggle();
+  });
+
+  let h = function(span) {
+    return $('span.class-node[data-name="' + $(span).data('name') + '"]');
+  };
+
+  $('span.class-node').mouseover(function() {
+    h(this).addClass('highlight');
+  }).mouseout(function() {
+    h(this).removeClass('highlight');
+  });
+});
+
+        </script>
+    </head>
+    <body>
+        <div class="container-fluid p-3">
+            <div class="mx-2">
+                <svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="208" height="72" fill="currentColor" viewBox="0 0 52 18">
+  <defs>
+    <path id="arrow"
+          d="M0 0
+             l-1 -2
+             a.15.15 0 0 1 .15-.2
+             l.88.2.88-.2
+             a.15.15 0 0 1 .15.2z" />
+    <g id="D">
+      <path fill-rule="evenodd"
+            d="M0 0
+               a6.2 6.2 0 1 1 0 12
+               v-8z
+               M.5.5
+               a5.615 5.615 0 1 1 0 11z" />
+      <use xlink:href="#arrow" x="0.25" y="12" />
+      <use xlink:href="#arrow" x="0.25" y="12" transform="rotate(95 .25 11.75)" />
+    </g>
+    <g id="e">
+      <path fill-rule="evenodd"
+            d="M8 4.25
+               a4 4 0 1 0-4 3.75
+               v-.5
+               a3.5 3.5 0 0 1 -3.49-3.25z
+               m-.51-.5
+               a3.5 3.5 0 0 0-6.98 0z"
+            transform="rotate(-45 4 4)" />
+      <use xlink:href="#arrow" x="7.1" y="6.36" transform="rotate(-127 7.1 6.36)" />
+      <use xlink:href="#arrow" x="1.2" y="6.76" transform="rotate(45 1.2 6.76)" />
+    </g>
+    <g id="c">
+      <path d="M8 4.25
+               a4 4 0 1 0-4 3.75
+               v-.5
+               a3.5 3.5 0 1 1 3.5-3.25z"
+            transform="rotate(-45 4 4) "/>
+      <use xlink:href="#arrow" x="7.1" y="6.36" transform="rotate(-127 7.1 6.36)" />
+    </g>
+    <g id="y">
+      <path d="M.7 12
+               Q5.5 8 7.5.5
+               h-.55
+               Q5 8 0 12z" />
+      <path d="M0 0
+               Q1.65 4 4.4 7.4
+               l.35-.35
+               Q2.0 3.65.55 0z" />
+      <use xlink:href="#arrow" x="7.5" y="-0.2" transform="rotate(-162 7.5 -.2)" />
+      <use xlink:href="#arrow" x="4.6" y="7.3" transform="rotate(-36 4.6 7.3)" />
+    </g>
+    <g id="l">
+      <path d="M0 0
+               v12
+               h2
+               v-.5
+               h-1.5
+               v-11.5z" />
+      <use xlink:href="#arrow" x="3" y="11.75" transform="rotate(-90 3 11.75)" />
+    </g>
+  </defs>
+
+  <use xlink:href="#D" x="2" y="1" />
+  <use xlink:href="#e" x="10.5" y="5" />
+  <use xlink:href="#c" x="18" y="5" />
+  <use xlink:href="#y" x="25.5" y="5" />
+  <use xlink:href="#c" x="33.5" y="5" />
+  <use xlink:href="#l" x="41.5" y="1" />
+  <use xlink:href="#e" x="44" y="5" />
+
+</svg>
+
+                <hr class="mt-1">
+                <h1>
+                    Violation Report
+                </h1>
+                <div class="violations border rounded-lg pb-1 mb-3 alert-success row">
+                    <h1 class="m-0 pt-2">
+                        <i class="bi bi-check-circle-fill">
+                        </i>
+                    </h1>
+                    <div class="col-12 mt-1">
+                        <b>
+                            No violations found
+                        </b>
+                    </div>
+                </div>
+                            <div class="pt-2">
+                    <h2 class="slice text-capitalize mt-2">
+                        Package
+                    </h2>
+                    <dl class="slices row border rounded-lg py-1">
+                        <dt class="col-sm-4 border-top py-1 text-truncate" title="de.obqo.decycle.demo.base.from">
+                            <a id="Package-de.obqo.decycle.demo.base.from">
+                                de.obqo.decycle.demo.base.from
+                            </a>
+                        </dt>
+                        <dd class="col-sm-8 border-top py-1 mb-0">
+                            <ul class="references list-unstyled mb-0">
+                                <li class="pb-1">
+                                    <a class="mr-2">
+                                        de.obqo.decycle.demo.base.to
+                                    </a>
+                                    <ul class="class-references list-unstyled">
+                                        <li>
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.from.FromAnnotation">
+                                                de.obqo.decycle.demo.base.from.FromAnnotation
+                                            </span>
+                                             &rarr;&nbsp;
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.to.AnnotationAnnotation">
+                                                de.obqo.decycle.demo.base.to.AnnotationAnnotation
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.from.FromAnnotation">
+                                                de.obqo.decycle.demo.base.from.FromAnnotation
+                                            </span>
+                                             &rarr;&nbsp;
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.to.TypeAnnotationParam">
+                                                de.obqo.decycle.demo.base.to.TypeAnnotationParam
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.from.FromClass">
+                                                de.obqo.decycle.demo.base.from.FromClass
+                                            </span>
+                                             &rarr;&nbsp;
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.to.BaseClass">
+                                                de.obqo.decycle.demo.base.to.BaseClass
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.from.FromClass">
+                                                de.obqo.decycle.demo.base.from.FromClass
+                                            </span>
+                                             &rarr;&nbsp;
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.to.BaseInterface">
+                                                de.obqo.decycle.demo.base.to.BaseInterface
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.from.FromClass">
+                                                de.obqo.decycle.demo.base.from.FromClass
+                                            </span>
+                                             &rarr;&nbsp;
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.to.CheckedException">
+                                                de.obqo.decycle.demo.base.to.CheckedException
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.from.FromClass">
+                                                de.obqo.decycle.demo.base.from.FromClass
+                                            </span>
+                                             &rarr;&nbsp;
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.to.ClassObject">
+                                                de.obqo.decycle.demo.base.to.ClassObject
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.from.FromClass">
+                                                de.obqo.decycle.demo.base.from.FromClass
+                                            </span>
+                                             &rarr;&nbsp;
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.to.ConstructorAnnotation">
+                                                de.obqo.decycle.demo.base.to.ConstructorAnnotation
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.from.FromClass">
+                                                de.obqo.decycle.demo.base.from.FromClass
+                                            </span>
+                                             &rarr;&nbsp;
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.to.ConstructorParam">
+                                                de.obqo.decycle.demo.base.to.ConstructorParam
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.from.FromClass">
+                                                de.obqo.decycle.demo.base.from.FromClass
+                                            </span>
+                                             &rarr;&nbsp;
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.to.FieldAnnotation">
+                                                de.obqo.decycle.demo.base.to.FieldAnnotation
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.from.FromClass">
+                                                de.obqo.decycle.demo.base.from.FromClass
+                                            </span>
+                                             &rarr;&nbsp;
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.to.GenericTypeForClass">
+                                                de.obqo.decycle.demo.base.to.GenericTypeForClass
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.from.FromClass">
+                                                de.obqo.decycle.demo.base.from.FromClass
+                                            </span>
+                                             &rarr;&nbsp;
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.to.GenericTypeForList">
+                                                de.obqo.decycle.demo.base.to.GenericTypeForList
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.from.FromClass">
+                                                de.obqo.decycle.demo.base.from.FromClass
+                                            </span>
+                                             &rarr;&nbsp;
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.to.InstanceOfType">
+                                                de.obqo.decycle.demo.base.to.InstanceOfType
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.from.FromClass">
+                                                de.obqo.decycle.demo.base.from.FromClass
+                                            </span>
+                                             &rarr;&nbsp;
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.to.LambdaExpression">
+                                                de.obqo.decycle.demo.base.to.LambdaExpression
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.from.FromClass">
+                                                de.obqo.decycle.demo.base.from.FromClass
+                                            </span>
+                                             &rarr;&nbsp;
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.to.LocalVar">
+                                                de.obqo.decycle.demo.base.to.LocalVar
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.from.FromClass">
+                                                de.obqo.decycle.demo.base.from.FromClass
+                                            </span>
+                                             &rarr;&nbsp;
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.to.MethodAnnotation">
+                                                de.obqo.decycle.demo.base.to.MethodAnnotation
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.from.FromClass">
+                                                de.obqo.decycle.demo.base.from.FromClass
+                                            </span>
+                                             &rarr;&nbsp;
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.to.MethodParam">
+                                                de.obqo.decycle.demo.base.to.MethodParam
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.from.FromClass">
+                                                de.obqo.decycle.demo.base.from.FromClass
+                                            </span>
+                                             &rarr;&nbsp;
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.to.NonStaticConcreteMember">
+                                                de.obqo.decycle.demo.base.to.NonStaticConcreteMember
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.from.FromClass">
+                                                de.obqo.decycle.demo.base.from.FromClass
+                                            </span>
+                                             &rarr;&nbsp;
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.to.NonStaticInitializer">
+                                                de.obqo.decycle.demo.base.to.NonStaticInitializer
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.from.FromClass">
+                                                de.obqo.decycle.demo.base.from.FromClass
+                                            </span>
+                                             &rarr;&nbsp;
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.to.NonStaticMember">
+                                                de.obqo.decycle.demo.base.to.NonStaticMember
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.from.FromClass">
+                                                de.obqo.decycle.demo.base.from.FromClass
+                                            </span>
+                                             &rarr;&nbsp;
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.to.ParamAnnotation">
+                                                de.obqo.decycle.demo.base.to.ParamAnnotation
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.from.FromClass">
+                                                de.obqo.decycle.demo.base.from.FromClass
+                                            </span>
+                                             &rarr;&nbsp;
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.to.ResourcesClass">
+                                                de.obqo.decycle.demo.base.to.ResourcesClass
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.from.FromClass">
+                                                de.obqo.decycle.demo.base.from.FromClass
+                                            </span>
+                                             &rarr;&nbsp;
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.to.ResourcesClassFactory">
+                                                de.obqo.decycle.demo.base.to.ResourcesClassFactory
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.from.FromClass">
+                                                de.obqo.decycle.demo.base.from.FromClass
+                                            </span>
+                                             &rarr;&nbsp;
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.to.ReturnType">
+                                                de.obqo.decycle.demo.base.to.ReturnType
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.from.FromClass">
+                                                de.obqo.decycle.demo.base.from.FromClass
+                                            </span>
+                                             &rarr;&nbsp;
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.to.StaticConcreteMember">
+                                                de.obqo.decycle.demo.base.to.StaticConcreteMember
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.from.FromClass">
+                                                de.obqo.decycle.demo.base.from.FromClass
+                                            </span>
+                                             &rarr;&nbsp;
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.to.StaticInitializer">
+                                                de.obqo.decycle.demo.base.to.StaticInitializer
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.from.FromClass">
+                                                de.obqo.decycle.demo.base.from.FromClass
+                                            </span>
+                                             &rarr;&nbsp;
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.to.StaticMember">
+                                                de.obqo.decycle.demo.base.to.StaticMember
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.from.FromClass">
+                                                de.obqo.decycle.demo.base.from.FromClass
+                                            </span>
+                                             &rarr;&nbsp;
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.to.StaticMethodParam">
+                                                de.obqo.decycle.demo.base.to.StaticMethodParam
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.from.FromClass">
+                                                de.obqo.decycle.demo.base.from.FromClass
+                                            </span>
+                                             &rarr;&nbsp;
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.to.TypeAnnotation">
+                                                de.obqo.decycle.demo.base.to.TypeAnnotation
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.from.FromClass">
+                                                de.obqo.decycle.demo.base.from.FromClass
+                                            </span>
+                                             &rarr;&nbsp;
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.to.TypeAnnotationParam">
+                                                de.obqo.decycle.demo.base.to.TypeAnnotationParam
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.from.FromClass">
+                                                de.obqo.decycle.demo.base.from.FromClass
+                                            </span>
+                                             &rarr;&nbsp;
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.to.TypeCast">
+                                                de.obqo.decycle.demo.base.to.TypeCast
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.from.FromClass">
+                                                de.obqo.decycle.demo.base.from.FromClass
+                                            </span>
+                                             &rarr;&nbsp;
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.to.TypeParamAnnotation">
+                                                de.obqo.decycle.demo.base.to.TypeParamAnnotation
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.from.FromClass">
+                                                de.obqo.decycle.demo.base.from.FromClass
+                                            </span>
+                                             &rarr;&nbsp;
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.to.TypeUseAnnotation">
+                                                de.obqo.decycle.demo.base.to.TypeUseAnnotation
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.from.FromClass$1LocalClass">
+                                                de.obqo.decycle.demo.base.from.FromClass$1LocalClass
+                                            </span>
+                                             &rarr;&nbsp;
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.to.LocalTypeAnnotation">
+                                                de.obqo.decycle.demo.base.to.LocalTypeAnnotation
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.from.FromClass$1LocalClass">
+                                                de.obqo.decycle.demo.base.from.FromClass$1LocalClass
+                                            </span>
+                                             &rarr;&nbsp;
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.to.ReturnType">
+                                                de.obqo.decycle.demo.base.to.ReturnType
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.from.FromClass$1LocalClass">
+                                                de.obqo.decycle.demo.base.from.FromClass$1LocalClass
+                                            </span>
+                                             &rarr;&nbsp;
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.to.TypeUseAnnotation">
+                                                de.obqo.decycle.demo.base.to.TypeUseAnnotation
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.from.FromClass$1LocalClass$1">
+                                                de.obqo.decycle.demo.base.from.FromClass$1LocalClass$1
+                                            </span>
+                                             &rarr;&nbsp;
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.to.BaseInterface">
+                                                de.obqo.decycle.demo.base.to.BaseInterface
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.from.FromClass$1LocalClass$1">
+                                                de.obqo.decycle.demo.base.from.FromClass$1LocalClass$1
+                                            </span>
+                                             &rarr;&nbsp;
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.to.TypeUseAnnotation">
+                                                de.obqo.decycle.demo.base.to.TypeUseAnnotation
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.from.FromInterface">
+                                                de.obqo.decycle.demo.base.from.FromInterface
+                                            </span>
+                                             &rarr;&nbsp;
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.to.BaseInterface">
+                                                de.obqo.decycle.demo.base.to.BaseInterface
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.from.FromInterface">
+                                                de.obqo.decycle.demo.base.from.FromInterface
+                                            </span>
+                                             &rarr;&nbsp;
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.to.CheckedException">
+                                                de.obqo.decycle.demo.base.to.CheckedException
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.from.FromInterface">
+                                                de.obqo.decycle.demo.base.from.FromInterface
+                                            </span>
+                                             &rarr;&nbsp;
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.to.GenericTypeForClass">
+                                                de.obqo.decycle.demo.base.to.GenericTypeForClass
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.from.FromInterface">
+                                                de.obqo.decycle.demo.base.from.FromInterface
+                                            </span>
+                                             &rarr;&nbsp;
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.to.MethodParam">
+                                                de.obqo.decycle.demo.base.to.MethodParam
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.from.FromInterface">
+                                                de.obqo.decycle.demo.base.from.FromInterface
+                                            </span>
+                                             &rarr;&nbsp;
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.to.ReturnType">
+                                                de.obqo.decycle.demo.base.to.ReturnType
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.from.FromInterface">
+                                                de.obqo.decycle.demo.base.from.FromInterface
+                                            </span>
+                                             &rarr;&nbsp;
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.to.StaticConcreteMember">
+                                                de.obqo.decycle.demo.base.to.StaticConcreteMember
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.from.FromInterface">
+                                                de.obqo.decycle.demo.base.from.FromInterface
+                                            </span>
+                                             &rarr;&nbsp;
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.to.StaticMember">
+                                                de.obqo.decycle.demo.base.to.StaticMember
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.from.FromOtherClass">
+                                                de.obqo.decycle.demo.base.from.FromOtherClass
+                                            </span>
+                                             &rarr;&nbsp;
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.to.CheckedException">
+                                                de.obqo.decycle.demo.base.to.CheckedException
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.from.FromOtherClass">
+                                                de.obqo.decycle.demo.base.from.FromOtherClass
+                                            </span>
+                                             &rarr;&nbsp;
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.to.MethodParam">
+                                                de.obqo.decycle.demo.base.to.MethodParam
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.from.FromOtherClass">
+                                                de.obqo.decycle.demo.base.from.FromOtherClass
+                                            </span>
+                                             &rarr;&nbsp;
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.to.ReturnType">
+                                                de.obqo.decycle.demo.base.to.ReturnType
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.from.FromOtherClass">
+                                                de.obqo.decycle.demo.base.from.FromOtherClass
+                                            </span>
+                                             &rarr;&nbsp;
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.to.UncheckedException1">
+                                                de.obqo.decycle.demo.base.to.UncheckedException1
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.from.FromOtherClass">
+                                                de.obqo.decycle.demo.base.from.FromOtherClass
+                                            </span>
+                                             &rarr;&nbsp;
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.to.UncheckedException2">
+                                                de.obqo.decycle.demo.base.to.UncheckedException2
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.from.package-info">
+                                                de.obqo.decycle.demo.base.from.package-info
+                                            </span>
+                                             &rarr;&nbsp;
+                                            <span class="class-node" data-name="de.obqo.decycle.demo.base.to.PackageAnnotation">
+                                                de.obqo.decycle.demo.base.to.PackageAnnotation
+                                            </span>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </dd>
+                        <dt class="col-sm-4 border-top py-1 text-truncate" title="de.obqo.decycle.demo.base.to">
+                            <a id="Package-de.obqo.decycle.demo.base.to">
+                                de.obqo.decycle.demo.base.to
+                            </a>
+                        </dt>
+                        <dd class="col-sm-8 border-top py-1 mb-0">
+                            <ul class="references list-unstyled mb-0">
+                            </ul>
+                        </dd>
+                    </dl>
+                </div>
+                            <hr>
+                <div class="footer small">
+                    Generated by 
+                    <a href="https://github.com/obecker/decycle">
+                        Decycle
+                    </a>
+                     
+                    null
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
+
