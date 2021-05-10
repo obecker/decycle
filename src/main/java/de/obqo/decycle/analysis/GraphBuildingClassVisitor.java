@@ -20,7 +20,7 @@ public class GraphBuildingClassVisitor extends ClassVisitor {
     private Node currentClass;
 
     GraphBuildingClassVisitor(final Graph graph) {
-        super(Opcodes.ASM7);
+        super(Opcodes.ASM9);
         this.graph = graph;
     }
 

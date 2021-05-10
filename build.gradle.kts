@@ -19,7 +19,7 @@ dependencies {
     testAnnotationProcessor("org.projectlombok:lombok:$lombokVersion")
     annotationProcessor("org.projectlombok:lombok:$lombokVersion")
 
-    implementation("org.ow2.asm:asm:7.3.1")
+    implementation("org.ow2.asm:asm:9.1")
     implementation("com.google.guava:guava:30.1.1-jre") {
         exclude(group = "org.checkerframework")
     }
