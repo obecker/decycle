@@ -1,109 +1,79 @@
 package de.obqo.decycle.analysis;
 
-import static de.obqo.decycle.analysis.VisitorSupport.classNode;
-import static de.obqo.decycle.analysis.VisitorSupport.classNodeFromDescriptor;
+import static de.obqo.decycle.analysis.GraphBuilder.classNodeFromTypeName;
 
 import de.obqo.decycle.graph.Graph;
-import de.obqo.decycle.model.Node;
 
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
-import org.objectweb.asm.ModuleVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.TypePath;
 
 public class GraphBuildingClassVisitor extends ClassVisitor {
 
-    private final Graph graph;
-    private Node currentClass;
+    private final GraphBuilder graphBuilder;
 
     GraphBuildingClassVisitor(final Graph graph) {
         super(Opcodes.ASM9);
-        this.graph = graph;
+        this.graphBuilder = new GraphBuilder(graph);
     }
 
     @Override
     public void visit(final int version, final int access, final String name, final String signature,
             final String superName, final String[] interfaces) {
+        this.graphBuilder.visitCurrentClass(name);
+        this.graphBuilder.connectNodesFromDescriptors(signature);
 
-        this.currentClass = classNode(name);
-
-        classNodeFromDescriptor(signature).forEach(node -> this.graph.connect(this.currentClass, node));
-
-        if (superName == null) {
-            this.graph.add(this.currentClass);
-        } else {
-            this.graph.connect(this.currentClass, classNode(superName));
+        if (superName != null) {
+            this.graphBuilder.connect(classNodeFromTypeName(superName));
         }
 
         for (final String i : interfaces) {
-            this.graph.connect(this.currentClass, classNode(i));
+            this.graphBuilder.connect(classNodeFromTypeName(i));
         }
-    }
-
-    @Override
-    public ModuleVisitor visitModule(final String name, final int access, final String version) {
-        // TODO
-        return super.visitModule(name, access, version);
     }
 
     @Override
     public void visitOuterClass(final String owner, final String name, final String descriptor) {
-        this.graph.add(classNode(owner));
-        classNodeFromDescriptor(descriptor).forEach(this.graph::add);
+        // we don't gather this dependency, as it is implicitly given
+    }
+
+    @Override
+    public void visitInnerClass(final String name, final String outerName, final String innerName, final int access) {
+        // we don't gather this dependency, as it is implicitly given
     }
 
     @Override
     public AnnotationVisitor visitAnnotation(final String descriptor, final boolean visible) {
-        classNodeFromDescriptor(descriptor).forEach(node -> this.graph.connect(this.currentClass, node));
-        return new GraphBuildingAnnotationVisitor(this.api, this.graph, this.currentClass);
+        this.graphBuilder.connectNodesFromDescriptors(descriptor);
+        return new GraphBuildingAnnotationVisitor(this.api, this.graphBuilder);
     }
 
     @Override
     public AnnotationVisitor visitTypeAnnotation(final int typeRef, final TypePath typePath, final String descriptor,
             final boolean visible) {
-        classNodeFromDescriptor(descriptor).forEach(node -> this.graph.connect(this.currentClass, node));
-        return new GraphBuildingAnnotationVisitor(this.api, this.graph, this.currentClass);
-    }
-
-    @Override
-    public void visitInnerClass(final String name, final String outerName, final String innerName, final int access) {
-        if (outerName == null) { // what the heck does that mean?
-            this.graph.add(classNode(name));
-        } else {
-            // we don't gather this dependency, but deduce it through the naming ... not sure how good that idea is.
-            // graph.connect(classNode(name), classNode(outerName));
-        }
+        this.graphBuilder.connectNodesFromDescriptors(descriptor);
+        return new GraphBuildingAnnotationVisitor(this.api, this.graphBuilder);
     }
 
     @Override
     public FieldVisitor visitField(final int access, final String name, final String descriptor, final String signature,
             final Object value) {
-        classNodeFromDescriptor(signature).forEach(node -> this.graph.connect(this.currentClass, node));
-        classNodeFromDescriptor(descriptor).forEach(node -> this.graph.connect(this.currentClass, node));
-        return new GraphBuildingFieldVisitor(this.api, this.graph, this.currentClass);
+        this.graphBuilder.connectNodesFromDescriptors(descriptor, signature);
+        return new GraphBuildingFieldVisitor(this.api, this.graphBuilder);
     }
 
     @Override
     public MethodVisitor visitMethod(final int access, final String name, final String descriptor,
-            final String signature,
-            final String[] exceptions) {
-        classNodeFromDescriptor(signature).forEach(node -> this.graph.connect(this.currentClass, node));
-
-        classNodeFromDescriptor(descriptor).forEach(node -> this.graph.connect(this.currentClass, node));
+            final String signature, final String[] exceptions) {
+        this.graphBuilder.connectNodesFromDescriptors(descriptor, signature);
         if (exceptions != null) {
             for (final String e : exceptions) {
-                this.graph.connect(this.currentClass, classNode(e));
+                this.graphBuilder.connect(classNodeFromTypeName(e));
             }
         }
-        return new GraphBuildingMethodVisitor(this.api, this.graph, this.currentClass);
-    }
-
-    @Override
-    public void visitEnd() {
-        super.visitEnd();
-        // TODO read ClassReader.constantUtf8Values by reflection for finding missing method reference class
+        return new GraphBuildingMethodVisitor(this.api, this.graphBuilder);
     }
 }

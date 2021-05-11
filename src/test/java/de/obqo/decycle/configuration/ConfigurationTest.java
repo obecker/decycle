@@ -37,7 +37,8 @@ class ConfigurationTest {
     void shouldReportAllDependencies() throws IOException {
         final StringBuilder out = new StringBuilder();
         assertThat(Configuration.builder()
-                .classpath("build/classes/java/test")
+                .classpath("build/classes/java/test") // for gradle
+//                .classpath("out/test/classes") // for IntelliJ
                 .includes(List.of("de.obqo.decycle.demo.base.**"))
                 .report(out)
                 .minifyReport(false)

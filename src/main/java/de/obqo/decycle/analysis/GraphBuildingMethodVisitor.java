@@ -1,130 +1,120 @@
 package de.obqo.decycle.analysis;
 
-import static de.obqo.decycle.analysis.VisitorSupport.classNode;
-import static de.obqo.decycle.analysis.VisitorSupport.classNodeFromDescriptor;
-import static de.obqo.decycle.analysis.VisitorSupport.classNodeFromSingleType;
-
-import de.obqo.decycle.graph.Graph;
-import de.obqo.decycle.model.Node;
+import static de.obqo.decycle.analysis.GraphBuilder.classNodeFromSingleType;
+import static de.obqo.decycle.analysis.GraphBuilder.classNodeFromTypeName;
 
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.Handle;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
-import org.objectweb.asm.Type;
 import org.objectweb.asm.TypePath;
 
 class GraphBuildingMethodVisitor extends MethodVisitor {
 
-    private final Graph graph;
-    private final Node currentClass;
+    private final GraphBuilder graphBuilder;
 
-    GraphBuildingMethodVisitor(final int api, final Graph graph, final Node currentClass) {
+    GraphBuildingMethodVisitor(final int api, final GraphBuilder graphBuilder) {
         super(api);
-        this.graph = graph;
-        this.currentClass = currentClass;
+        this.graphBuilder = graphBuilder;
+    }
+
+    private GraphBuildingAnnotationVisitor annotationVisitor() {
+        return new GraphBuildingAnnotationVisitor(this.api, this.graphBuilder);
     }
 
     @Override
     public AnnotationVisitor visitAnnotationDefault() {
-        return new GraphBuildingAnnotationVisitor(this.api, this.graph, this.currentClass);
+        return annotationVisitor();
     }
 
     @Override
     public AnnotationVisitor visitAnnotation(final String descriptor, final boolean visible) {
-        classNodeFromDescriptor(descriptor).forEach(node -> this.graph.connect(this.currentClass, node));
-        return new GraphBuildingAnnotationVisitor(this.api, this.graph, this.currentClass);
+        this.graphBuilder.connectNodesFromDescriptors(descriptor);
+        return annotationVisitor();
     }
 
     @Override
     public AnnotationVisitor visitTypeAnnotation(final int typeRef, final TypePath typePath,
-            final String descriptor,
-            final boolean visible) {
-        classNodeFromDescriptor(descriptor).forEach(node -> this.graph.connect(this.currentClass, node));
-        return new GraphBuildingAnnotationVisitor(this.api, this.graph, this.currentClass);
+            final String descriptor, final boolean visible) {
+        this.graphBuilder.connectNodesFromDescriptors(descriptor);
+        return annotationVisitor();
     }
 
     @Override
     public AnnotationVisitor visitParameterAnnotation(final int parameter, final String descriptor,
             final boolean visible) {
-        classNodeFromDescriptor(descriptor).forEach(node -> this.graph.connect(this.currentClass, node));
-        return new GraphBuildingAnnotationVisitor(this.api, this.graph, this.currentClass);
+        this.graphBuilder.connectNodesFromDescriptors(descriptor);
+        return annotationVisitor();
     }
 
     @Override
     public void visitTypeInsn(final int opcode, final String type) {
-        this.graph.connect(this.currentClass, classNodeFromSingleType(type));
+        this.graphBuilder.connect(classNodeFromSingleType(type));
     }
 
     @Override
     public void visitFieldInsn(final int opcode, final String owner, final String name, final String descriptor) {
-        this.graph.connect(this.currentClass, classNodeFromSingleType(owner));
-        classNodeFromDescriptor(descriptor).forEach(node -> this.graph.connect(this.currentClass, node));
+        this.graphBuilder.connect(classNodeFromSingleType(owner));
+        this.graphBuilder.connectNodesFromDescriptors(descriptor);
     }
 
     @Override
     public void visitMethodInsn(final int opcode, final String owner, final String name, final String descriptor,
             final boolean isInterface) {
-        this.graph.connect(this.currentClass, classNodeFromSingleType(owner));
-        classNodeFromDescriptor(descriptor).forEach(node -> this.graph.connect(this.currentClass, node));
+        this.graphBuilder.connect(classNodeFromSingleType(owner));
+        this.graphBuilder.connectNodesFromDescriptors(descriptor);
     }
 
     @Override
-    public void visitInvokeDynamicInsn(final String name, final String descriptor,
-            final Handle bootstrapMethodHandle,
+    public void visitInvokeDynamicInsn(final String name, final String descriptor, final Handle bootstrapMethodHandle,
             final Object... bootstrapMethodArguments) {
-        classNodeFromDescriptor(descriptor).forEach(node -> this.graph.connect(this.currentClass, node));
-    }
-
-    @Override
-    public void visitLdcInsn(final Object value) {
-        if (value instanceof Type) {
-            classNodeFromDescriptor(((Type) value).getDescriptor())
-                    .forEach(node -> this.graph.connect(this.currentClass, node));
+        this.graphBuilder.connectNodesFromDescriptors(descriptor);
+        for (final Object argument : bootstrapMethodArguments) {
+            this.graphBuilder.connectValue(argument);
         }
     }
 
     @Override
-    public void visitMultiANewArrayInsn(final String descriptor, final int numDimensions) {
-        classNodeFromDescriptor(descriptor).forEach(node -> this.graph.connect(this.currentClass, node));
+    public void visitLdcInsn(final Object value) {
+        this.graphBuilder.connectValue(value);
     }
 
     @Override
-    public AnnotationVisitor visitInsnAnnotation(final int typeRef, final TypePath typePath,
-            final String descriptor,
+    public void visitMultiANewArrayInsn(final String descriptor, final int numDimensions) {
+        this.graphBuilder.connectNodesFromDescriptors(descriptor);
+    }
+
+    @Override
+    public AnnotationVisitor visitInsnAnnotation(final int typeRef, final TypePath typePath, final String descriptor,
             final boolean visible) {
-        classNodeFromDescriptor(descriptor).forEach(node -> this.graph.connect(this.currentClass, node));
-        return new GraphBuildingAnnotationVisitor(this.api, this.graph, this.currentClass);
+        this.graphBuilder.connectNodesFromDescriptors(descriptor);
+        return annotationVisitor();
     }
 
     @Override
     public void visitTryCatchBlock(final Label start, final Label end, final Label handler, final String type) {
         if (type != null) {
-            this.graph.connect(this.currentClass, classNode(type));
+            this.graphBuilder.connect(classNodeFromTypeName(type));
         }
     }
 
     @Override
     public AnnotationVisitor visitTryCatchAnnotation(final int typeRef, final TypePath typePath,
-            final String descriptor,
-            final boolean visible) {
-        classNodeFromDescriptor(descriptor).forEach(node -> this.graph.connect(this.currentClass, node));
-        return new GraphBuildingAnnotationVisitor(this.api, this.graph, this.currentClass);
+            final String descriptor, final boolean visible) {
+        this.graphBuilder.connectNodesFromDescriptors(descriptor);
+        return annotationVisitor();
     }
 
     @Override
     public void visitLocalVariable(final String name, final String descriptor, final String signature,
-            final Label start, final Label end,
-            final int index) {
-        classNodeFromDescriptor(descriptor).forEach(node -> this.graph.connect(this.currentClass, node));
-        classNodeFromDescriptor(signature).forEach(node -> this.graph.connect(this.currentClass, node));
+            final Label start, final Label end, final int index) {
+        this.graphBuilder.connectNodesFromDescriptors(descriptor, signature);
     }
 
     @Override
     public AnnotationVisitor visitLocalVariableAnnotation(final int typeRef, final TypePath typePath,
-            final Label[] start,
-            final Label[] end, final int[] index, final String descriptor, final boolean visible) {
-        classNodeFromDescriptor(descriptor).forEach(node -> this.graph.connect(this.currentClass, node));
-        return new GraphBuildingAnnotationVisitor(this.api, this.graph, this.currentClass);
+            final Label[] start, final Label[] end, final int[] index, final String descriptor, final boolean visible) {
+        this.graphBuilder.connectNodesFromDescriptors(descriptor);
+        return annotationVisitor();
     }
 }

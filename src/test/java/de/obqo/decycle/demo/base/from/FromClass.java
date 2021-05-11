@@ -1,5 +1,6 @@
 package de.obqo.decycle.demo.base.from;
 
+import de.obqo.decycle.demo.base.to.ArrayMember;
 import de.obqo.decycle.demo.base.to.BaseClass;
 import de.obqo.decycle.demo.base.to.BaseInterface;
 import de.obqo.decycle.demo.base.to.CheckedException;
@@ -54,6 +55,8 @@ public class FromClass<@TypeParamAnnotation T extends GenericTypeForClass> exten
 
     private Map<Class<?>, Integer> classes = Map.of(ClassObject.class, 0);
 
+    private ArrayMember[] array;
+
     static {
         Object o = new StaticInitializer();
         o.toString();
@@ -63,12 +66,11 @@ public class FromClass<@TypeParamAnnotation T extends GenericTypeForClass> exten
     public static final FromClass<GenericTypeForClass> INSTANCE = new FromClass<>(new ConstructorParam());
 
     {
-        NonStaticInitializer i = Optional.of("foo").map(s -> LambdaExpression.create(s)).orElse(null);
+        NonStaticInitializer i = Optional.of("foo").map(s -> LambdaExpression.create(s, 0)).orElse(null);
     }
 
     @ConstructorAnnotation
     public FromClass(ConstructorParam param) {
-        // TODO MethodReference not reported
         final Function<String, GenericTypeForList> methodRef = MethodReference::ref;
         this.list = Stream.of("one", "two", "three").map(methodRef).collect(Collectors.toList());
     }

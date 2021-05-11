@@ -6,4 +6,12 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 public @interface FieldAnnotation {
 
+    FieldAnnotationParam[] params() default {};
+
+    @interface FieldAnnotationParam {
+
+        String value();
+
+    }
+
 }
