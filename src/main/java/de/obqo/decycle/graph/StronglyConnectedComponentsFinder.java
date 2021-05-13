@@ -12,9 +12,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.google.common.base.Preconditions;
-import com.google.common.graph.Network;
-
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -29,7 +26,7 @@ public class StronglyConnectedComponentsFinder {
      * @param graph the graph
      * @return a set of all SCCs, each SCC represented as a set of {@link Edge}s
      */
-    public static Set<Set<Edge>> findComponents(final Network<Node, Edge> graph) {
+    public static Set<Set<Edge>> findComponents(final Slice graph) {
         final Set<Set<Node>> components = new TarjansAlgorithm(graph).getMultiNodeComponents();
 
         final Set<Set<Edge>> result = new HashSet<>();
@@ -69,7 +66,7 @@ public class StronglyConnectedComponentsFinder {
         /**
          * The directed graph
          */
-        private final Network<Node, Edge> graph;
+        private final Slice graph;
 
         /**
          * Number of nodes in the graph
@@ -104,15 +101,14 @@ public class StronglyConnectedComponentsFinder {
         /**
          * Set of the detected strongly-connected components with size > 1
          */
-        private Set<Set<Node>> multiNodeComponents;
+        private final Set<Set<Node>> multiNodeComponents;
 
         /**
          * Computes the strong components of the directed graph {@code grapg}.
          *
          * @param graph the directed graph
          */
-        TarjansAlgorithm(final Network<Node, Edge> graph) {
-            Preconditions.checkState(graph.isDirected(), "Graph must be a directed graph");
+        TarjansAlgorithm(final Slice graph) {
             this.graph = graph;
             final Set<Node> nodes = graph.nodes();
             this.nodeCount = nodes.size();

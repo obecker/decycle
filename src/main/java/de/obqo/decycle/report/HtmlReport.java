@@ -40,7 +40,7 @@ import static java.util.stream.Collectors.toList;
 
 import de.obqo.decycle.check.Constraint;
 import de.obqo.decycle.graph.Graph;
-import de.obqo.decycle.model.Edge;
+import de.obqo.decycle.graph.Slice;
 import de.obqo.decycle.model.Node;
 
 import java.io.IOException;
@@ -49,8 +49,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
-
-import com.google.common.graph.Network;
 
 import j2html.tags.ContainerTag;
 import j2html.tags.DomContent;
@@ -63,10 +61,10 @@ public class HtmlReport {
             final boolean minify) {
 
         final var violationDiv = getViolationDiv(violations);
-        final var sliceSections = graph.slices().stream()
+        final var sliceSections = graph.sliceTypes().stream()
                 .filter(Predicate.not(Node.CLASS::equals))
                 .sorted(SLICE_COMPARATOR)
-                .map(slice -> renderSliceSection(graph, violations, slice));
+                .map(sliceType -> renderSliceSection(graph, violations, sliceType));
 
         final var html = html().withLang("en").with(
                 head(
@@ -162,26 +160,26 @@ public class HtmlReport {
     }
 
     private DomContent renderSliceSection(final Graph graph, final List<Constraint.Violation> violations,
-            final String slice) {
+            final String sliceType) {
         final Map<String, Map<String, List<String>>> violationsIndex =
                 violations.stream()
-                        .filter(v -> v.getSliceType().equals(slice))
+                        .filter(v -> v.getSliceType().equals(sliceType))
                         .flatMap(v -> v.getDependencies().stream()
                                 .map(d -> entry(d.getFrom(), entry(d.getTo(), v.getName()))))
                         .collect(groupingBy(Map.Entry::getKey, mapping(Map.Entry::getValue,
                                 groupingBy(Map.Entry::getKey, mapping(Map.Entry::getValue, toList())))));
 
-        final Network<Node, Edge> network = graph.slice(slice);
+        final Slice slice = graph.slice(sliceType);
 
         return div().withClass("pt-2").with(
-                h2(slice).withClass("slice text-capitalize mt-2"),
+                h2(sliceType).withClass("slice text-capitalize mt-2"),
                 dl().withClass("slices row border rounded-lg py-1").with(
-                        network.nodes().stream()
+                        slice.nodes().stream()
                                 .sorted()
-                                .flatMap(node -> renderNodeTableRow(graph, network, violationsIndex, node))));
+                                .flatMap(node -> renderNodeTableRow(graph, slice, violationsIndex, node))));
     }
 
-    private Stream<DomContent> renderNodeTableRow(final Graph graph, final Network<Node, Edge> network,
+    private Stream<DomContent> renderNodeTableRow(final Graph graph, final Slice slice,
             final Map<String, Map<String, List<String>>> violationsIndex,
             final Node node) {
         final Map<String, List<String>> fromViolations = violationsIndex.getOrDefault(node.getName(), Map.of());
@@ -193,12 +191,12 @@ public class HtmlReport {
                         .with(a(node.getName()).withId(node.getType() + "-" + node.getName())),
                 dd().withClasses("col-sm-8", "border-top", "py-1", "mb-0", errorClass)
                         .with(ul().withClass("references list-unstyled mb-0")
-                                .with(renderOutEdgesList(graph, network, node, fromViolations))));
+                                .with(renderOutEdgesList(graph, slice, node, fromViolations))));
     }
 
-    private Stream<DomContent> renderOutEdgesList(final Graph graph, final Network<Node, Edge> network, final Node node,
+    private Stream<DomContent> renderOutEdgesList(final Graph graph, final Slice slice, final Node node,
             final Map<String, List<String>> fromViolations) {
-        return network.outEdges(node)
+        return slice.outEdges(node)
                 .stream()
                 .sorted()
                 .map(edge -> {

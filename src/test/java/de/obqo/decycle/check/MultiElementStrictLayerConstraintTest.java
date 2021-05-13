@@ -43,11 +43,4 @@ class MultiElementStrictLayerConstraintTest {
         assertThat(dependenciesIn(constraint.violations(new MockSliceSource("t", d("c", "b"), d("d", "b")))))
                 .containsOnly(d("c", "b"), d("d", "b"));
     }
-
-    @ParameterizedTest
-    @MethodSource("constraints")
-    void selfDependenciesWithinAMultiElementLayerShouldBeOk(final Constraint constraint) {
-        // TODO requires self-loop in MockSliceSource
-        assertThat(constraint.violations(new MockSliceSource("t", d("b", "b")))).isEmpty();
-    }
 }

@@ -12,12 +12,13 @@ import com.google.common.graph.Network;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
+@SuppressWarnings("UnstableApiUsage")
 class SliceNodeFinder {
 
     private final String sliceType;
-    private final Network<Node, Edge> graph;
+    private final Network<Node, Edge> internalGraph;
 
-    public Optional<Node> find(final Node node) {
+    Optional<Node> find(final Node node) {
         return allInNodesOfType(node).findFirst();
     }
 
@@ -33,6 +34,6 @@ class SliceNodeFinder {
     }
 
     private Set<Edge> inEdges(final Node node) {
-        return this.graph.nodes().contains(node) ? this.graph.inEdges(node) : Set.of();
+        return this.internalGraph.nodes().contains(node) ? this.internalGraph.inEdges(node) : Set.of();
     }
 }

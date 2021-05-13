@@ -1,16 +1,11 @@
 package de.obqo.decycle.graph;
 
-import de.obqo.decycle.model.Edge;
-import de.obqo.decycle.model.Node;
-
 import java.util.Set;
-
-import com.google.common.graph.Network;
 
 public interface SliceSource {
 
-    Set<String> slices();
+    Set<String> sliceTypes();
 
-    Network<Node, Edge> slice(String name);
+    Slice slice(String name);
 
 }

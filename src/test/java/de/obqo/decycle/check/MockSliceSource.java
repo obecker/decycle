@@ -3,6 +3,8 @@ package de.obqo.decycle.check;
 import static de.obqo.decycle.model.Node.sliceNode;
 
 import de.obqo.decycle.check.Constraint.Dependency;
+import de.obqo.decycle.graph.MutableSlice;
+import de.obqo.decycle.graph.Slice;
 import de.obqo.decycle.graph.SliceSource;
 import de.obqo.decycle.model.Edge;
 import de.obqo.decycle.model.Node;
@@ -10,10 +12,6 @@ import de.obqo.decycle.model.Node;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import com.google.common.graph.MutableNetwork;
-import com.google.common.graph.Network;
-import com.google.common.graph.NetworkBuilder;
 
 class MockSliceSource implements SliceSource {
 
@@ -27,27 +25,24 @@ class MockSliceSource implements SliceSource {
                 .collect(Collectors.toList());
     }
 
-    private final String slice;
-    private final MutableNetwork<Node, Edge> graph;
+    private final MutableSlice graph;
 
-    MockSliceSource(final String slice, final Dependency... deps) {
-        this.slice = slice;
-
-        this.graph = NetworkBuilder.directed().allowsSelfLoops(true).build();
+    MockSliceSource(final String sliceType, final Dependency... deps) {
+        this.graph = MutableSlice.create(sliceType);
         for (final Dependency dep : deps) {
-            final Node from = sliceNode(slice, dep.getFrom());
-            final Node to = sliceNode(slice, dep.getTo());
-            this.graph.addEdge(from, to, Edge.references(from, to));
+            final Node from = sliceNode(sliceType, dep.getFrom());
+            final Node to = sliceNode(sliceType, dep.getTo());
+            this.graph.addEdge(Edge.references(from, to));
         }
     }
 
     @Override
-    public Set<String> slices() {
-        return Set.of(this.slice);
+    public Set<String> sliceTypes() {
+        return Set.of(this.graph.getSliceType());
     }
 
     @Override
-    public Network<Node, Edge> slice(final String name) {
-        return this.slice.equals(name) ? this.graph : NetworkBuilder.directed().build();
+    public Slice slice(final String sliceType) {
+        return this.graph.getSliceType().equals(sliceType) ? this.graph : MutableSlice.create(sliceType);
     }
 }

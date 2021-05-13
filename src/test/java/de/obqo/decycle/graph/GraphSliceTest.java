@@ -21,8 +21,6 @@ import de.obqo.decycle.slicer.PatternMatchingCategorizer;
 
 import java.util.Set;
 
-import com.google.common.graph.Network;
-
 import org.junit.jupiter.api.Test;
 
 class GraphSliceTest {
@@ -77,7 +75,7 @@ class GraphSliceTest {
         g.connect(classNode("package.one.class"), classNode("package.two.class"));
         g.add(sliceNode("x", "x"));
 
-        assertThat(g.slices()).containsOnly(CLASS, PACKAGE, "x");
+        assertThat(g.sliceTypes()).containsOnly(CLASS, PACKAGE, "x");
     }
 
     @Test
@@ -98,26 +96,29 @@ class GraphSliceTest {
         g.connect(classTwo, classThreeB);
         g.connect(classOneInner, classThreeB);
 
-        // given PACKAGE edge
-        final Network<Node, Edge> packages = g.slice(PACKAGE);
+        // given PACKAGE slice
+        final Slice packages = g.slice(PACKAGE);
+        final Node packageOne = packageNode("package.one");
+        final Node packageTwo = packageNode("package.two");
+        final Node packageThree = packageNode("package.three");
 
         // when
         final Set<Edge> packageEdgesOneTwo = g.containingClassEdges(
-                packages.edgeConnectingOrNull(packageNode("package.one"), packageNode("package.two")));
+                packages.edgeConnecting(packageOne, packageTwo).orElseThrow());
 
         // then
         assertThat(packageEdgesOneTwo).containsOnly(Edge.references(classOne, classTwo));
 
         // when
         final Set<Edge> packageEdgesOneThree = g.containingClassEdges(
-                packages.edgeConnectingOrNull(packageNode("package.one"), packageNode("package.three")));
+                packages.edgeConnecting(packageOne, packageThree).orElseThrow());
 
         // then
         assertThat(packageEdgesOneThree).containsOnly(Edge.references(classOneInner, classThreeB));
 
         // given SLICE edge
-        final Network<Node, Edge> slices = g.slice(SLICE);
-        final Edge sliceEdge = slices.edgeConnectingOrNull(sliceNode(SLICE, "two"), sliceNode(SLICE, "three"));
+        final Slice slices = g.slice(SLICE);
+        final Edge sliceEdge = slices.edgeConnecting(sliceNode(SLICE, "two"), sliceNode(SLICE, "three")).orElseThrow();
         assertThat(sliceEdge).isNotNull();
 
         // when
@@ -151,7 +152,7 @@ class GraphSliceTest {
         g.connect(a2, c2);
 
         // when
-        final Network<Node, Edge> classes = g.slice(CLASS);
+        final Slice classes = g.slice(CLASS);
 
         // then
         assertThat(classes.edgeConnecting(a1, b1)).hasValueSatisfying(edge -> assertThat(edge.isIgnored()).isTrue());
@@ -160,7 +161,7 @@ class GraphSliceTest {
         assertThat(classes.edgeConnecting(a2, c2)).hasValueSatisfying(edge -> assertThat(edge.isIgnored()).isTrue());
 
         // when
-        final Network<Node, Edge> slices = g.slice(SLICE);
+        final Slice slices = g.slice(SLICE);
         final Node a = sliceNode(SLICE, "a");
         final Node b = sliceNode(SLICE, "b");
         final Node c = sliceNode(SLICE, "c");

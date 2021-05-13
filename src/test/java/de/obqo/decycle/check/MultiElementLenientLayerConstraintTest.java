@@ -34,11 +34,4 @@ class MultiElementLenientLayerConstraintTest {
     void dependenciesWithinAMultiElementLayerShouldBeOk(final Constraint constraint) {
         assertThat(constraint.violations(new MockSliceSource("t", d("b", "c"), d("b", "d")))).isEmpty();
     }
-
-    @ParameterizedTest
-    @MethodSource("constraints")
-    void selfDependenciesWithinAMultiElementLayerShouldBeOk(final Constraint constraint) {
-        // TODO requires self-loop in MockSliceSource
-        assertThat(constraint.violations(new MockSliceSource("t", d("b", "b")))).isEmpty();
-    }
 }
