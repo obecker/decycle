@@ -22,7 +22,7 @@ import com.google.common.graph.MutableNetwork;
 import com.google.common.graph.NetworkBuilder;
 
 @SuppressWarnings("UnstableApiUsage")
-public class Graph implements SliceSource {
+public class Graph implements SlicingSource {
 
     private final Categorizer categorizer;
     private final NodeFilter filter;
@@ -120,8 +120,8 @@ public class Graph implements SliceSource {
     }
 
     @Override
-    public Slice slice(final String name) {
-        final var slice = MutableSlice.create(name);
+    public Slicing slicing(final String name) {
+        final var slice = MutableSlicing.create(name);
 
         final var sliceNodeFinder = new SliceNodeFinder(name, this.internalGraph);
 

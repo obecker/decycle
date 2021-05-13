@@ -1,8 +1,8 @@
 package de.obqo.decycle.check;
 
 import static de.obqo.decycle.check.Layer.oneOf;
-import static de.obqo.decycle.check.MockSliceSource.d;
-import static de.obqo.decycle.check.MockSliceSource.dependenciesIn;
+import static de.obqo.decycle.check.MockSlicingSource.d;
+import static de.obqo.decycle.check.MockSlicingSource.dependenciesIn;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
@@ -21,26 +21,26 @@ class MultiElementStrictLayerConstraintTest {
     @ParameterizedTest
     @MethodSource("constraints")
     void dependenciesIntoAMultiElementLayerShouldBeOk(final Constraint constraint) {
-        assertThat(constraint.violations(new MockSliceSource("t", d("a", "b"), d("a", "d")))).isEmpty();
+        assertThat(constraint.violations(new MockSlicingSource("t", d("a", "b"), d("a", "d")))).isEmpty();
     }
 
     @ParameterizedTest
     @MethodSource("constraints")
     void dependenciesFromAMultiElementLayerShouldBeOk(final Constraint constraint) {
-        assertThat(constraint.violations(new MockSliceSource("t", d("b", "e"), d("d", "e")))).isEmpty();
+        assertThat(constraint.violations(new MockSlicingSource("t", d("b", "e"), d("d", "e")))).isEmpty();
     }
 
     @ParameterizedTest
     @MethodSource("constraints")
     void dependenciesWithinAMultiElementLayerShouldNotBeOk(final Constraint constraint) {
-        assertThat(dependenciesIn(constraint.violations(new MockSliceSource("t", d("b", "c"), d("b", "d")))))
+        assertThat(dependenciesIn(constraint.violations(new MockSlicingSource("t", d("b", "c"), d("b", "d")))))
                 .containsOnly(d("b", "c"), d("b", "d"));
     }
 
     @ParameterizedTest
     @MethodSource("constraints")
     void inverseDependenciesWithinAMultiElementLayerShouldNotBeOk(final Constraint constraint) {
-        assertThat(dependenciesIn(constraint.violations(new MockSliceSource("t", d("c", "b"), d("d", "b")))))
+        assertThat(dependenciesIn(constraint.violations(new MockSlicingSource("t", d("c", "b"), d("d", "b")))))
                 .containsOnly(d("c", "b"), d("d", "b"));
     }
 }

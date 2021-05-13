@@ -14,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @SuppressWarnings("UnstableApiUsage")
-class DefaultMutableSlice implements MutableSlice {
+class DefaultMutableSlicing implements MutableSlicing {
 
     @Getter
     private final String sliceType;

@@ -6,7 +6,7 @@ import de.obqo.decycle.model.Node;
 import java.util.Optional;
 import java.util.Set;
 
-public interface Slice {
+public interface Slicing {
 
     String getSliceType();
 

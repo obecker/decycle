@@ -3,9 +3,9 @@ package de.obqo.decycle.check;
 import static de.obqo.decycle.model.Node.sliceNode;
 
 import de.obqo.decycle.check.Constraint.Dependency;
-import de.obqo.decycle.graph.MutableSlice;
-import de.obqo.decycle.graph.Slice;
-import de.obqo.decycle.graph.SliceSource;
+import de.obqo.decycle.graph.MutableSlicing;
+import de.obqo.decycle.graph.Slicing;
+import de.obqo.decycle.graph.SlicingSource;
 import de.obqo.decycle.model.Edge;
 import de.obqo.decycle.model.Node;
 
@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-class MockSliceSource implements SliceSource {
+class MockSlicingSource implements SlicingSource {
 
     static Dependency d(final String from, final String to) {
         return new Dependency(from, to);
@@ -25,10 +25,10 @@ class MockSliceSource implements SliceSource {
                 .collect(Collectors.toList());
     }
 
-    private final MutableSlice graph;
+    private final MutableSlicing graph;
 
-    MockSliceSource(final String sliceType, final Dependency... deps) {
-        this.graph = MutableSlice.create(sliceType);
+    MockSlicingSource(final String sliceType, final Dependency... deps) {
+        this.graph = MutableSlicing.create(sliceType);
         for (final Dependency dep : deps) {
             final Node from = sliceNode(sliceType, dep.getFrom());
             final Node to = sliceNode(sliceType, dep.getTo());
@@ -42,7 +42,7 @@ class MockSliceSource implements SliceSource {
     }
 
     @Override
-    public Slice slice(final String sliceType) {
-        return this.graph.getSliceType().equals(sliceType) ? this.graph : MutableSlice.create(sliceType);
+    public Slicing slicing(final String sliceType) {
+        return this.graph.getSliceType().equals(sliceType) ? this.graph : MutableSlicing.create(sliceType);
     }
 }

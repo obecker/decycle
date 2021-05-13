@@ -2,10 +2,10 @@ package de.obqo.decycle.graph;
 
 import java.util.Set;
 
-public interface SliceSource {
+public interface SlicingSource {
 
     Set<String> sliceTypes();
 
-    Slice slice(String name);
+    Slicing slicing(String name);
 
 }

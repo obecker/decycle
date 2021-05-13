@@ -40,7 +40,7 @@ import static java.util.stream.Collectors.toList;
 
 import de.obqo.decycle.check.Constraint;
 import de.obqo.decycle.graph.Graph;
-import de.obqo.decycle.graph.Slice;
+import de.obqo.decycle.graph.Slicing;
 import de.obqo.decycle.model.Node;
 
 import java.io.IOException;
@@ -169,17 +169,17 @@ public class HtmlReport {
                         .collect(groupingBy(Map.Entry::getKey, mapping(Map.Entry::getValue,
                                 groupingBy(Map.Entry::getKey, mapping(Map.Entry::getValue, toList())))));
 
-        final Slice slice = graph.slice(sliceType);
+        final Slicing slicing = graph.slicing(sliceType);
 
         return div().withClass("pt-2").with(
                 h2(sliceType).withClass("slice text-capitalize mt-2"),
                 dl().withClass("slices row border rounded-lg py-1").with(
-                        slice.nodes().stream()
+                        slicing.nodes().stream()
                                 .sorted()
-                                .flatMap(node -> renderNodeTableRow(graph, slice, violationsIndex, node))));
+                                .flatMap(node -> renderNodeTableRow(graph, slicing, violationsIndex, node))));
     }
 
-    private Stream<DomContent> renderNodeTableRow(final Graph graph, final Slice slice,
+    private Stream<DomContent> renderNodeTableRow(final Graph graph, final Slicing slicing,
             final Map<String, Map<String, List<String>>> violationsIndex,
             final Node node) {
         final Map<String, List<String>> fromViolations = violationsIndex.getOrDefault(node.getName(), Map.of());
@@ -191,12 +191,12 @@ public class HtmlReport {
                         .with(a(node.getName()).withId(node.getType() + "-" + node.getName())),
                 dd().withClasses("col-sm-8", "border-top", "py-1", "mb-0", errorClass)
                         .with(ul().withClass("references list-unstyled mb-0")
-                                .with(renderOutEdgesList(graph, slice, node, fromViolations))));
+                                .with(renderOutEdgesList(graph, slicing, node, fromViolations))));
     }
 
-    private Stream<DomContent> renderOutEdgesList(final Graph graph, final Slice slice, final Node node,
+    private Stream<DomContent> renderOutEdgesList(final Graph graph, final Slicing slicing, final Node node,
             final Map<String, List<String>> fromViolations) {
-        return slice.outEdges(node)
+        return slicing.outEdges(node)
                 .stream()
                 .sorted()
                 .map(edge -> {

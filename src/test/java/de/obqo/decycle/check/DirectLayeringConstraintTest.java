@@ -2,8 +2,8 @@ package de.obqo.decycle.check;
 
 import static de.obqo.decycle.check.Layer.anyOf;
 import static de.obqo.decycle.check.Layer.oneOf;
-import static de.obqo.decycle.check.MockSliceSource.d;
-import static de.obqo.decycle.check.MockSliceSource.dependenciesIn;
+import static de.obqo.decycle.check.MockSlicingSource.d;
+import static de.obqo.decycle.check.MockSlicingSource.dependenciesIn;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import de.obqo.decycle.check.Constraint.Dependency;
@@ -17,8 +17,8 @@ class DirectLayeringConstraintTest {
     private DirectLayeringConstraint c = new DirectLayeringConstraint("t",
             List.of(new LenientLayer("a"), new LenientLayer("b"), new LenientLayer("c")));
 
-    private List<Constraint.Violation> violations(final String slice, final Dependency... deps) {
-        return this.c.violations(new MockSliceSource(slice, deps));
+    private List<Constraint.Violation> violations(final String sliceType, final Dependency... deps) {
+        return this.c.violations(new MockSlicingSource(sliceType, deps));
     }
 
     @Test

@@ -1,6 +1,6 @@
 package de.obqo.decycle.check;
 
-import de.obqo.decycle.graph.SliceSource;
+import de.obqo.decycle.graph.SlicingSource;
 import de.obqo.decycle.model.Edge;
 
 import java.util.Comparator;
@@ -44,5 +44,5 @@ public interface Constraint {
 
     String getShortString();
 
-    List<Violation> violations(SliceSource sliceSource);
+    List<Violation> violations(SlicingSource slicingSource);
 }

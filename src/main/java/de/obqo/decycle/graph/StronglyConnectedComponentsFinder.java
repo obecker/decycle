@@ -26,7 +26,7 @@ public class StronglyConnectedComponentsFinder {
      * @param graph the graph
      * @return a set of all SCCs, each SCC represented as a set of {@link Edge}s
      */
-    public static Set<Set<Edge>> findComponents(final Slice graph) {
+    public static Set<Set<Edge>> findComponents(final Slicing graph) {
         final Set<Set<Node>> components = new TarjansAlgorithm(graph).getMultiNodeComponents();
 
         final Set<Set<Edge>> result = new HashSet<>();
@@ -66,7 +66,7 @@ public class StronglyConnectedComponentsFinder {
         /**
          * The directed graph
          */
-        private final Slice graph;
+        private final Slicing graph;
 
         /**
          * Number of nodes in the graph
@@ -108,7 +108,7 @@ public class StronglyConnectedComponentsFinder {
          *
          * @param graph the directed graph
          */
-        TarjansAlgorithm(final Slice graph) {
+        TarjansAlgorithm(final Slicing graph) {
             this.graph = graph;
             final Set<Node> nodes = graph.nodes();
             this.nodeCount = nodes.size();

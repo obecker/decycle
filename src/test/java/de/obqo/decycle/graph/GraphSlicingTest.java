@@ -23,14 +23,14 @@ import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
-class GraphSliceTest {
+class GraphSlicingTest {
 
     @Test
     void packageSliceOfAGraphWithoutPackageShouldBeEmpty() {
         final var g = new Graph();
         g.add(sliceNode("x", "x"));
 
-        assertThat(g.slice(PACKAGE).nodes()).isEmpty();
+        assertThat(g.slicing(PACKAGE).nodes()).isEmpty();
     }
 
     @Test
@@ -38,7 +38,7 @@ class GraphSliceTest {
         final var g = new Graph(new PackageCategorizer());
         g.add(classNode("p.C"));
 
-        assertThat(g.slice(PACKAGE).nodes()).containsOnly(packageNode("p"));
+        assertThat(g.slicing(PACKAGE).nodes()).containsOnly(packageNode("p"));
     }
 
     @Test
@@ -46,7 +46,7 @@ class GraphSliceTest {
         final var g = new Graph(new PackageCategorizer());
         g.connect(classNode("p.one.Class"), classNode("p.two.Class"));
 
-        assertThat(g.slice(PACKAGE).edges()).containsOnly(
+        assertThat(g.slicing(PACKAGE).edges()).containsOnly(
                 Edge.references(packageNode("p.one"), packageNode("p.two")));
     }
 
@@ -55,7 +55,7 @@ class GraphSliceTest {
         final var g = new Graph(new PackageCategorizer());
         g.connect(classNode("p.one.Class"), classNode("p.two.Class"));
 
-        assertThat(g.slice("no such type").nodes()).isEmpty();
+        assertThat(g.slicing("no such type").nodes()).isEmpty();
     }
 
     @Test
@@ -65,7 +65,7 @@ class GraphSliceTest {
         final var g = new Graph(combine(new InternalClassCategorizer(), new PackageCategorizer()));
         g.connect(classNode("p.one.Class$Inner"), classNode("p.two.Class$Inner"));
 
-        assertThat(g.slice(PACKAGE).edges()).containsOnly(
+        assertThat(g.slicing(PACKAGE).edges()).containsOnly(
                 Edge.references(packageNode("p.one"), packageNode("p.two")));
     }
 
@@ -97,7 +97,7 @@ class GraphSliceTest {
         g.connect(classOneInner, classThreeB);
 
         // given PACKAGE slice
-        final Slice packages = g.slice(PACKAGE);
+        final Slicing packages = g.slicing(PACKAGE);
         final Node packageOne = packageNode("package.one");
         final Node packageTwo = packageNode("package.two");
         final Node packageThree = packageNode("package.three");
@@ -117,7 +117,7 @@ class GraphSliceTest {
         assertThat(packageEdgesOneThree).containsOnly(Edge.references(classOneInner, classThreeB));
 
         // given SLICE edge
-        final Slice slices = g.slice(SLICE);
+        final Slicing slices = g.slicing(SLICE);
         final Edge sliceEdge = slices.edgeConnecting(sliceNode(SLICE, "two"), sliceNode(SLICE, "three")).orElseThrow();
         assertThat(sliceEdge).isNotNull();
 
@@ -152,7 +152,7 @@ class GraphSliceTest {
         g.connect(a2, c2);
 
         // when
-        final Slice classes = g.slice(CLASS);
+        final Slicing classes = g.slicing(CLASS);
 
         // then
         assertThat(classes.edgeConnecting(a1, b1)).hasValueSatisfying(edge -> assertThat(edge.isIgnored()).isTrue());
@@ -161,7 +161,7 @@ class GraphSliceTest {
         assertThat(classes.edgeConnecting(a2, c2)).hasValueSatisfying(edge -> assertThat(edge.isIgnored()).isTrue());
 
         // when
-        final Slice slices = g.slice(SLICE);
+        final Slicing slices = g.slicing(SLICE);
         final Node a = sliceNode(SLICE, "a");
         final Node b = sliceNode(SLICE, "b");
         final Node c = sliceNode(SLICE, "c");

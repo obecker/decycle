@@ -3,10 +3,10 @@ package de.obqo.decycle.graph;
 import de.obqo.decycle.model.Edge;
 import de.obqo.decycle.model.Node;
 
-public interface MutableSlice extends Slice {
+public interface MutableSlicing extends Slicing {
 
-    static MutableSlice create(final String sliceType) {
-        return new DefaultMutableSlice(sliceType);
+    static MutableSlicing create(final String sliceType) {
+        return new DefaultMutableSlicing(sliceType);
     }
 
     void addNode(final Node node);

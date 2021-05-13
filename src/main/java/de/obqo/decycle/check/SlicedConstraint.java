@@ -2,7 +2,7 @@ package de.obqo.decycle.check;
 
 import static java.util.function.Predicate.not;
 
-import de.obqo.decycle.graph.SliceSource;
+import de.obqo.decycle.graph.SlicingSource;
 import de.obqo.decycle.model.Edge;
 import de.obqo.decycle.model.Node;
 
@@ -35,8 +35,8 @@ public abstract class SlicedConstraint implements Constraint {
     }
 
     @Override
-    public List<Violation> violations(final SliceSource sliceSource) {
-        final var sg = sliceSource.slice(this.sliceType);
+    public List<Violation> violations(final SlicingSource slicingSource) {
+        final var sg = slicingSource.slicing(this.sliceType);
         final var deps = sg.edges().stream()
                 .filter(not(Edge::isIgnored))
                 .filter(e -> isViolatedBy(e.getFrom(), e.getTo()))
