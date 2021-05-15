@@ -12,6 +12,12 @@ import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * A {@link SlicedConstraint} represents some dependency rules for the slices of a {@link
+ * de.obqo.decycle.graph.Slicing}. Such constraint is defined by a list of {@link Layer layers}, each containing a set
+ * of slices (i.e. a set of slice node names). The actual dependencies in a {@link de.obqo.decycle.graph.Slicing} must
+ * match the dependencies defined by this constraint and its layers.
+ */
 @RequiredArgsConstructor
 public abstract class SlicedConstraint implements Constraint {
 

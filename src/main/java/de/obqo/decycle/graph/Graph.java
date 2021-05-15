@@ -21,6 +21,12 @@ import java.util.stream.Stream;
 import com.google.common.graph.MutableNetwork;
 import com.google.common.graph.NetworkBuilder;
 
+/**
+ * A {@link Graph} represents the network resulting from analyzing the classes of a given classpath. It contains {@link
+ * Node#CLASS class} {@link Node nodes} that are connected among each other by {@link Edge.EdgeLabel#REFERENCES
+ * referencing} {@link Edge edges} as well as {@link Node#PACKAGE package} and slice nodes that are connected to class
+ * nodes by {@link Edge.EdgeLabel#CONTAINS containing} {@link Edge edges}.
+ */
 @SuppressWarnings("UnstableApiUsage")
 public class Graph implements SlicingSource {
 

@@ -2,6 +2,10 @@ package de.obqo.decycle.check;
 
 import java.util.List;
 
+/**
+ * A {@link Layer} represents a list of slices (names of slice {@link de.obqo.decycle.model.Node nodes}) that
+ * will be used in a {@link SlicedConstraint}.
+ */
 public interface Layer {
 
     List<String> getSlices();

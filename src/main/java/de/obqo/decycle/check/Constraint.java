@@ -9,6 +9,10 @@ import java.util.Set;
 
 import lombok.Value;
 
+/**
+ * A {@link Constraint} can check whether all {@link de.obqo.decycle.graph.Slicing slicings} of a {@link SlicingSource}
+ * follow its rules. All detected rule violations can be retrieved with {@link #violations(SlicingSource)}.
+ */
 public interface Constraint {
 
     @Value

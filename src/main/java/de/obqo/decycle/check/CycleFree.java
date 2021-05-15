@@ -12,6 +12,10 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
+/**
+ * The {@link CycleFree} {@link Constraint constraint} checks that there are no cyclic dependencies between the slices
+ * of each {@link de.obqo.decycle.graph.Slicing} of {@link SlicingSource}.
+ */
 public class CycleFree implements Constraint {
 
     @Override
