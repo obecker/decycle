@@ -53,18 +53,7 @@ public abstract class SlicedConstraint implements Constraint {
 
     @Override
     public String getShortString() {
-        return this.layers.stream().map(this::layerToString).collect(Collectors.joining(this.arrow));
-    }
-
-    private String layerToString(final Layer layer) {
-        final List<String> slices = layer.getSlices();
-        if (slices.size() == 1) {
-            return slices.get(0);
-        }
-
-        return layer.denyDependenciesWithinLayer()
-                ? slices.stream().collect(Collectors.joining(", ", "[", "]"))
-                : slices.stream().collect(Collectors.joining(", ", "(", ")"));
+        return this.layers.stream().map(Layer::getShortString).collect(Collectors.joining(this.arrow));
     }
 
     @Override

@@ -14,8 +14,7 @@ import org.junit.jupiter.api.Test;
 
 class LayeringConstraintTest {
 
-    private LayeringConstraint c = new LayeringConstraint("t",
-            List.of(new LenientLayer("a"), new LenientLayer("b"), new LenientLayer("c")));
+    private LayeringConstraint c = new LayeringConstraint("t", List.of(anyOf("a"), anyOf("b"), anyOf("c")));
 
     private List<Constraint.Violation> violations(final String sliceType, final Dependency... deps) {
         return this.c.violations(new MockSlicingSource(sliceType, deps));
