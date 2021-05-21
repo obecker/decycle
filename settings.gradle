@@ -1,3 +1,4 @@
 rootProject.name = 'decycle'
 
 include('lib')
+include('plugin-gradle')

@@ -1,0 +1,13 @@
+plugins {
+    id 'de.obqo.gradle.decycle'
+}
+
+decycle {
+    including 'demo.module.**'
+    ignore 'demo.module.b.**', 'demo.module.a.**'
+    slicings {
+        module {
+            patterns 'demo.module.(*).**'
+        }
+    }
+}

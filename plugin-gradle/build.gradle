@@ -1,0 +1,83 @@
+plugins {
+    id 'groovy'
+    id 'java-gradle-plugin'
+    id 'maven-publish'
+    id "com.gradle.plugin-publish" version "0.15.0"
+}
+
+
+ext {
+    decycleVersion = rootProject.version
+}
+
+sourceCompatibility = 11
+
+repositories {
+    mavenCentral()
+    maven {
+        name = "local"
+        url = file("../lib/build/repository").toURI()
+    }
+}
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs << "-Xlint:all" << "-Werror"
+}
+
+test {
+    useJUnitPlatform()
+}
+
+task createClasspathManifest {
+    def outputDir = file("$buildDir/classpathManifest")
+    def pluginClasspath = sourceSets.main.runtimeClasspath
+
+    inputs.files pluginClasspath
+    outputs.dir outputDir
+
+    doLast {
+        outputDir.mkdirs()
+        file("$outputDir/plugin-classpath.txt").text = pluginClasspath.join("\n")
+    }
+}
+
+dependencies {
+    compileOnly "de.obqo.decycle:decycle-lib:${decycleVersion}"
+
+    testImplementation gradleTestKit()
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.1'
+    testImplementation 'org.assertj:assertj-core:3.19.0'
+    testImplementation 'commons-io:commons-io:2.8.0'
+    testRuntimeOnly files(createClasspathManifest)
+}
+
+def pluginId = 'de.obqo.gradle.decycle'
+gradlePlugin {
+    plugins {
+        decyclePlugin {
+            id = pluginId
+            implementationClass = 'de.obqo.gradle.decycle.DecyclePlugin'
+        }
+    }
+}
+
+processResources {
+    doLast {
+        file("${buildDir}/resources/main/META-INF/gradle-plugins/${pluginId}.properties") << "tool-version=${decycleVersion}\n"
+    }
+}
+
+pluginBundle {
+    website = 'https://github.com/obecker/gradle-decycle'
+    vcsUrl = 'https://github.com/obecker/gradle-decycle'
+
+    plugins {
+        decyclePlugin {
+            id = 'de.obqo.gradle.decycle'
+            displayName = 'Gradle Decycle Plugin'
+            description = 'Gradle plugin that executes decycle dependency checks'
+            tags = ['decycle', 'code-quality']
+        }
+    }
+}

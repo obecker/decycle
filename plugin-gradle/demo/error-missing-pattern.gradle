@@ -1,0 +1,12 @@
+plugins {
+    id 'de.obqo.gradle.decycle'
+}
+
+decycle {
+    including 'non.existing.**'
+    slicings {
+        module {
+            allow anyOf('XX', 'YY'), 'ZZ'
+        }
+    }
+}
