@@ -1,1 +1,3 @@
 rootProject.name = 'decycle'
+
+include('lib')
