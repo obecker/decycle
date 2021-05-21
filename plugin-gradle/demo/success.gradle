@@ -1,0 +1,7 @@
+plugins {
+    id 'de.obqo.gradle.decycle'
+}
+
+decycle {
+    excluding 'demo.cycle.**'
+}

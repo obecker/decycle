@@ -1,0 +1,2 @@
+// intentional empty file
+// prevents gradle from using settings.gradle from the project directory for executing the tests

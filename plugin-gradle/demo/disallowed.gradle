@@ -1,0 +1,13 @@
+plugins {
+    id 'de.obqo.gradle.decycle'
+}
+
+decycle {
+    including 'demo.other.**'
+    slicings {
+        module {
+            patterns 'demo.other.(*).**'
+            allowDirect 'x', 'y', 'z'
+        }
+    }
+}
