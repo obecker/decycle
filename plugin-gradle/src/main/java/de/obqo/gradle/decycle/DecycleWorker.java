@@ -76,9 +76,9 @@ public abstract class DecycleWorker implements WorkAction<DecycleWorkerParameter
     // Note: the configuration/extension classes of the plugin must not depend on decycle directly, since the
     // decycle classes exist only on the classpath of this worker, but not on the runtime classpath of the plugin.
 
-    private List<IgnoredDependency> getIgnoredDependencies(List<List<String>> ignoredDeps) {
+    private List<IgnoredDependency> getIgnoredDependencies(List<IgnoreConfig> ignoredDeps) {
         return ignoredDeps.stream()
-                .map(ignoredDep -> new IgnoredDependency(ignoredDep.get(0), ignoredDep.get(1)))
+                .map(ignoredDep -> new IgnoredDependency(ignoredDep.getFrom(), ignoredDep.getTo()))
                 .collect(Collectors.toList());
     }
 

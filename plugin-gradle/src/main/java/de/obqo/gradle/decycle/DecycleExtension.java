@@ -1,8 +1,8 @@
 package de.obqo.gradle.decycle;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.gradle.api.Action;
 import org.gradle.api.GradleException;
@@ -28,41 +28,41 @@ public class DecycleExtension {
     }
 
     public void sourceSets(final SourceSet... sourceSets) {
-        for (SourceSet sourceSet : sourceSets) {
+        for (final SourceSet sourceSet : sourceSets) {
             this.configuration.addSourceSet(sourceSet);
         }
     }
 
     public void including(final String... includings) {
-        for (String including : includings) {
+        for (final String including : includings) {
             this.configuration.addIncluding(including);
         }
     }
 
     public void excluding(final String... excludings) {
-        for (String excluding : excludings) {
+        for (final String excluding : excludings) {
             this.configuration.addExcluding(excluding);
         }
     }
 
-    public void ignore(final String... ignore) {
-        if (ignore.length % 2 != 0) {
-            throw new GradleException(String.format(
-                    "decycle: ignore list must consist of string pairs, found %s values",
-                    ignore.length));
-        }
-        for (int i = 0; i < ignore.length; i += 2) {
-            this.configuration.addIgnoredDep(List.of(ignore[i], ignore[i + 1]));
-        }
+    public void ignore(final String... ignoreSpec) {
+        throw new GradleException(String.format(
+                "decycle: ignore must be used with from: and to: values, found %s",
+                String.join(", ", ignoreSpec)));
     }
 
-    public void ignore(final Map<String, String> args) {
-        if (!Set.of("from", "to").equals(args.keySet())) {
+    public void ignore(final Map<String, String> ignoreSpec) {
+        final Set<String> ignoreKeys = Set.of("from", "to");
+        if (!ignoreKeys.containsAll(ignoreSpec.keySet())) {
             throw new GradleException(String.format(
-                    "decycle: ignore must have from: and to: values, found %s",
-                    args));
+                    "decycle: ignore must only have from: and to: values, found %s",
+                    ignoreSpec.keySet().stream().filter(key -> !ignoreKeys.contains(key))
+                            .map(key -> key + ":")
+                            .sorted()
+                            .collect(Collectors.joining(", "))));
         }
-        ignore(args.get("from"), args.get("to"));
+        this.configuration.addIgnoredDep(
+                new IgnoreConfig(ignoreSpec.getOrDefault("from", "**"), ignoreSpec.getOrDefault("to", "**")));
     }
 
     public void slicings(final Action<NamedDomainObjectContainer<SlicingExtension>> action) {

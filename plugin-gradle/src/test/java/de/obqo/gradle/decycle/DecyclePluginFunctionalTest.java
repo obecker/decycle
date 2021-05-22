@@ -48,15 +48,22 @@ public class DecyclePluginFunctionalTest {
     }
 
     @Test
-    void shouldSucceedWithIgnoredDependenciesAsList() {
-        BuildResult result = build("ignore-list.gradle");
+    void shouldSucceedWithIgnoredDependencies() {
+        BuildResult result = build("ignore.gradle");
         assertBuildResult(result, TaskOutcome.SUCCESS, "decycleMain");
         assertBuildResult(result, TaskOutcome.SUCCESS, "decycleTest");
     }
 
     @Test
-    void shouldSucceedWithIgnoredDependenciesAsMap() {
-        BuildResult result = build("ignore-map.gradle");
+    void shouldSucceedWithIgnoredFromDependencies() {
+        BuildResult result = build("ignore-from.gradle");
+        assertBuildResult(result, TaskOutcome.SUCCESS, "decycleMain");
+        assertBuildResult(result, TaskOutcome.SUCCESS, "decycleTest");
+    }
+
+    @Test
+    void shouldSucceedWithIgnoredToDependencies() {
+        BuildResult result = build("ignore-to.gradle");
         assertBuildResult(result, TaskOutcome.SUCCESS, "decycleMain");
         assertBuildResult(result, TaskOutcome.SUCCESS, "decycleTest");
     }
@@ -130,14 +137,14 @@ public class DecyclePluginFunctionalTest {
     void shouldFailBecauseOfWrongIgnoreListConfiguration() {
         BuildResult result = buildAndFail("error-ignore-list.gradle");
         assertBuildResult(result, TaskOutcome.FAILED, null)
-                .contains("ignore list must consist of string pairs, found 3 values");
+                .contains("decycle: ignore must be used with from: and to: values, found demo.module.b.**, demo.module.a.**, c");
     }
 
     @Test
     void shouldFailBecauseOfWrongIgnoreMapConfiguration() {
         BuildResult result = buildAndFail("error-ignore-map.gradle");
         assertBuildResult(result, TaskOutcome.FAILED, null)
-                .contains("ignore must have from: and to: values, found {from=demo.module.b.**}");
+                .contains("ignore must only have from: and to: values, found froms:, too:");
     }
 
     private BuildResult build(final String buildFile) {

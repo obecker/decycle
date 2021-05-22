@@ -18,9 +18,8 @@ class DecycleConfiguration implements Serializable {
     private final transient List<SourceSet> sourceSets = new ArrayList<>();
     private final List<String> includings = new ArrayList<>();
     private final List<String> excludings = new ArrayList<>();
-    private final List<List<String>> ignoredDeps = new ArrayList<>();
+    private final List<IgnoreConfig> ignoredDeps = new ArrayList<>();
     private final List<SlicingConfiguration> slicings = new ArrayList<>();
-    private String toolVersion;
 
     List<SourceSet> getSourceSets() {
         return this.sourceSets;
@@ -46,11 +45,11 @@ class DecycleConfiguration implements Serializable {
         this.excludings.add(excluding);
     }
 
-    List<List<String>> getIgnoredDeps() {
+    List<IgnoreConfig> getIgnoredDeps() {
         return this.ignoredDeps;
     }
 
-    void addIgnoredDep(final List<String> ignore) {
+    void addIgnoredDep(final IgnoreConfig ignore) {
         this.ignoredDeps.add(ignore);
     }
 
