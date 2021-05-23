@@ -144,7 +144,7 @@ public class DecyclePluginFunctionalTest {
     void shouldFailBecauseOfWrongIgnoreMapConfiguration() {
         BuildResult result = buildAndFail("error-ignore-map.gradle");
         assertBuildResult(result, TaskOutcome.FAILED, null)
-                .contains("ignore must only have from: and to: values, found froms:, too:");
+                .contains("ignore must only have from: and to: values, found and:, via:");
     }
 
     private BuildResult build(final String buildFile) {
