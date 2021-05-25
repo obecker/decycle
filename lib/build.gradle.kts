@@ -1,10 +1,11 @@
 plugins {
-    java
+    `java-library`
     `maven-publish`
+    signing
 }
 
-version = rootProject.version
 group = rootProject.group
+version = rootProject.version
 
 val artifactId by extra("${rootProject.name}-lib")
 val junitVersion by extra("5.7.1")
@@ -40,6 +41,10 @@ tasks.compileJava {
     options.compilerArgs.addAll(listOf("-Xlint:all", "-Xlint:-processing", "-Werror"))
 }
 
+java {
+    withSourcesJar()
+}
+
 tasks.test {
     useJUnitPlatform()
 }
@@ -53,23 +58,71 @@ tasks.jar {
 }
 
 tasks.build {
-    dependsOn(":lib:publishMavenPublicationToLocalRepository")
+    dependsOn(":lib:publishLibPublicationToLocalRepository")
 }
 
 publishing {
     repositories {
         maven {
             name = "local"
-            url = file("../lib/build/repository").toURI()
+            url = file("$buildDir/repository").toURI()
+        }
+        maven {
+            val ossrhUsername: String? by project
+            val ossrhPassword: String? by project
+            name = "sonatype"
+            url = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
+            credentials {
+                username = ossrhUsername
+                password = ossrhPassword
+            }
         }
     }
     publications {
-        create<MavenPublication>("maven") {
+        create<MavenPublication>("lib") {
             artifactId = "${project.extra["artifactId"]}"
             from(components["java"])
             pom {
                 name.set("Decycle Lib")
+                description.set("Java library for detecting and reporting package cycles")
+                url.set("https://github.com/obecker/decycle")
+                licenses {
+                    license {
+                        name.set("The Apache License, Version 2.0")
+                        url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+                    }
+                }
+                developers {
+                    developer {
+                        id.set("obecker")
+                        name.set("Oliver Becker")
+                    }
+                }
+                scm {
+                    connection.set("https://github.com/obecker/decycle.git")
+                    developerConnection.set("https://github.com/obecker/decycle.git")
+                    url.set("https://github.com/obecker/decycle")
+                }
             }
         }
     }
 }
+
+tasks.withType<PublishToMavenRepository>().configureEach {
+    val isSnapshot = version.toString().endsWith("-SNAPSHOT")
+    onlyIf {
+        (repository == publishing.repositories["sonatype"] && !isSnapshot) ||
+        (repository == publishing.repositories["local"] && isSnapshot)
+    }
+}
+
+signing {
+    sign(publishing.publications["lib"])
+}
+
+tasks.withType<Sign>() {
+    onlyIf {
+        project.hasProperty("signing.keyId")
+    }
+}
+
