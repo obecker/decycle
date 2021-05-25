@@ -1,4 +1,4 @@
-package de.obqo.gradle.decycle;
+package de.obqo.decycle.gradle;
 
 import java.io.Serializable;
 

@@ -1,5 +1,5 @@
 plugins {
-    id 'de.obqo.gradle.decycle'
+    id 'de.obqo.decycle'
 }
 
 sourceSets {

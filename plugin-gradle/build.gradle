@@ -52,12 +52,12 @@ dependencies {
     testRuntimeOnly files(createClasspathManifest)
 }
 
-def pluginId = 'de.obqo.gradle.decycle'
+def pluginId = 'de.obqo.decycle'
 gradlePlugin {
     plugins {
         decyclePlugin {
             id = pluginId
-            implementationClass = 'de.obqo.gradle.decycle.DecyclePlugin'
+            implementationClass = 'de.obqo.decycle.gradle.DecyclePlugin'
         }
     }
 }
@@ -69,12 +69,12 @@ processResources {
 }
 
 pluginBundle {
-    website = 'https://github.com/obecker/gradle-decycle'
-    vcsUrl = 'https://github.com/obecker/gradle-decycle'
+    website = 'https://github.com/obecker/decycle/tree/master/plugin-gradle'
+    vcsUrl = 'https://github.com/obecker/decycle'
 
     plugins {
         decyclePlugin {
-            id = 'de.obqo.gradle.decycle'
+            id = 'de.obqo.decycle'
             displayName = 'Gradle Decycle Plugin'
             description = 'Gradle plugin that executes decycle dependency checks'
             tags = ['decycle', 'code-quality']

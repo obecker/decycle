@@ -1,4 +1,4 @@
-package de.obqo.gradle.decycle;
+package de.obqo.decycle.gradle;
 
 import de.obqo.decycle.check.Constraint;
 import de.obqo.decycle.check.DirectLayeringConstraint;

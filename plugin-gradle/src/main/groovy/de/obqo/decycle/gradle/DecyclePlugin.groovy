@@ -1,4 +1,4 @@
-package de.obqo.gradle.decycle
+package de.obqo.decycle.gradle
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -17,7 +17,7 @@ class DecyclePlugin implements Plugin<Project> {
         project.apply plugin: 'java'
 
         Properties props = new Properties()
-        getClass().classLoader.getResource("META-INF/gradle-plugins/de.obqo.gradle.decycle.properties").withInputStream { stream ->
+        getClass().classLoader.getResource("META-INF/gradle-plugins/de.obqo.decycle.properties").withInputStream { stream ->
             props.load(stream)
         }
 

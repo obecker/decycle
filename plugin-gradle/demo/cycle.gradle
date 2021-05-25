@@ -1,16 +1,5 @@
-//buildscript {
-//    repositories {
-//        mavenCentral()
-//        mavenLocal()
-//    }
-//    dependencies {
-//        classpath 'de.obqo.gradle:gradle-decycle:1.0-SNAPSHOT'
-//    }
-//}
-//apply plugin: 'de.obqo.gradle.decycle'
-
 plugins {
-    id 'de.obqo.gradle.decycle'
+    id 'de.obqo.decycle'
 }
 
 decycle {

@@ -1,4 +1,4 @@
 plugins {
-    id 'de.obqo.gradle.decycle'
+    id 'de.obqo.decycle'
 }
 // should detect the cycle between demo.cycle.a and demo.cycle.b without any custom configuration
