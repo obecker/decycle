@@ -13,6 +13,9 @@ public class Layer {
 
     /**
      * Constructs a {@link Layer} without further constraints on its slices.
+     *
+     * @param slices the slice names
+     * @return a new lenient layer constraint
      */
     public static Layer anyOf(final String... slices) {
         return new Layer(false, slices);
@@ -20,6 +23,9 @@ public class Layer {
 
     /**
      * Constructs a {@link Layer} whose slices must not depend on each other.
+     *
+     * @param slices the slice names
+     * @return a new strict layer constraint
      */
     public static Layer oneOf(final String... slices) {
         return new Layer(true, slices);
