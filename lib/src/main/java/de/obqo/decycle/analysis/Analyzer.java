@@ -8,6 +8,8 @@ import de.obqo.decycle.slicer.Categorizer;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStream;
+import java.util.logging.Level;
 import java.util.stream.Stream;
 import java.util.zip.ZipFile;
 
@@ -16,7 +18,9 @@ import com.google.common.base.Preconditions;
 import org.objectweb.asm.ClassReader;
 
 import lombok.SneakyThrows;
+import lombok.extern.java.Log;
 
+@Log
 public class Analyzer {
 
     public Graph analyze(final String classpath, final Categorizer categorizer, final NodeFilter filter,
@@ -37,27 +41,28 @@ public class Analyzer {
     @SneakyThrows
     private void analyze(final File file, final Graph graph) {
         if (file.getName().endsWith(".class")) {
-            final var reader = new ClassReader(new BufferedInputStream(new FileInputStream(file)));
-            readStream(reader, file.getName(), graph);
+            try (final var bis = new BufferedInputStream(new FileInputStream(file))) {
+                readStream(bis, file.getName(), graph);
+            }
         } else {
-            final var zipFile = new ZipFile(file);
-            final var entries = zipFile.entries();
-            while (entries.hasMoreElements()) {
-                final var e = entries.nextElement();
-                if (e.getName().endsWith(".class")) {
-                    final var reader = new ClassReader(zipFile.getInputStream(e));
-                    readStream(reader, e.getName(), graph);
+            try (final var zipFile = new ZipFile(file)) {
+                final var entries = zipFile.entries();
+                while (entries.hasMoreElements()) {
+                    final var e = entries.nextElement();
+                    if (e.getName().endsWith(".class")) {
+                        readStream(zipFile.getInputStream(e), e.getName(), graph);
+                    }
                 }
             }
         }
     }
 
-    private void readStream(final ClassReader reader, final String name, final Graph graph) {
+    private void readStream(final InputStream stream, final String name, final Graph graph) {
         try {
+            final var reader = new ClassReader(stream);
             reader.accept(new GraphBuildingClassVisitor(graph), 0);
         } catch (final Exception e) {
-            System.err.println("Something went wrong when analyzing " + name);
-            e.printStackTrace();
+            log.log(Level.SEVERE, "Something went wrong when analyzing " + name, e);
         }
     }
 }
