@@ -2,25 +2,19 @@ plugins {
     `java-library`
     `maven-publish`
     signing
+    id("io.freefair.lombok") version "6.0.0-m2"
 }
 
 group = rootProject.group
 version = rootProject.version
 
-val artifactId by extra("${rootProject.name}-lib")
 val junitVersion by extra("5.7.1")
-val lombokVersion by extra("1.18.20")
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    compileOnly("org.projectlombok:lombok:$lombokVersion")
-    testCompileOnly("org.projectlombok:lombok:$lombokVersion")
-    testAnnotationProcessor("org.projectlombok:lombok:$lombokVersion")
-    annotationProcessor("org.projectlombok:lombok:$lombokVersion")
-
     implementation("org.ow2.asm:asm:9.1")
     implementation("com.google.guava:guava:30.1.1-jre") {
         exclude(group = "org.checkerframework")
@@ -43,6 +37,11 @@ tasks.compileJava {
 
 java {
     withSourcesJar()
+    withJavadocJar()
+}
+
+lombok {
+    version.set("1.18.20")
 }
 
 tasks.test {
@@ -50,15 +49,10 @@ tasks.test {
 }
 
 tasks.jar {
-    archiveBaseName.set(artifactId)
     archiveVersion.set("${rootProject.version}")
     manifest {
         attributes["Implementation-Version"] = project.version
     }
-}
-
-tasks.build {
-    dependsOn(":lib:publishLibPublicationToLocalRepository")
 }
 
 publishing {
@@ -71,7 +65,7 @@ publishing {
             val ossrhUsername: String? by project
             val ossrhPassword: String? by project
             name = "sonatype"
-            url = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
+            url = uri("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
             credentials {
                 username = ossrhUsername
                 password = ossrhPassword
@@ -80,7 +74,6 @@ publishing {
     }
     publications {
         create<MavenPublication>("lib") {
-            artifactId = "${project.extra["artifactId"]}"
             from(components["java"])
             pom {
                 name.set("Decycle Lib")
@@ -89,7 +82,7 @@ publishing {
                 licenses {
                     license {
                         name.set("The Apache License, Version 2.0")
-                        url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+                        url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
                     }
                 }
                 developers {
