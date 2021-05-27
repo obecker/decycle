@@ -31,6 +31,30 @@ import java.util.stream.Stream;
 import lombok.Builder;
 import lombok.NonNull;
 
+/**
+ * Central configuration class for using the Decycle API. A full configuration check would look like this
+ * <pre>
+ *     List&lt;Constraint.Violation&gt; violations = Configuration.builder()
+ *             .classpath("...") // required
+ *             .includes(...)
+ *             .excludes(...)
+ *             .ignoredDependencies(...)
+ *             .slicings(...)
+ *             .constraints(...)
+ *             .report(...)
+ *             .minifyReport(...)
+ *             .build()
+ *             .check();
+ * </pre>
+ * However, typically use cases don't need all settings. The minimal configuration
+ * <pre>
+ *     List&lt;Constraint.Violation&gt; violations = Configuration.builder()
+ *             .classpath("...")
+ *             .build()
+ *             .check();
+ * </pre>
+ * will return all package cycles in the given classpath.
+ */
 public class Configuration {
 
     @NonNull
@@ -56,11 +80,15 @@ public class Configuration {
      * Constructor for the Lombok builder. Will not be visible in the generated javadoc, but the param comments will be
      * copied to their corresponding builder methods.
      *
-     * @param classpath           The classpath the be analyzed
+     * @param classpath           The classpath the be analyzed - this cannot be {@code null} or omitted. The classpath
+     *                            is a string of directories or jar files that are separated by the OS specific path
+     *                            separator (typically a semicolon ';' or colon ':').
      * @param includes            Include only classes in the analysis whose fully qualified class names match the given
-     *                            patterns (if null or empty: include all classes)
+     *                            patterns (if null or empty: include all classes) - see {@link
+     *                            PatternMatchingNodeFilter}
      * @param excludes            Exclude classes from the analysis whose fully qualified class names match the given
-     *                            patterns (if null or empty: exclude no classes)
+     *                            patterns (if null or empty: exclude no classes) - see {@link
+     *                            PatternMatchingNodeFilter}
      * @param ignoredDependencies List of class dependencies that should be ignored when checking cycles and other
      *                            constraints
      * @param slicings            Definition of slicings (map key = slicing type, map value = list of patterns that
@@ -68,7 +96,8 @@ public class Configuration {
      * @param constraints         Set of additional constraints to be checked (Note: {@link CycleFree} is automatically
      *                            included)
      * @param report              Target of the HTML report (if {@code null}, then no report is written)
-     * @param minifyReport        Whether the HTML report should be minified (default is {@code true}).
+     * @param minifyReport        Whether the HTML report should be minified (default is {@code true}). Has no effect if
+     *                            no {@code report} was configured.
      * @since dummy javadoc tag - prevents a bug that discards the last param comment in the builder methods
      */
     @Builder
@@ -129,6 +158,12 @@ public class Configuration {
         return new IgnoredDependenciesFilter(this.ignoredDependencies);
     }
 
+    /**
+     * Perform a check of the classes in the given {@code classpath} against the configured {@code constraints} and
+     * writes a report if requested.
+     *
+     * @return the list of all detected constraint violations (empty if no violations have been detected).
+     */
     public List<Violation> check() {
         final var allConstraints = Stream.concat(Stream.of(new CycleFree()), this.constraints.stream());
         final var violations = allConstraints.flatMap(c -> c.violations(this.graph).stream())
@@ -140,6 +175,9 @@ public class Configuration {
         return violations;
     }
 
+    /**
+     * @return a string representation of this configuration
+     */
     @Override
     public String toString() {
         final StringBuilder builder = new StringBuilder("Decycle {\n");
