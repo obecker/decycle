@@ -5,9 +5,11 @@ plugins {
     id "com.gradle.plugin-publish" version "0.15.0"
 }
 
+version = rootProject.version
+group = rootProject.group
 
 ext {
-    decycleVersion = rootProject.version
+    pluginId = 'de.obqo.decycle'
 }
 
 sourceCompatibility = 11
@@ -50,32 +52,26 @@ dependencies {
     testRuntimeOnly files(createClasspathManifest)
 }
 
-def pluginId = 'de.obqo.decycle'
-gradlePlugin {
-    plugins {
-        decyclePlugin {
-            id = pluginId
-            implementationClass = 'de.obqo.decycle.gradle.DecyclePlugin'
-        }
-    }
-}
-
 processResources {
     doLast {
-        file("${buildDir}/resources/main/META-INF/gradle-plugins/${pluginId}.properties") << "tool-version=${decycleVersion}\n"
+        file("${buildDir}/resources/main/META-INF/gradle-plugins/${pluginId}.properties") << "tool-version=${version}\n"
     }
 }
 
 pluginBundle {
     website = 'https://github.com/obecker/decycle/tree/master/plugin-gradle'
     vcsUrl = 'https://github.com/obecker/decycle'
+    tags = ['decycle', 'code-quality']
+}
 
+gradlePlugin {
     plugins {
         decyclePlugin {
-            id = 'de.obqo.decycle'
+            id = pluginId
             displayName = 'Gradle Decycle Plugin'
             description = 'Gradle plugin that executes decycle dependency checks'
-            tags = ['decycle', 'code-quality']
+            implementationClass = 'de.obqo.decycle.gradle.DecyclePlugin'
         }
     }
 }
+
