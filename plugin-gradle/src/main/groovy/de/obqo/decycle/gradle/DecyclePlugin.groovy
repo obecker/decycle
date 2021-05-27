@@ -32,15 +32,6 @@ class DecyclePlugin implements Plugin<Project> {
 
         // create a new configuration that will be used by the plugin's worker
         final Configuration workerClasspath = project.configurations.create("decycle")
-        project.repositories {
-            mavenCentral()
-            if (toolVersion.endsWith("-SNAPSHOT")) {
-                maven {
-                    name = "local"
-                    url = project.file("../../lib/build/repository").toURI()
-                }
-            }
-        }
 
         project.afterEvaluate {
 

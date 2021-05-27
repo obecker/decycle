@@ -103,9 +103,8 @@ publishing {
 
 tasks.withType<PublishToMavenRepository>().configureEach {
     val isSnapshot = version.toString().endsWith("-SNAPSHOT")
-    onlyIf {
-        (repository == publishing.repositories["sonatype"] && !isSnapshot) ||
-        (repository == publishing.repositories["local"] && isSnapshot)
+    if (repository.name == "sonatype" && isSnapshot) {
+        enabled = false
     }
 }
 

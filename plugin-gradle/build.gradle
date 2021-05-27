@@ -14,20 +14,16 @@ sourceCompatibility = 11
 
 repositories {
     mavenCentral()
-    maven {
-        name = "local"
-        url = file("${project(':decycle-lib').buildDir}/repository").toURI()
-    }
 }
 
 tasks.withType(JavaCompile) {
     options.compilerArgs << "-Xlint:all" << "-Werror"
-    // we need a deployed library for building/testing the plugin
-    dependsOn(":decycle-lib:publishLibPublicationToLocalRepository")
 }
 
 test {
     useJUnitPlatform()
+    // we need a deployed library for testing the plugin
+    dependsOn(":decycle-lib:publishLibPublicationToLocalRepository")
 }
 
 task createClasspathManifest {
@@ -44,7 +40,7 @@ task createClasspathManifest {
 }
 
 dependencies {
-    compileOnly "de.obqo.decycle:decycle-lib:${decycleVersion}"
+    compileOnly project(":decycle-lib")
 
     testImplementation gradleTestKit()
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.1'
