@@ -1,5 +1,6 @@
 package de.obqo.decycle.slicer;
 
+import static de.obqo.decycle.slicer.ParallelCategorizer.parallel;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import de.obqo.decycle.model.Node;
@@ -14,18 +15,18 @@ class ParallelCategorizerTest {
 
     @Test
     void parallelCombinationOfZeroCategorizersShouldReturnNothing() {
-        assertThat(new ParallelCategorizer().apply(n("x"))).isEmpty();
+        assertThat(parallel().apply(n("x"))).isEmpty();
     }
 
     @Test
     void parallelCombinationOfSingleCategorizerShouldApplyThisCategorizer() {
-        assertThat(new ParallelCategorizer(ListCategorizer.of(n("a"), n("b"), n("c"))).apply(n("b")))
+        assertThat(parallel(ListCategorizer.of(n("a"), n("b"), n("c"))).apply(n("b")))
                 .containsOnly(n("c"));
     }
 
     @Test
     void parallelCombinationOfMultipleCategorizersShouldReturnTheResultOfAllCategorizers() {
-        assertThat(new ParallelCategorizer(
+        assertThat(parallel(
                 ListCategorizer.of(n("a"), n("b")),
                 ListCategorizer.of(n("a"), n("c")),
                 ListCategorizer.of(n("a"), n("d"))

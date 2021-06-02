@@ -30,7 +30,7 @@ public class Analyzer {
         Preconditions.checkNotNull(filter, "filter must not be null");
         Preconditions.checkNotNull(ignoredEdgesFilter, "ignoredEdgesFilter must not be null");
 
-        final Graph graph = new Graph(categorizer, filter, new NoSelfReference(categorizer), ignoredEdgesFilter);
+        final Graph graph = new Graph(categorizer, filter, ignoredEdgesFilter);
 
         final String[] libs = classpath.split(System.getProperty("path.separator"));
         Stream.of(libs).flatMap(FileFinder::find).forEach(file -> analyze(file, graph));

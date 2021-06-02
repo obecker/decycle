@@ -5,18 +5,15 @@ import static de.obqo.decycle.model.Node.PACKAGE;
 import static de.obqo.decycle.model.Node.classNode;
 import static de.obqo.decycle.model.Node.packageNode;
 import static de.obqo.decycle.model.Node.sliceNode;
-import static de.obqo.decycle.slicer.MultiCategorizer.combine;
+import static de.obqo.decycle.slicer.ParallelCategorizer.parallel;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import de.obqo.decycle.model.Edge;
-import de.obqo.decycle.model.EdgeFilter;
 import de.obqo.decycle.model.Node;
 import de.obqo.decycle.model.NodeFilter;
 import de.obqo.decycle.slicer.IgnoredDependenciesFilter;
 import de.obqo.decycle.slicer.IgnoredDependency;
-import de.obqo.decycle.slicer.InternalClassCategorizer;
 import de.obqo.decycle.slicer.PackageCategorizer;
-import de.obqo.decycle.slicer.ParallelCategorizer;
 import de.obqo.decycle.slicer.PatternMatchingCategorizer;
 
 import java.util.Set;
@@ -62,7 +59,7 @@ class GraphSlicingTest {
     void packageSliceOfAnInnerClassShouldBeItsPackage() {
         // since the slice node will appear anyway we use an edge between to inner classes, to test that they get
         // projected on the correct slice
-        final var g = new Graph(combine(new InternalClassCategorizer(), new PackageCategorizer()));
+        final var g = new Graph(new PackageCategorizer());
         g.connect(classNode("p.one.Class$Inner"), classNode("p.two.Class$Inner"));
 
         assertThat(g.slicing(PACKAGE).edges()).containsOnly(
@@ -82,9 +79,7 @@ class GraphSlicingTest {
     void shouldFindContainingClassEdges() {
         // given
         final var SLICE = "Slice";
-        final var cat = combine(new InternalClassCategorizer(),
-                new ParallelCategorizer(new PackageCategorizer(),
-                        new PatternMatchingCategorizer(SLICE, "package.(*).**")));
+        final var cat = parallel(new PackageCategorizer(), new PatternMatchingCategorizer(SLICE, "package.(*).**"));
         final var g = new Graph(cat);
         final var classOne = classNode("package.one.class");
         final var classTwo = classNode("package.two.class");
@@ -133,12 +128,11 @@ class GraphSlicingTest {
     void sliceEdgeShouldBeIgnoredIfAllClassEdgesAreIgnored() {
         // given
         final var SLICE = "Slice";
-        final var cat = new ParallelCategorizer(new PackageCategorizer(),
-                new PatternMatchingCategorizer(SLICE, "package.(*).**"));
+        final var cat = parallel(new PackageCategorizer(), new PatternMatchingCategorizer(SLICE, "package.(*).**"));
         final var ignoredEdgesFilter = new IgnoredDependenciesFilter(
                 Set.of(new IgnoredDependency("package.a.A1", "package.b.B1"),
                         new IgnoredDependency("package.a.**", "package.c.**")));
-        final var g = new Graph(cat, NodeFilter.ALL, EdgeFilter.ALL, ignoredEdgesFilter);
+        final var g = new Graph(cat, NodeFilter.ALL, ignoredEdgesFilter);
 
         final var a1 = classNode("package.a.A1");
         final var a2 = classNode("package.a.A2");

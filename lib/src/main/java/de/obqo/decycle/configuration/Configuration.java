@@ -1,6 +1,7 @@
 package de.obqo.decycle.configuration;
 
 import static de.obqo.decycle.slicer.MultiCategorizer.combine;
+import static de.obqo.decycle.slicer.ParallelCategorizer.parallel;
 import static java.util.Objects.requireNonNullElse;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
@@ -17,9 +18,7 @@ import de.obqo.decycle.report.HtmlReport;
 import de.obqo.decycle.slicer.Categorizer;
 import de.obqo.decycle.slicer.IgnoredDependenciesFilter;
 import de.obqo.decycle.slicer.IgnoredDependency;
-import de.obqo.decycle.slicer.InternalClassCategorizer;
 import de.obqo.decycle.slicer.PackageCategorizer;
-import de.obqo.decycle.slicer.ParallelCategorizer;
 import de.obqo.decycle.slicer.PatternMatchingNodeFilter;
 
 import java.util.Comparator;
@@ -140,8 +139,7 @@ public class Configuration {
         final var slicers =
                 this.slicings.entrySet().stream().map(entry -> buildSlicing(entry.getKey(), entry.getValue()));
         final var slicersWithPackages = Stream.concat(Stream.of(new PackageCategorizer()), slicers);
-        final var cat = new ParallelCategorizer(slicersWithPackages.toArray(Categorizer[]::new));
-        return combine(new InternalClassCategorizer(), cat);
+        return parallel(slicersWithPackages.toArray(Categorizer[]::new));
     }
 
     private Categorizer buildSlicing(final String sliceType, final List<Pattern> patterns) {

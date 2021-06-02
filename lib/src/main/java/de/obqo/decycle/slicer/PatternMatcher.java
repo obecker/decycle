@@ -21,7 +21,7 @@ class PatternMatcher {
 
     public Optional<String> matches(final String name) {
         final Matcher matcher = this.pattern.matcher(name);
-        return matcher.matches() ? Optional.of(name.substring(matcher.start(1), matcher.end(1))) : Optional.empty();
+        return matcher.matches() ? Optional.of(matcher.group(1)) : Optional.empty();
     }
 
     private static String ensureParens(final String p, final boolean strict) {

@@ -14,7 +14,6 @@ import de.obqo.decycle.slicer.Categorizer;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -32,7 +31,6 @@ public class Graph implements SlicingSource {
 
     private final Categorizer categorizer;
     private final NodeFilter filter;
-    private final BiPredicate<Node, Node> edgeFilter;
     private final EdgeFilter ignoredEdgesFilter;
 
     private final MutableNetwork<Node, Edge> internalGraph = NetworkBuilder.directed().build();
@@ -46,14 +44,13 @@ public class Graph implements SlicingSource {
     }
 
     public Graph(final Categorizer categorizer, final NodeFilter filter) {
-        this(categorizer, filter, null, null);
+        this(categorizer, filter, null);
     }
 
     public Graph(final Categorizer categorizer, final NodeFilter filter,
-            final EdgeFilter edgeFilter, final EdgeFilter ignoredEdgesFilter) {
+            final EdgeFilter ignoredEdgesFilter) {
         this.categorizer = requireNonNullElse(categorizer, Categorizer.EMPTY);
         this.filter = requireNonNullElse(filter, NodeFilter.ALL);
-        this.edgeFilter = requireNonNullElse(edgeFilter, (n, m) -> !Objects.equals(n, m));
         this.ignoredEdgesFilter = requireNonNullElse(ignoredEdgesFilter, EdgeFilter.NONE);
     }
 
@@ -64,7 +61,7 @@ public class Graph implements SlicingSource {
     }
 
     private void addReference(final Node a, final Node b) {
-        if (this.filter.test(a) && this.filter.test(b) && this.edgeFilter.test(a, b)) {
+        if (this.filter.test(a) && this.filter.test(b) && !Objects.equals(a, b)) {
             final boolean ignored = this.ignoredEdgesFilter.test(a, b);
             this.internalGraph.addEdge(a, b, Edge.references(a, b, ignored));
         }
@@ -163,13 +160,9 @@ public class Graph implements SlicingSource {
     }
 
     private Stream<Node> containingClassNodes(final Node node) {
-        final Stream<Node> nodes = node.getType().equals(Node.CLASS) ? Stream.of(node) : Stream.empty();
-        // TODO check: this further recursion for CLASS nodes is needed because of inner classes
-        // Do we really need the InternalClassCategorizer?
-
-        return Stream.concat(nodes, this.internalGraph.outEdges(node)
+        return node.getType().equals(Node.CLASS) ? Stream.of(node) : this.internalGraph.outEdges(node)
                 .stream().filter(Edge::isContaining)
                 .map(Edge::getTo)
-                .flatMap(this::containingClassNodes));
+                .flatMap(this::containingClassNodes);
     }
 }
