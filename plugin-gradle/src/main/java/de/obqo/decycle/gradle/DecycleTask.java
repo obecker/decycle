@@ -9,6 +9,7 @@ import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.CacheableTask;
 import org.gradle.api.tasks.Classpath;
 import org.gradle.api.tasks.Input;
+import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.SkipWhenEmpty;
 import org.gradle.api.tasks.TaskAction;
@@ -31,6 +32,8 @@ public class DecycleTask extends DefaultTask {
 
     private RegularFileProperty reportFile;
 
+    private Property<String> reportTitle;
+
     @Inject
     public DecycleTask(final WorkerExecutor workerExecutor) {
         this.workerExecutor = workerExecutor;
@@ -39,6 +42,7 @@ public class DecycleTask extends DefaultTask {
         this.classpath = objectFactory.property(FileCollection.class);
         this.workerClasspath = objectFactory.property(FileCollection.class);
         this.reportFile = objectFactory.fileProperty();
+        this.reportTitle = objectFactory.property(String.class);
     }
 
     @Input
@@ -62,6 +66,11 @@ public class DecycleTask extends DefaultTask {
         return this.reportFile;
     }
 
+    @Internal
+    public Property<String> getReportTitle() {
+        return this.reportTitle;
+    }
+
     @TaskAction
     public void runConstraintCheck() {
         WorkQueue workQueue = workerExecutor.classLoaderIsolation(workerSpec -> {
@@ -71,6 +80,7 @@ public class DecycleTask extends DefaultTask {
             parameters.getConfiguration().set(this.configuration);
             parameters.getClasspath().set(this.classpath.map(FileCollection::getAsPath));
             parameters.getReportFile().set(this.reportFile);
+            parameters.getReportTitle().set(this.reportTitle);
         });
     }
 }

@@ -71,6 +71,8 @@ public class Configuration {
 
     private final Appendable report;
 
+    private final String reportTitle;
+
     private final boolean minifyReport;
 
     private final Graph graph;
@@ -95,6 +97,7 @@ public class Configuration {
      * @param constraints         Set of additional constraints to be checked (Note: {@link CycleFree} is automatically
      *                            included)
      * @param report              Target of the HTML report (if {@code null}, then no report is written)
+     * @param reportTitle         HTML Title to be used in the generated report
      * @param minifyReport        Whether the HTML report should be minified (default is {@code true}). Has no effect if
      *                            no {@code report} was configured.
      * @since dummy javadoc tag - prevents a bug that discards the last param comment in the builder methods
@@ -108,6 +111,7 @@ public class Configuration {
             final Map<String, List<Pattern>> slicings,
             final Set<Constraint> constraints,
             final Appendable report,
+            final String reportTitle,
             final Boolean minifyReport) {
         this.classpath = classpath;
         this.includes = requireNonNullElse(includes, List.of());
@@ -116,6 +120,7 @@ public class Configuration {
         this.ignoredDependencies = requireNonNullElse(ignoredDependencies, List.of());
         this.constraints = requireNonNullElse(constraints, Set.of());
         this.report = report;
+        this.reportTitle = reportTitle;
         this.minifyReport = !Boolean.FALSE.equals(minifyReport); // null -> true
 
         validate();
@@ -168,7 +173,7 @@ public class Configuration {
                 .sorted(Comparator.comparing(Violation::getSliceType).thenComparing(Violation::getName))
                 .collect(toList());
         if (this.report != null) {
-            new HtmlReport().writeReport(this.graph, violations, this.report, this.minifyReport);
+            new HtmlReport().writeReport(this.graph, violations, this.report, this.reportTitle, this.minifyReport);
         }
         return violations;
     }

@@ -15,4 +15,6 @@ public interface DecycleWorkerParameters extends WorkParameters {
 
     RegularFileProperty getReportFile();
 
+    Property<String> getReportTitle();
+
 }

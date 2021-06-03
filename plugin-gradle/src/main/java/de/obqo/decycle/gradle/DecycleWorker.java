@@ -36,6 +36,7 @@ public abstract class DecycleWorker implements WorkAction<DecycleWorkerParameter
         DecycleConfiguration configuration = getParameters().getConfiguration().get();
         String classpath = getParameters().getClasspath().get();
         File reportFile = getParameters().getReportFile().getAsFile().get();
+        String reportTitle = getParameters().getReportTitle().get();
 
         Configuration.ConfigurationBuilder builder = Configuration.builder();
 
@@ -55,6 +56,7 @@ public abstract class DecycleWorker implements WorkAction<DecycleWorkerParameter
 
         try (final FileWriter writer = new FileWriter(reportFile)) {
             builder.report(writer);
+            builder.reportTitle(reportTitle);
 
             final Configuration decycleConfig = builder.build();
 

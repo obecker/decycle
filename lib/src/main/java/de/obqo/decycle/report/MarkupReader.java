@@ -3,6 +3,8 @@ package de.obqo.decycle.report;
 import static j2html.TagCreator.rawHtml;
 import static j2html.tags.InlineStaticResource.getFileAsString;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Scanner;
 
 import j2html.tags.DomContent;
@@ -17,6 +19,11 @@ class MarkupReader {
     static DomContent rawHtmlWithInlineFile_min(final String path) {
         final String contentAsString = getFileAsString(path);
         return rawHtml(minifyMarkup(contentAsString));
+    }
+
+    static String base64FromFile_min(final String path) {
+        final String contentAsString = getFileAsString(path);
+        return Base64.getEncoder().encodeToString(minifyMarkup(contentAsString).getBytes(StandardCharsets.UTF_8));
     }
 
     private static String minifyMarkup(final String input) {

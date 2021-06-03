@@ -49,11 +49,13 @@ class DecyclePlugin implements Plugin<Project> {
                 def name = source.name
 
                 DecycleTask decycleWorkTask = project.tasks.create(TASK_NAME + name.capitalize(), DecycleTask)
-                decycleWorkTask.description = "Checks the ${name} sources for package cycles and other custom constraints"
+                decycleWorkTask.
+                        description = "Checks the ${name} sources for package cycles and other custom constraints"
                 decycleWorkTask.group = JavaBasePlugin.VERIFICATION_GROUP
                 decycleWorkTask.configuration.set(configuration)
-                decycleWorkTask.reportFile.set(new File(project.buildDir, "reports/decycle/${name}.html"))
                 decycleWorkTask.classpath.set(source.output)
+                decycleWorkTask.reportFile.set(new File(project.buildDir, "reports/decycle/${name}.html"))
+                decycleWorkTask.reportTitle.set(project.name + " | " + name);
                 decycleWorkTask.workerClasspath.set(workerClasspath)
 
                 // set task dependencies, e.g. decycle -> decycleTest -> testClasses

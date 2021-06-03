@@ -76,8 +76,7 @@ class ConfigurationTest {
 
         final var violation1 = violations.get(0);
         assertThat(violation1.getName()).isEqualTo("common => (helper, shared)");
-        assertThat(violation1.getDependencies()).containsOnly(new Constraint.Dependency("shared", "common")
-        );
+        assertThat(violation1.getDependencies()).containsOnly(new Constraint.Dependency("shared", "common"));
 
         final var violation2 = violations.get(1);
         assertThat(violation2.getName()).isEqualTo("no cycles");
@@ -94,7 +93,9 @@ class ConfigurationTest {
         Configuration.builder()
                 .classpath(System.getProperty("java.class.path"))
                 .includes(List.of("j2html.**"))
+                .ignoredDependencies(List.of(new IgnoredDependency("j2html.attributes.Attribute", "j2html.**")))
                 .report(out)
+                .reportTitle("j2html")
                 .minifyReport(false)
                 .build()
                 .check();
