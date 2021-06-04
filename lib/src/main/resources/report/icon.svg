@@ -3,29 +3,18 @@
      width="16" height="16" fill="black" viewBox="0 0 16 16">
   <defs>
     <path id="a"
-          d="M0 0
-             l-1.5-3
-             a.35.35 0 0 1 .4-.45
-             l1.11 .3 1.11-.3
-             a.35.35 0 0 1 .4.45z" />
+          d="M0 0l-1.5-3a.35.35 0 0 1 .4-.45l1.11.3 1.11-.3a.35.35 0 0 1 .4.45z" />
     <g id="e">
       <path fill-rule="evenodd"
-            d="M7.94 4.75
-               a4 4 0 1 0-3.94 3.25
-               v-1.5
-               a2.5 2.5 0 0 1-2.4-1.75z
-               m-1.56-1.5
-               a2.5 2.5 0 0 0-4.76 0z"
+            d="M7.97 4.5a4 4 0 1 0-3.97 3.5v-1a3 3 0 0 1-2.95-2.5zm-1.02-1a3 3 0 0 0-5.9 0z"
             transform="rotate(-45 4 4)" />
-      <use xlink:href="#a" x="7.8" y="4.8" transform="rotate(-134 7.8 4.8)" />
+      <use xlink:href="#a" x="7.75" y="5" transform="rotate(-132 7.75 5)" />
     </g>
 
     <g id="c">
-      <path d="M8 15 a7 7 0 1 1 7-7
-               a.75 1.5 0 1 1-1.5 0
-               a5.5 5.5 0 1 0-5.5 5.5z"
+      <path d="M8 15a7 7 0 1 1 7-7a.5 0.75 0 1 1-1 0a6 6 0 1 0-6 6z"
             transform="rotate(45, 8, 8)"/>
-      <use xlink:href="#a" x="5" y="14" transform="rotate(-41 5 14)"/>
+      <use xlink:href="#a" x="4.8" y="14" transform="rotate(-42 4.8 14)"/>
     </g>
   </defs>
 
