@@ -42,7 +42,7 @@ The plugin adds a `decycle` configuration object to the build, that offers the f
     <b>sourceSets</b> sourceSets.main, sourceSets.test, ...
     <b>including</b> 'org.example.includes.**', ...
     <b>excluding</b> 'org.example.excludes.**', ...
-    <b>ignore</b> from: 'org.examples.from.Example', to: 'org.examples.to.**'
+    <b>ignoring</b> from: 'org.examples.from.Example', to: 'org.examples.to.**'
     <b>slicings</b> {
         <i>name1</i> {
             <b>patterns</b> 'org.example.(*).**', ...
@@ -58,7 +58,7 @@ The plugin adds a `decycle` configuration object to the build, that offers the f
 
 (_Note_: technically all configuration settings are method calls and no property assignments.
 So you have to use `sourceSets ...` or even `sourceSets(...)` instead of `sourceSets = ...`.
-Also, when the settings for `sourceSets`, `including`, `excluding`, and `ignore` are applied multiple times,
+Also, when the settings for `sourceSets`, `including`, `excluding`, and `ignoring` are applied multiple times,
 they will be added to the existing configuration.)
 
 * `sourceSets`
@@ -74,14 +74,14 @@ they will be added to the existing configuration.)
 * `excluding`
   defines ant style string patterns for the classes that should be excluded (default: none)
 
-* `ignore`
+* `ignoring`
   defines a dependency (or an ant style string pattern for a set of dependencies) that should be ignored
   when checking cycle (and other) constraints on the analyzed classes (default none).
   This setting differs from `excluding` as the ignored dependency is not excluded from the dependency graph
-  (i.e. it is present in the report). Multiple ignored dependencies can be configured by using `ignore` multiple times. 
+  (i.e. it is present in the report). Multiple ignored dependencies can be configured by using `ignoring` multiple times. 
   Ignored dependencies might be useful if you introduce decycle to an existing project and don't want to resolve all 
   existing cyclic dependencies at once.
-  Technically the parameter for `ignore` is a map with the following two keys,
+  Technically the parameter for `ignoring` is a map with the following two keys,
   both are optional:
     * `from:` defines the source of the dependency (default: all)
     * `to`: defines the target of the dependency (default: all)

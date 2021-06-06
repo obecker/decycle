@@ -4,7 +4,7 @@ plugins {
 
 decycle {
     including 'demo.module.**'
-    ignore from: 'demo.module.b.**', to: 'demo.module.a.**'
+    ignoring from: 'demo.module.b.**', to: 'demo.module.a.**'
     slicings {
         module {
             patterns 'demo.module.(*).**'
