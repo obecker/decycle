@@ -41,9 +41,9 @@ public abstract class DecycleWorker implements WorkAction<DecycleWorkerParameter
         Configuration.ConfigurationBuilder builder = Configuration.builder();
 
         builder.classpath(classpath);
-        builder.includes(configuration.getIncludings());
-        builder.excludes(configuration.getExcludings());
-        builder.ignoredDependencies(getIgnoredDependencies(configuration.getIgnoredDeps()));
+        builder.including(configuration.getIncludings());
+        builder.excluding(configuration.getExcludings());
+        builder.ignoring(getIgnoredDependencies(configuration.getIgnoredDeps()));
         builder.slicings(
                 configuration.getSlicings().stream().collect(
                         Collectors.toMap(SlicingConfiguration::getSliceType, this::getPatterns)));

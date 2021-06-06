@@ -25,7 +25,7 @@ class ConfigurationTest {
             assertThat(Configuration.builder()
                     .classpath("build/classes/java/main") // for gradle
 //                    .classpath("out/production/classes") // for IntelliJ
-                    .includes(List.of("de.obqo.decycle.**"))
+                    .including(List.of("de.obqo.decycle.**"))
                     .report(out)
                     .build()
                     .check())
@@ -39,7 +39,7 @@ class ConfigurationTest {
         assertThat(Configuration.builder()
                 .classpath("build/classes/java/test") // for gradle
 //                .classpath("out/test/classes") // for IntelliJ
-                .includes(List.of("de.obqo.decycle.demo.base.**"))
+                .including(List.of("de.obqo.decycle.demo.base.**"))
                 .report(out)
                 .minifyReport(false)
                 .build()
@@ -57,8 +57,8 @@ class ConfigurationTest {
 
         final List<Constraint.Violation> violations = Configuration.builder()
                 .classpath("build")
-                .includes(List.of("de.obqo.decycle.demo.**"))
-                .ignoredDependencies(List.of(
+                .including(List.of("de.obqo.decycle.demo.**"))
+                .ignoring(List.of(
                         new IgnoredDependency("de.obqo.decycle.demo.common.**", "de.obqo.decycle.demo.util.**"),
                         new IgnoredDependency("de.obqo.decycle.demo.common.*", "de.obqo.decycle.demo.common.impl.*")))
                 .slicings(Map.of("subpackage", List.of(new UnnamedPattern("de.obqo.decycle.demo.(*).**"))))
@@ -92,8 +92,8 @@ class ConfigurationTest {
 
         Configuration.builder()
                 .classpath(System.getProperty("java.class.path"))
-                .includes(List.of("j2html.**"))
-                .ignoredDependencies(List.of(new IgnoredDependency("j2html.attributes.Attribute", "j2html.**")))
+                .including(List.of("j2html.**"))
+                .ignoring(List.of(new IgnoredDependency("j2html.attributes.Attribute", "j2html.**")))
                 .report(out)
                 .reportTitle("j2html")
                 .minifyReport(false)
