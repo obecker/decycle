@@ -52,6 +52,7 @@ tasks.jar {
     archiveVersion.set("${rootProject.version}")
     manifest {
         attributes["Implementation-Version"] = project.version
+        attributes["Automatic-Module-Name"] = project.group
     }
 }
 
