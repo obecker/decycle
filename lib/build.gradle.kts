@@ -8,7 +8,7 @@ plugins {
 group = rootProject.group
 version = rootProject.version
 
-val junitVersion by extra("5.7.1")
+val junitVersion by extra("5.7.2")
 
 repositories {
     mavenCentral()
