@@ -53,6 +53,7 @@ dependencies {
 }
 
 processResources {
+    inputs.property("version", version)
     doLast {
         file("${buildDir}/resources/main/META-INF/gradle-plugins/${pluginId}.properties") << "tool-version=${version}\n"
     }
