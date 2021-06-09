@@ -8,23 +8,27 @@ plugins {
 group = rootProject.group
 version = rootProject.version
 
-val junitVersion by extra("5.7.2")
+val asmVersion: String by project
+val guavaVersion: String by project
+val j2htmlVersion: String by project
+val junitVersion: String by project
+val assertjVersion: String by project
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    implementation("org.ow2.asm:asm:9.1")
-    implementation("com.google.guava:guava:30.1.1-jre") {
+    implementation("org.ow2.asm:asm:${asmVersion}")
+    implementation("com.google.guava:guava:${guavaVersion}") {
         exclude(group = "org.checkerframework")
     }
-    implementation( "com.j2html:j2html:1.4.0")
+    implementation( "com.j2html:j2html:${j2htmlVersion}")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
     testImplementation("org.junit.jupiter:junit-jupiter-params:$junitVersion")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
-    testImplementation("org.assertj:assertj-core:3.19.0")
+    testImplementation("org.assertj:assertj-core:${assertjVersion}")
 }
 
 configure<JavaPluginConvention> {
@@ -107,6 +111,12 @@ tasks.withType<PublishToMavenRepository>().configureEach {
     if (repository.name == "sonatype" && isSnapshot) {
         enabled = false
     }
+}
+
+tasks.register("publishLib") {
+    group = "Publishing"
+    description = "Publishes decycle-lib to Maven Central via OSS Sonatype"
+    dependsOn("publishLibPublicationToSonatypeRepository")
 }
 
 signing {
