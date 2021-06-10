@@ -28,11 +28,29 @@ dt.error, dd.error {
     background-color: lightyellow;
 }
 
-ul.references > li > a {
-    color: darkblue;
-    cursor: pointer;
+.hidden {
+    display: none;
 }
-ul.references > li > a:hover {
+
+ul.references > li {
+    position: relative;
+}
+ul.references > li > a.toggle-display {
+    cursor: pointer;
+    color: dimgray;
+    position: absolute;
+    left: -18px;
+    top: 4px;
+}
+ul.references > li > a.toggle-display:hover {
+    color: black;
+}
+ul.references > li > a[href] {
+    color: darkblue;
+    font-weight: bold;
+    padding: 0 2px;
+}
+ul.references > li > a[href]:hover {
     text-decoration: underline;
 }
 

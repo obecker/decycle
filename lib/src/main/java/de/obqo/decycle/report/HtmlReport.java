@@ -209,14 +209,20 @@ public class HtmlReport {
                     return li()
                             .withClasses("pb-1", iff(hasViolations, "error"))
                             .with(
-                                    a().withClass("mr-2")
+                                    a().withClass("mr-2 toggle-display").with(
+                                            i().withClasses("bi", "bi-arrows-expand", iff(hasViolations, "hidden"))
+                                                    .withTitle("Show class dependencies"),
+                                            i().withClasses("bi", "bi-arrows-collapse", iff(!hasViolations, "hidden"))
+                                                    .withTitle("Hide class dependencies")),
+                                    a().withHref("#" + slicing.getSliceType() + "-" + edge.getTo().getName())
+                                            .withClass("mr-2")
                                             .with(wrap(edge.isIgnored(), TagCreator::del,
                                                     text(edge.getTo().getName()))),
                                     iff(hasViolations, span(
                                             text(" "),
                                             i().withClass("bi bi-exclamation-triangle-fill"),
                                             text(toViolations.stream().collect(joining(", ", " (", ")"))))),
-                                    ul().withClass("class-references list-unstyled")
+                                    ul().withClass("class-references list-unstyled mb-1")
                                             .with(graph.containingClassEdges(edge)
                                                     .stream()
                                                     .sorted()

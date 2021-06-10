@@ -39,11 +39,29 @@ dt.error, dd.error {
     background-color: lightyellow;
 }
 
-ul.references > li > a {
-    color: darkblue;
-    cursor: pointer;
+.hidden {
+    display: none;
 }
-ul.references > li > a:hover {
+
+ul.references > li {
+    position: relative;
+}
+ul.references > li > a.toggle-display {
+    cursor: pointer;
+    color: dimgray;
+    position: absolute;
+    left: -18px;
+    top: 4px;
+}
+ul.references > li > a.toggle-display:hover {
+    color: black;
+}
+ul.references > li > a[href] {
+    color: darkblue;
+    font-weight: bold;
+    padding: 0 2px;
+}
+ul.references > li > a[href]:hover {
     text-decoration: underline;
 }
 
@@ -89,8 +107,12 @@ span.class-node.highlight {
         </script>
         <script>
             $(function() {
-  $('ul.references > li > a').click(function() {
-    $(this).parent().find('ul.class-references').slideToggle();
+  $('ul.references > li > a.toggle-display').click(function() {
+    let $a = $(this);
+    let $ul = $a.parent().find('ul.class-references');
+    $ul.slideToggle(Math.sqrt($ul.height()) * 25, function() {
+      $a.children('i').toggleClass('hidden');
+    });
   });
 
   let h = function(span) {
@@ -182,10 +204,16 @@ span.class-node.highlight {
                         <dd class="col-sm-8 border-top py-1 mb-0">
                             <ul class="references list-unstyled mb-0">
                                 <li class="pb-1">
-                                    <a class="mr-2">
+                                    <a class="mr-2 toggle-display">
+                                        <i class="bi bi-arrows-expand" title="Show class dependencies">
+                                        </i>
+                                        <i class="bi bi-arrows-collapse hidden" title="Hide class dependencies">
+                                        </i>
+                                    </a>
+                                    <a href="#Package-de.obqo.decycle.demo.base.to" class="mr-2">
                                         de.obqo.decycle.demo.base.to
                                     </a>
-                                    <ul class="class-references list-unstyled">
+                                    <ul class="class-references list-unstyled mb-1">
                                         <li>
                                             <span class="class-node" data-name="de.obqo.decycle.demo.base.from.FromAnnotation">
                                                 de.obqo.decycle.demo.base.from.FromAnnotation
