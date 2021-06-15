@@ -43,6 +43,7 @@ import de.obqo.decycle.graph.Slicing;
 import de.obqo.decycle.model.Node;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -51,8 +52,11 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import j2html.TagCreator;
-import j2html.tags.ContainerTag;
+import j2html.rendering.FlatHtml;
+import j2html.rendering.IndentedHtml;
 import j2html.tags.DomContent;
+import j2html.tags.specialized.ScriptTag;
+import j2html.tags.specialized.StyleTag;
 
 public class HtmlReport {
 
@@ -115,20 +119,18 @@ public class HtmlReport {
                 )
         );
 
-        final var text = minify ? html.render() : html.renderFormatted();
         try {
-            out.append(text);
-            out.append('\n');
+            html.render(minify ? FlatHtml.into(out) : IndentedHtml.into(out));
         } catch (final IOException exception) {
-            throw new RuntimeException(exception);
+            throw new UncheckedIOException(exception);
         }
     }
 
-    private ContainerTag inlineStyle(final boolean minify, final String path) {
+    private StyleTag inlineStyle(final boolean minify, final String path) {
         return minify ? styleWithInlineFile_min(path) : styleWithInlineFile(path);
     }
 
-    private ContainerTag inlineScript(final boolean minify, final String path) {
+    private ScriptTag inlineScript(final boolean minify, final String path) {
         return minify ? scriptWithInlineFile_min(path) : scriptWithInlineFile(path);
     }
 
@@ -149,7 +151,7 @@ public class HtmlReport {
                         .flatMap(this::getViolationDivColumns)));
     }
 
-    private Stream<ContainerTag> getViolationDivColumns(final Constraint.Violation v) {
+    private Stream<DomContent> getViolationDivColumns(final Constraint.Violation v) {
         return Stream.of(
                 div().withClass("col-4 name mt-1").with(b(replaceArrows(v.getName()))),
                 div().withClass("col-8 dependencies mt-1")
@@ -237,9 +239,9 @@ public class HtmlReport {
                 });
     }
 
-    private static DomContent[] wrap(final boolean condition, final Function<DomContent[], DomContent> wrapper,
+    private static DomContent wrap(final boolean condition, final Function<DomContent[], DomContent> wrapper,
             final DomContent... contents) {
-        return condition ? new DomContent[] { wrapper.apply(contents) } : contents;
+        return condition ? wrapper.apply(contents) : each(contents);
     }
 
     private static class SliceComparator implements Comparator<String> {

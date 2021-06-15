@@ -10,172 +10,169 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
         <style>
             html {
-    font-size: 14px;
-}
-
-.violations {
-    position: relative;
-    min-height: 3.75rem;
-}
-
-.violations > h1 {
-    position: absolute;
-    right: 0.75rem;
-}
-
-.violations > .name {
-    color: black;
-}
-
-.violations > .dependencies a {
-    font-weight: normal;
-}
-
-dl.slices {
-    background-color: aliceblue;
-}
-
-dt.error, dd.error {
-    background-color: lightyellow;
-}
-
-.hidden {
-    display: none;
-}
-
-ul.references > li {
-    position: relative;
-}
-ul.references > li > a.toggle-display {
-    cursor: pointer;
-    color: dimgray;
-    position: absolute;
-    left: -18px;
-    top: 4px;
-}
-ul.references > li > a.toggle-display:hover {
-    color: black;
-}
-ul.references > li > a[href] {
-    color: darkblue;
-    font-weight: bold;
-    padding: 0 2px;
-}
-ul.references > li > a[href]:hover {
-    text-decoration: underline;
-}
-
-ul.references > li.error > span {
-    color: #721c24;
-}
-
-ul.class-references > li {
-    text-indent: -3rem;
-    padding-left: 3rem;
-}
-
-ul.class-references {
-    font-size: 90%;
-    color: dimgray;
-    display: none;
-}
-
-li.error > ul.class-references {
-    display: block;
-}
-
-dt.border-top:first-child, dd.border-top:first-of-type {
-    border: none !important;
-}
-
-div.footer a {
-    color: darkblue;
-    text-decoration: underline;
-}
-
-span.class-node {
-    padding: 2px;
-}
-
-span.class-node.highlight {
-    color: white;
-    background-color: darkblue;
-}
-
+                font-size: 14px;
+            }
+            
+            .violations {
+                position: relative;
+                min-height: 3.75rem;
+            }
+            
+            .violations > h1 {
+                position: absolute;
+                right: 0.75rem;
+            }
+            
+            .violations > .name {
+                color: black;
+            }
+            
+            .violations > .dependencies a {
+                font-weight: normal;
+            }
+            
+            dl.slices {
+                background-color: aliceblue;
+            }
+            
+            dt.error, dd.error {
+                background-color: lightyellow;
+            }
+            
+            .hidden {
+                display: none;
+            }
+            
+            ul.references > li {
+                position: relative;
+            }
+            ul.references > li > a.toggle-display {
+                cursor: pointer;
+                color: dimgray;
+                position: absolute;
+                left: -18px;
+                top: 4px;
+            }
+            ul.references > li > a.toggle-display:hover {
+                color: black;
+            }
+            ul.references > li > a[href] {
+                color: darkblue;
+                font-weight: bold;
+                padding: 0 2px;
+            }
+            ul.references > li > a[href]:hover {
+                text-decoration: underline;
+            }
+            
+            ul.references > li.error > span {
+                color: #721c24;
+            }
+            
+            ul.class-references > li {
+                text-indent: -3rem;
+                padding-left: 3rem;
+            }
+            
+            ul.class-references {
+                font-size: 90%;
+                color: dimgray;
+                display: none;
+            }
+            
+            li.error > ul.class-references {
+                display: block;
+            }
+            
+            dt.border-top:first-child, dd.border-top:first-of-type {
+                border: none !important;
+            }
+            
+            div.footer a {
+                color: darkblue;
+                text-decoration: underline;
+            }
+            
+            span.class-node {
+                padding: 2px;
+            }
+            
+            span.class-node.highlight {
+                color: white;
+                background-color: darkblue;
+            }
         </style>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous">
         </script>
         <script>
             $(function() {
-  $('ul.references > li > a.toggle-display').click(function() {
-    let $a = $(this);
-    let $ul = $a.parent().find('ul.class-references');
-    $ul.slideToggle(Math.sqrt($ul.height()) * 25, function() {
-      $a.children('i').toggleClass('hidden');
-    });
-  });
-
-  let h = function(span) {
-    return $('span.class-node[data-name="' + $(span).data('name') + '"]');
-  };
-
-  $('span.class-node').mouseover(function() {
-    h(this).addClass('highlight');
-  }).mouseout(function() {
-    h(this).removeClass('highlight');
-  });
-});
-
+              $('ul.references > li > a.toggle-display').click(function() {
+                let $a = $(this);
+                let $ul = $a.parent().find('ul.class-references');
+                $ul.slideToggle(Math.sqrt($ul.height()) * 25, function() {
+                  $a.children('i').toggleClass('hidden');
+                });
+              });
+            
+              let h = function(span) {
+                return $('span.class-node[data-name="' + $(span).data('name') + '"]');
+              };
+            
+              $('span.class-node').mouseover(function() {
+                h(this).addClass('highlight');
+              }).mouseout(function() {
+                h(this).removeClass('highlight');
+              });
+            });
         </script>
     </head>
     <body>
         <div class="container-fluid p-3">
             <div class="mx-2">
                 <svg xmlns="http://www.w3.org/2000/svg"
-     xmlns:xlink="http://www.w3.org/1999/xlink"
-     width="208" height="72" fill="currentColor" viewBox="0 0 52 18">
-  <defs>
-    <path id="arrow"
-          d="M0 0-1-2a.15.15 0 0 1 .15-.2l.88.2.88-.2a.15.15 0 0 1 .15.2z" />
-    <g id="D">
-      <path fill-rule="evenodd"
-            d="M0 0a6.2 6.2 0 1 1 0 12v-8zM.5.5a5.615 5.615 0 1 1 0 11z" />
-      <use xlink:href="#arrow" x="0.25" y="12" />
-      <use xlink:href="#arrow" x="0.25" y="12" transform="rotate(94 .25 11.75)" />
-    </g>
-    <g id="e">
-      <path fill-rule="evenodd"
-            d="M8 4.25a4 4 0 1 0-4 3.75v-.5a3.5 3.5 0 0 1-3.49-3.25zm-.51-.5a3.5 3.5 0 0 0-6.98 0z"
-            transform="rotate(-45 4 4)" />
-      <use xlink:href="#arrow" x="7.1" y="6.36" transform="rotate(-125 7.1 6.36)" />
-      <use xlink:href="#arrow" x="1.2" y="6.76" transform="rotate(45 1.2 6.76)" />
-    </g>
-    <g id="c">
-      <path d="M8 4.25a4 4 0 1 0-4 3.75v-.5a3.5 3.5 0 1 1 3.5-3.25z"
-            transform="rotate(-45 4 4) "/>
-      <use xlink:href="#arrow" x="7.1" y="6.36" transform="rotate(-125 7.1 6.36)" />
-    </g>
-    <g id="y">
-      <path d="M.7 12Q5.5 8 7.5.5h-.55Q5 8 0 12zM0 0Q1.65 4 4.4 7.4l.35-.35Q2.0 3.65.55 0z" />
-      <use xlink:href="#arrow" x="7.5" y="-0.2" transform="rotate(-162 7.5 -.2)" />
-      <use xlink:href="#arrow" x="4.6" y="7.3" transform="rotate(-36 4.6 7.3)" />
-    </g>
-    <g id="l">
-      <path d="M0 0v12h2v-.5h-1.5v-11.5z" />
-      <use xlink:href="#arrow" x="3" y="11.75" transform="rotate(-90 3 11.75)" />
-    </g>
-  </defs>
-
-  <use xlink:href="#D" x="2" y="1" />
-  <use xlink:href="#e" x="10.5" y="5" />
-  <use xlink:href="#c" x="18" y="5" />
-  <use xlink:href="#y" x="25.5" y="5" />
-  <use xlink:href="#c" x="33.5" y="5" />
-  <use xlink:href="#l" x="41.5" y="1" />
-  <use xlink:href="#e" x="44" y="5" />
-
-</svg>
-
+                     xmlns:xlink="http://www.w3.org/1999/xlink"
+                     width="208" height="72" fill="currentColor" viewBox="0 0 52 18">
+                  <defs>
+                    <path id="arrow"
+                          d="M0 0-1-2a.15.15 0 0 1 .15-.2l.88.2.88-.2a.15.15 0 0 1 .15.2z" />
+                    <g id="D">
+                      <path fill-rule="evenodd"
+                            d="M0 0a6.2 6.2 0 1 1 0 12v-8zM.5.5a5.615 5.615 0 1 1 0 11z" />
+                      <use xlink:href="#arrow" x="0.25" y="12" />
+                      <use xlink:href="#arrow" x="0.25" y="12" transform="rotate(94 .25 11.75)" />
+                    </g>
+                    <g id="e">
+                      <path fill-rule="evenodd"
+                            d="M8 4.25a4 4 0 1 0-4 3.75v-.5a3.5 3.5 0 0 1-3.49-3.25zm-.51-.5a3.5 3.5 0 0 0-6.98 0z"
+                            transform="rotate(-45 4 4)" />
+                      <use xlink:href="#arrow" x="7.1" y="6.36" transform="rotate(-125 7.1 6.36)" />
+                      <use xlink:href="#arrow" x="1.2" y="6.76" transform="rotate(45 1.2 6.76)" />
+                    </g>
+                    <g id="c">
+                      <path d="M8 4.25a4 4 0 1 0-4 3.75v-.5a3.5 3.5 0 1 1 3.5-3.25z"
+                            transform="rotate(-45 4 4) "/>
+                      <use xlink:href="#arrow" x="7.1" y="6.36" transform="rotate(-125 7.1 6.36)" />
+                    </g>
+                    <g id="y">
+                      <path d="M.7 12Q5.5 8 7.5.5h-.55Q5 8 0 12zM0 0Q1.65 4 4.4 7.4l.35-.35Q2.0 3.65.55 0z" />
+                      <use xlink:href="#arrow" x="7.5" y="-0.2" transform="rotate(-162 7.5 -.2)" />
+                      <use xlink:href="#arrow" x="4.6" y="7.3" transform="rotate(-36 4.6 7.3)" />
+                    </g>
+                    <g id="l">
+                      <path d="M0 0v12h2v-.5h-1.5v-11.5z" />
+                      <use xlink:href="#arrow" x="3" y="11.75" transform="rotate(-90 3 11.75)" />
+                    </g>
+                  </defs>
+                
+                  <use xlink:href="#D" x="2" y="1" />
+                  <use xlink:href="#e" x="10.5" y="5" />
+                  <use xlink:href="#c" x="18" y="5" />
+                  <use xlink:href="#y" x="25.5" y="5" />
+                  <use xlink:href="#c" x="33.5" y="5" />
+                  <use xlink:href="#l" x="41.5" y="1" />
+                  <use xlink:href="#e" x="44" y="5" />
+                
+                </svg>
                 <hr class="mt-1">
                 <h1 class="mb-3">
                     Violation Report
@@ -191,7 +188,7 @@ span.class-node.highlight {
                         </b>
                     </div>
                 </div>
-                            <div class="pt-2">
+                <div class="pt-2">
                     <h2 class="slice text-capitalize mt-2">
                         Package
                     </h2>
@@ -877,7 +874,7 @@ span.class-node.highlight {
                         </dd>
                     </dl>
                 </div>
-                            <hr>
+                <hr>
                 <div class="footer small">
                     Generated by 
                     <a href="https://github.com/obecker/decycle" target="decycle">
@@ -890,4 +887,3 @@ span.class-node.highlight {
         </div>
     </body>
 </html>
-
