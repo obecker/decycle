@@ -46,7 +46,6 @@ public abstract class SlicedConstraint implements Constraint {
         final var deps = sg.edges().stream()
                 .filter(not(Edge::isIgnored))
                 .filter(e -> isViolatedBy(e.getFrom(), e.getTo()))
-                .map(Dependency::of)
                 .collect(Collectors.toCollection(TreeSet::new));
         return deps.isEmpty() ? List.of() : List.of(new Violation(this.sliceType, getShortString(), deps));
     }

@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.stream.Collectors;
 
 /**
  * The {@link CycleFree} {@link Constraint constraint} checks that there are no cyclic dependencies between the slices
@@ -29,8 +28,7 @@ public class CycleFree implements Constraint {
         for (final String sliceType : slicingSource.sliceTypes()) {
             if (!Node.CLASS.equals(sliceType)) {
                 for (final Set<Edge> comp : findComponents(slicingSource.slicing(sliceType))) {
-                    list.add(new Violation(sliceType, getShortString(),
-                            comp.stream().map(Dependency::of).collect(Collectors.toCollection(TreeSet::new))));
+                    list.add(new Violation(sliceType, getShortString(), new TreeSet<>(comp)));
                 }
             }
         }

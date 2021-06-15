@@ -73,6 +73,10 @@ public class Edge implements Comparable<Edge> {
         this.ignored &= ignored;
     }
 
+    public String displayString() {
+        return this.from.displayString() + " → " + this.to.displayString();
+    }
+
     @Override
     public int compareTo(final Edge other) {
         return COMPARATOR.compare(this, other);

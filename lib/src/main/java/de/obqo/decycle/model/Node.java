@@ -28,16 +28,6 @@ public class Node implements Comparable<Node> {
     public static final String CLASS = "Class";
     public static final String PACKAGE = "Package";
 
-    private static final Comparator<Node> COMPARATOR = Comparator.comparing(Node::getName);
-
-    private final @NonNull String type;
-
-    private final @NonNull String name;
-
-    public boolean hasType(final String type) {
-        return type.equals(this.type);
-    }
-
     public static Node classNode(final String name) {
         return new Node(CLASS, name);
     }
@@ -48,6 +38,20 @@ public class Node implements Comparable<Node> {
 
     public static Node sliceNode(final String type, final String name) {
         return new Node(type, name);
+    }
+
+    private static final Comparator<Node> COMPARATOR = Comparator.comparing(Node::getName);
+
+    private final @NonNull String type;
+
+    private final @NonNull String name;
+
+    public boolean hasType(final String type) {
+        return type.equals(this.type);
+    }
+
+    public String displayString() {
+        return this.name;
     }
 
     @Override

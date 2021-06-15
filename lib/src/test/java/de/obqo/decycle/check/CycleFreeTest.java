@@ -1,10 +1,11 @@
 package de.obqo.decycle.check;
 
+import static de.obqo.decycle.check.SimpleDependency.d;
+import static de.obqo.decycle.check.SimpleDependency.dependenciesIn;
 import static de.obqo.decycle.model.Node.classNode;
 import static de.obqo.decycle.slicer.ParallelCategorizer.parallel;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import de.obqo.decycle.check.Constraint.Dependency;
 import de.obqo.decycle.graph.Graph;
 import de.obqo.decycle.model.Node;
 import de.obqo.decycle.model.NodeFilter;
@@ -12,9 +13,7 @@ import de.obqo.decycle.slicer.IgnoredDependenciesFilter;
 import de.obqo.decycle.slicer.IgnoredDependency;
 import de.obqo.decycle.slicer.PackageCategorizer;
 
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 
@@ -22,14 +21,6 @@ class CycleFreeTest {
 
     private Node n(final String s) {
         return Node.sliceNode(s, s);
-    }
-
-    private Dependency d(final String from, final String to) {
-        return new Dependency(from, to);
-    }
-
-    private Set<Dependency> dependenciesIn(final List<Constraint.Violation> violations) {
-        return violations.stream().flatMap(v -> v.getDependencies().stream()).collect(Collectors.toSet());
     }
 
     private final CycleFree cycleFree = new CycleFree();

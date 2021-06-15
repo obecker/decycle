@@ -1,11 +1,13 @@
 package de.obqo.decycle.configuration;
 
 import static de.obqo.decycle.check.Layer.anyOf;
+import static de.obqo.decycle.check.SimpleDependency.d;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import de.obqo.decycle.check.Constraint;
 import de.obqo.decycle.check.DirectLayeringConstraint;
 import de.obqo.decycle.check.LayeringConstraint;
+import de.obqo.decycle.check.SimpleDependency;
 import de.obqo.decycle.slicer.IgnoredDependency;
 
 import java.io.FileWriter;
@@ -76,14 +78,12 @@ class ConfigurationTest {
 
         final var violation1 = violations.get(0);
         assertThat(violation1.getName()).isEqualTo("common => (helper, shared)");
-        assertThat(violation1.getDependencies()).containsOnly(new Constraint.Dependency("shared", "common"));
+        assertThat(violation1.getDependencies()).map(SimpleDependency::new).containsOnly(d("shared", "common"));
 
         final var violation2 = violations.get(1);
         assertThat(violation2.getName()).isEqualTo("no cycles");
-        assertThat(violation2.getDependencies()).containsOnly(
-                new Constraint.Dependency("common", "shared"),
-                new Constraint.Dependency("shared", "common")
-        );
+        assertThat(violation2.getDependencies()).map(SimpleDependency::new)
+                .containsOnly(d("common", "shared"), d("shared", "common"));
     }
 
     @Test

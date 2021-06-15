@@ -37,7 +37,7 @@ import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.mapping;
 import static java.util.stream.Collectors.toList;
 
-import de.obqo.decycle.check.Constraint;
+import de.obqo.decycle.check.Constraint.Violation;
 import de.obqo.decycle.graph.Graph;
 import de.obqo.decycle.graph.Slicing;
 import de.obqo.decycle.model.Node;
@@ -62,7 +62,7 @@ public class HtmlReport {
 
     private static final SliceComparator SLICE_COMPARATOR = new SliceComparator();
 
-    public void writeReport(final Graph graph, final List<Constraint.Violation> violations, final Appendable out,
+    public void writeReport(final Graph graph, final List<Violation> violations, final Appendable out,
             final String title, final boolean minify) {
 
         final var sliceSections = graph.sliceTypes().stream()
@@ -138,7 +138,7 @@ public class HtmlReport {
         return minify ? rawHtmlWithInlineFile_min(path) : rawHtmlWithInlineFile(path);
     }
 
-    private DomContent getViolationDiv(final List<Constraint.Violation> violations) {
+    private DomContent getViolationDiv(final List<Violation> violations) {
         return violations.isEmpty()
                 ? div().withClass("violations border rounded-lg pb-1 mb-3 alert-success row").with(
                 h1().withClass("m-0 pt-2").with(i().withClass("bi bi-check-circle-fill")),
@@ -146,18 +146,18 @@ public class HtmlReport {
                 : div().withClass("violations border rounded-lg pb-1 mb-3 alert-danger row").with(
                 h1().withClass("m-0 pt-2").with(i().withClass("bi bi-exclamation-triangle-fill")),
                 each(violations.stream()
-                        .sorted(Comparator.comparing(Constraint.Violation::getSliceType, SLICE_COMPARATOR)
-                                .thenComparing(Constraint.Violation::getName))
+                        .sorted(Comparator.comparing(Violation::getSliceType, SLICE_COMPARATOR)
+                                .thenComparing(Violation::getName))
                         .flatMap(this::getViolationDivColumns)));
     }
 
-    private Stream<DomContent> getViolationDivColumns(final Constraint.Violation v) {
+    private Stream<DomContent> getViolationDivColumns(final Violation v) {
         return Stream.of(
                 div().withClass("col-4 name mt-1").with(b(replaceArrows(v.getName()))),
                 div().withClass("col-8 dependencies mt-1")
                         .with(v.getDependencies().stream().map(dependency ->
-                                div(a(dependency.toString())
-                                        .withHref("#" + v.getSliceType() + "-" + dependency.getFrom())
+                                div(a(dependency.displayString())
+                                        .withHref("#" + v.getSliceType() + "-" + dependency.getFrom().getName())
                                         .withClass("alert-link")))));
     }
 
@@ -165,13 +165,12 @@ public class HtmlReport {
         return name.replace("->", "→").replace("=>", "⇨");
     }
 
-    private DomContent renderSliceSection(final Graph graph, final List<Constraint.Violation> violations,
-            final String sliceType) {
+    private DomContent renderSliceSection(final Graph graph, final List<Violation> violations, final String sliceType) {
         final Map<String, Map<String, List<String>>> violationsIndex =
                 violations.stream()
                         .filter(v -> v.getSliceType().equals(sliceType))
                         .flatMap(v -> v.getDependencies().stream()
-                                .map(d -> entry(d.getFrom(), entry(d.getTo(), v.getName()))))
+                                .map(d -> entry(d.getFrom().getName(), entry(d.getTo().getName(), v.getName()))))
                         .collect(groupingBy(Map.Entry::getKey, mapping(Map.Entry::getValue,
                                 groupingBy(Map.Entry::getKey, mapping(Map.Entry::getValue, toList())))));
 

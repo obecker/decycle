@@ -1,7 +1,7 @@
 package de.obqo.decycle.check;
 
 import static de.obqo.decycle.check.Layer.anyOf;
-import static de.obqo.decycle.check.MockSlicingSource.d;
+import static de.obqo.decycle.check.SimpleDependency.d;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;

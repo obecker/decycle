@@ -1,5 +1,10 @@
 package de.obqo.decycle.gradle;
 
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.toSet;
+
 import de.obqo.decycle.check.Constraint;
 import de.obqo.decycle.check.DirectLayeringConstraint;
 import de.obqo.decycle.check.Layer;
@@ -15,7 +20,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.gradle.api.GradleException;
@@ -33,12 +37,12 @@ public abstract class DecycleWorker implements WorkAction<DecycleWorkerParameter
 
     @Override
     public void execute() {
-        DecycleConfiguration configuration = getParameters().getConfiguration().get();
-        String classpath = getParameters().getClasspath().get();
-        File reportFile = getParameters().getReportFile().getAsFile().get();
-        String reportTitle = getParameters().getReportTitle().get();
+        final DecycleConfiguration configuration = getParameters().getConfiguration().get();
+        final String classpath = getParameters().getClasspath().get();
+        final File reportFile = getParameters().getReportFile().getAsFile().get();
+        final String reportTitle = getParameters().getReportTitle().get();
 
-        Configuration.ConfigurationBuilder builder = Configuration.builder();
+        final Configuration.ConfigurationBuilder builder = Configuration.builder();
 
         builder.classpath(classpath);
         builder.including(configuration.getIncludings());
@@ -46,11 +50,11 @@ public abstract class DecycleWorker implements WorkAction<DecycleWorkerParameter
         builder.ignoring(getIgnoredDependencies(configuration.getIgnoredDeps()));
         builder.slicings(
                 configuration.getSlicings().stream().collect(
-                        Collectors.toMap(SlicingConfiguration::getSliceType, this::getPatterns)));
+                        toMap(SlicingConfiguration::getSliceType, this::getPatterns)));
         builder.constraints(
                 configuration.getSlicings().stream().flatMap(
                         slConfig -> slConfig.getAllows().stream().map(allow -> getSlicedConstraint(slConfig, allow))
-                ).collect(Collectors.toSet()));
+                ).collect(toSet()));
 
         reportFile.getParentFile().mkdirs();
 
@@ -67,9 +71,11 @@ public abstract class DecycleWorker implements WorkAction<DecycleWorkerParameter
             logger.debug("decycle result: {}", violations);
 
             if (!violations.isEmpty()) {
-                throw new GradleException(String.format("%s\n\nSee the report at: %s", violations, reportFile));
+                throw new GradleException(String.format("%s\nSee the report at: %s",
+                        violations.stream().map(Constraint.Violation::displayString).collect(joining("\n")),
+                        reportFile));
             }
-        } catch (IOException ioException) {
+        } catch (final IOException ioException) {
             throw new GradleException(ioException.getMessage(), ioException);
         }
     }
@@ -78,22 +84,24 @@ public abstract class DecycleWorker implements WorkAction<DecycleWorkerParameter
     // Note: the configuration/extension classes of the plugin must not depend on decycle directly, since the
     // decycle classes exist only on the classpath of this worker, but not on the runtime classpath of the plugin.
 
-    private List<IgnoredDependency> getIgnoredDependencies(List<IgnoreConfig> ignoredDeps) {
+    private List<IgnoredDependency> getIgnoredDependencies(final List<IgnoreConfig> ignoredDeps) {
         return ignoredDeps.stream()
                 .map(ignoredDep -> new IgnoredDependency(ignoredDep.getFrom(), ignoredDep.getTo()))
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
-    private List<Pattern> getPatterns(SlicingConfiguration slicing) {
-        return slicing.getPatterns().stream().map(pattern -> {
-            // take care to map each NamedPatternConfig to a Decycle NamedPattern
-            if (pattern instanceof NamedPatternConfig) {
-                final NamedPatternConfig namedPattern = (NamedPatternConfig) pattern;
-                return new NamedPattern(namedPattern.getName(), namedPattern.getPattern());
-            } else {
-                return new UnnamedPattern((String) pattern);
-            }
-        }).collect(Collectors.toList());
+    private List<Pattern> getPatterns(final SlicingConfiguration slicing) {
+        return slicing.getPatterns().stream().map(this::mapPattern).collect(toList());
+    }
+
+    private Pattern mapPattern(final Object pattern) {
+        // map each NamedPatternConfig to a Decycle NamedPattern
+        if (pattern instanceof NamedPatternConfig) {
+            final NamedPatternConfig namedPattern = (NamedPatternConfig) pattern;
+            return new NamedPattern(namedPattern.getName(), namedPattern.getPattern());
+        } else {
+            return new UnnamedPattern((String) pattern);
+        }
     }
 
     private SlicedConstraint getSlicedConstraint(final SlicingConfiguration slConfig, final AllowConfiguration allow) {
@@ -102,15 +110,17 @@ public abstract class DecycleWorker implements WorkAction<DecycleWorkerParameter
                 : new LayeringConstraint(slConfig.getSliceType(), getSlices(allow));
     }
 
-    private List<Layer> getSlices(AllowConfiguration allow) {
-        return Stream.of(allow.getSlices()).map(slice -> {
-            // take care to map each LayerConfig to a Decycle Layer
-            if (slice instanceof LayerConfig) {
-                final LayerConfig layer = (LayerConfig) slice;
-                return layer.isStrict() ? Layer.oneOf(layer.getSlices()) : Layer.anyOf(layer.getSlices());
-            } else {
-                return Layer.anyOf((String) slice);
-            }
-        }).collect(Collectors.toList());
+    private List<Layer> getSlices(final AllowConfiguration allow) {
+        return Stream.of(allow.getSlices()).map(this::mapLayer).collect(toList());
+    }
+
+    private Layer mapLayer(final Object slice) {
+        // map each LayerConfig to a Decycle Layer
+        if (slice instanceof LayerConfig) {
+            final LayerConfig layer = (LayerConfig) slice;
+            return layer.isStrict() ? Layer.oneOf(layer.getSlices()) : Layer.anyOf(layer.getSlices());
+        } else {
+            return Layer.anyOf((String) slice);
+        }
     }
 }

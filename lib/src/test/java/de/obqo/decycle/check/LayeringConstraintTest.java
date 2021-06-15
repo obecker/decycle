@@ -2,11 +2,9 @@ package de.obqo.decycle.check;
 
 import static de.obqo.decycle.check.Layer.anyOf;
 import static de.obqo.decycle.check.Layer.oneOf;
-import static de.obqo.decycle.check.MockSlicingSource.d;
-import static de.obqo.decycle.check.MockSlicingSource.dependenciesIn;
+import static de.obqo.decycle.check.SimpleDependency.d;
+import static de.obqo.decycle.check.SimpleDependency.dependenciesIn;
 import static org.assertj.core.api.Assertions.assertThat;
-
-import de.obqo.decycle.check.Constraint.Dependency;
 
 import java.util.List;
 
@@ -14,9 +12,9 @@ import org.junit.jupiter.api.Test;
 
 class LayeringConstraintTest {
 
-    private LayeringConstraint c = new LayeringConstraint("t", List.of(anyOf("a"), anyOf("b"), anyOf("c")));
+    private final LayeringConstraint c = new LayeringConstraint("t", List.of(anyOf("a"), anyOf("b"), anyOf("c")));
 
-    private List<Constraint.Violation> violations(final String sliceType, final Dependency... deps) {
+    private List<Constraint.Violation> violations(final String sliceType, final SimpleDependency... deps) {
         return this.c.violations(new MockSlicingSource(sliceType, deps));
     }
 
