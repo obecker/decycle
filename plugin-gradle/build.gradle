@@ -5,18 +5,11 @@ plugins {
     id "com.gradle.plugin-publish" version "0.15.0"
 }
 
-version = rootProject.version
-group = rootProject.group
-
 ext {
     pluginId = 'de.obqo.decycle'
 }
 
 sourceCompatibility = 11
-
-repositories {
-    mavenCentral()
-}
 
 tasks.withType(JavaCompile) {
     options.compilerArgs << "-Xlint:all" << "-Werror"

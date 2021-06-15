@@ -5,18 +5,11 @@ plugins {
     id("io.freefair.lombok") version "6.0.0-m2"
 }
 
-group = rootProject.group
-version = rootProject.version
-
 val asmVersion: String by project
 val guavaVersion: String by project
 val j2htmlVersion: String by project
 val junitVersion: String by project
 val assertjVersion: String by project
-
-repositories {
-    mavenCentral()
-}
 
 dependencies {
     implementation("org.ow2.asm:asm:${asmVersion}")

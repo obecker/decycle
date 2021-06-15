@@ -6,3 +6,12 @@ tasks.wrapper {
     distributionType = Wrapper.DistributionType.ALL
 }
 
+subprojects {
+
+    group = rootProject.group
+    version = rootProject.version
+
+    repositories {
+        mavenCentral()
+    }
+}
