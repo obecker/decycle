@@ -2,12 +2,12 @@ package de.obqo.decycle.check;
 
 import static java.util.function.Predicate.not;
 
+import de.obqo.decycle.graph.MutableSlicing;
 import de.obqo.decycle.graph.SlicingSource;
 import de.obqo.decycle.model.Edge;
 import de.obqo.decycle.model.Node;
 
 import java.util.List;
-import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
@@ -46,8 +46,9 @@ public abstract class SlicedConstraint implements Constraint {
         final var deps = sg.edges().stream()
                 .filter(not(Edge::isIgnored))
                 .filter(e -> isViolatedBy(e.getFrom(), e.getTo()))
-                .collect(Collectors.toCollection(TreeSet::new));
-        return deps.isEmpty() ? List.of() : List.of(new Violation(this.sliceType, getShortString(), deps));
+                .collect(Collectors.toSet());
+        return deps.isEmpty() ? List.of()
+                : List.of(new Violation(getShortString(), MutableSlicing.create(this.sliceType, deps)));
     }
 
     @Override

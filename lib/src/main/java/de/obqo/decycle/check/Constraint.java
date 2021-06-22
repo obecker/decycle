@@ -2,11 +2,13 @@ package de.obqo.decycle.check;
 
 import static java.util.stream.Collectors.joining;
 
+import de.obqo.decycle.graph.Slicing;
 import de.obqo.decycle.graph.SlicingSource;
 import de.obqo.decycle.model.Edge;
 
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 import lombok.Value;
 
@@ -19,16 +21,24 @@ public interface Constraint {
     @Value
     class Violation {
 
-        private String sliceType;
-        private String name;
-        private Set<Edge> dependencies;
+        String name;
+        Slicing violatingSubgraph;
+
+        public String getSliceType() {
+            return this.violatingSubgraph.getSliceType();
+        }
+
+        public Set<Edge> getDependencies() {
+            return new TreeSet<>(this.violatingSubgraph.edges());
+        }
 
         public String displayString() {
             return String.format(
                     "Violation(slicing=%s, name=%s, dependencies=[%s])",
-                    this.sliceType,
+                    getSliceType(),
                     this.name,
-                    this.dependencies.stream().map(Edge::displayString).collect(joining(", ")));
+                    getDependencies().stream().map(Edge::displayString).collect(joining(", "))
+            );
         }
     }
 

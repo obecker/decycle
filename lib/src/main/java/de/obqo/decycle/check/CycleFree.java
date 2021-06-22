@@ -2,6 +2,7 @@ package de.obqo.decycle.check;
 
 import static de.obqo.decycle.graph.StronglyConnectedComponentsFinder.findComponents;
 
+import de.obqo.decycle.graph.MutableSlicing;
 import de.obqo.decycle.graph.SlicingSource;
 import de.obqo.decycle.model.Edge;
 import de.obqo.decycle.model.Node;
@@ -9,7 +10,6 @@ import de.obqo.decycle.model.Node;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 
 /**
  * The {@link CycleFree} {@link Constraint constraint} checks that there are no cyclic dependencies between the slices
@@ -28,7 +28,7 @@ public class CycleFree implements Constraint {
         for (final String sliceType : slicingSource.sliceTypes()) {
             if (!Node.CLASS.equals(sliceType)) {
                 for (final Set<Edge> comp : findComponents(slicingSource.slicing(sliceType))) {
-                    list.add(new Violation(sliceType, getShortString(), new TreeSet<>(comp)));
+                    list.add(new Violation(getShortString(), MutableSlicing.create(sliceType, comp)));
                 }
             }
         }
