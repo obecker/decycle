@@ -3,6 +3,7 @@ package de.obqo.decycle.graph;
 import de.obqo.decycle.model.Edge;
 import de.obqo.decycle.model.Node;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -24,4 +25,9 @@ public interface Slicing {
     Set<Edge> outEdges(final Node node);
 
     Optional<Edge> edgeConnecting(final Node fromNode, final Node toNode);
+
+    /**
+     * @return the nodes of this slicing in topological order (which is undefined if the slicing has cycles)
+     */
+    List<Node> orderedNodes();
 }

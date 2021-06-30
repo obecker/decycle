@@ -17,6 +17,8 @@ dependencies {
         exclude(group = "org.checkerframework")
     }
     implementation( "com.j2html:j2html:${j2htmlVersion}")
+    implementation("org.javastack:fontmetrics:1.0.0")
+    testImplementation("org.slf4j:slf4j-jdk14:1.7.30")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
     testImplementation("org.junit.jupiter:junit-jupiter-params:$junitVersion")
