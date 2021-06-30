@@ -66,7 +66,7 @@ class DepthFirstOrder {
         this.preorder.add(n);
         for (final Edge e : g.outEdges(n)) {
             final Node w = e.getTo();
-            if (!this.marked.contains(w)) {
+            if (!e.isIgnored() && !this.marked.contains(w)) {
                 depthFirstSearch(g, w);
             }
         }
@@ -119,9 +119,9 @@ class DepthFirstOrder {
     /**
      * Returns the nodes in reverse postorder.
      *
-     * @return the nodes in reverse postorder, as an iterable of nodes
+     * @return the nodes in reverse postorder
      */
-    public Iterable<Node> reversePost() {
+    public List<Node> reversePost() {
         final List<Node> reverse = new ArrayList<>(this.postorder);
         Collections.reverse(reverse);
         return reverse;

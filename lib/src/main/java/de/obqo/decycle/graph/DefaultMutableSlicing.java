@@ -3,6 +3,7 @@ package de.obqo.decycle.graph;
 import de.obqo.decycle.model.Edge;
 import de.obqo.decycle.model.Node;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -49,5 +50,10 @@ class DefaultMutableSlicing implements MutableSlicing {
     @Override
     public Optional<Edge> edgeConnecting(final Node fromNode, final Node toNode) {
         return this.network.edgeConnecting(fromNode, toNode);
+    }
+
+    @Override
+    public List<Node> orderedNodes() {
+        return new Topological(this).order();
     }
 }

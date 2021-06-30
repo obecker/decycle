@@ -3,6 +3,22 @@ package de.obqo.decycle.report;
 import static de.obqo.decycle.report.MarkupReader.base64FromFile_min;
 import static de.obqo.decycle.report.MarkupReader.rawHtmlWithInlineFile;
 import static de.obqo.decycle.report.MarkupReader.rawHtmlWithInlineFile_min;
+import static de.obqo.decycle.report.svg.DynIdAttribute.dynId;
+import static de.obqo.decycle.report.svg.DynIdAttribute.ref;
+import static de.obqo.decycle.report.svg.DynIdAttribute.resetDynIds;
+import static de.obqo.decycle.report.svg.DynIdAttribute.url;
+import static de.obqo.decycle.report.svg.PathBuilder.from;
+import static de.obqo.decycle.report.svg.SvgTagBuilder.clipPath;
+import static de.obqo.decycle.report.svg.SvgTagBuilder.defs;
+import static de.obqo.decycle.report.svg.SvgTagBuilder.g;
+import static de.obqo.decycle.report.svg.SvgTagBuilder.linearGradient;
+import static de.obqo.decycle.report.svg.SvgTagBuilder.marker;
+import static de.obqo.decycle.report.svg.SvgTagBuilder.path;
+import static de.obqo.decycle.report.svg.SvgTagBuilder.rect;
+import static de.obqo.decycle.report.svg.SvgTagBuilder.stop;
+import static de.obqo.decycle.report.svg.SvgTagBuilder.svg;
+import static de.obqo.decycle.report.svg.SvgTagBuilder.text;
+import static de.obqo.decycle.report.svg.SvgTagBuilder.use;
 import static j2html.TagCreator.a;
 import static j2html.TagCreator.b;
 import static j2html.TagCreator.body;
@@ -40,18 +56,20 @@ import static java.util.stream.Collectors.toList;
 import de.obqo.decycle.check.Constraint.Violation;
 import de.obqo.decycle.graph.Graph;
 import de.obqo.decycle.graph.Slicing;
-import de.obqo.decycle.graph.Topological;
 import de.obqo.decycle.model.Node;
+import de.obqo.decycle.report.svg.SvgTag;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
+
+import org.javastack.fontmetrics.SimpleFontMetrics;
 
 import j2html.TagCreator;
 import j2html.rendering.FlatHtml;
@@ -63,9 +81,12 @@ import j2html.tags.specialized.StyleTag;
 public class HtmlReport {
 
     private static final SliceComparator SLICE_COMPARATOR = new SliceComparator();
+    private static final SimpleFontMetrics metrics = SimpleFontMetrics.getInstance();
 
     public void writeReport(final Graph graph, final List<Violation> violations, final Appendable out,
             final String title, final boolean minify) {
+
+        resetDynIds();
 
         final var sliceSections = graph.sliceTypes().stream()
                 .filter(Predicate.not(Node.CLASS::equals))
@@ -106,6 +127,7 @@ public class HtmlReport {
                                         h1().withClass("mb-3")
                                                 .withText("Violation Report" + (title != null ? " for " + title : "")),
                                         getViolationDiv(violations),
+                                        each(violations, vio -> dependencyGraph(vio.getViolatingSubgraph())),
                                         each(sliceSections),
                                         hr(),
                                         div().withClass("footer small").with(
@@ -178,16 +200,108 @@ public class HtmlReport {
 
         final Slicing slicing = graph.slicing(sliceType);
 
-        final Iterable<Node> order = new Topological(slicing).order();
-        final Stream<Node> stream = StreamSupport.stream(order.spliterator(), false);
-
         return div().withClass("pt-2").with(
                 h2(sliceType).withClass("slice text-capitalize mt-2"),
                 dl().withClass("slices row border rounded-lg py-1").with(
-//                        slicing.nodes().stream()
-//                                .sorted()
-                        stream
-                                .flatMap(node -> renderNodeTableRow(graph, slicing, violationsIndex, node))));
+                        slicing.nodes().stream()
+                                .sorted()
+                                .flatMap(node -> renderNodeTableRow(graph, slicing, violationsIndex, node))),
+                dependencyGraph(slicing)
+        );
+    }
+
+    private SvgTag dependencyGraph(final Slicing slicing) {
+        final List<Node> nodeList = slicing.orderedNodes();
+        final int maxTextWidth = nodeList.stream().map(Node::getName).mapToInt(metrics::widthOf).max().orElse(0);
+        final int verticalDistance = 420;
+        final int boxWidth = maxTextWidth + 100;
+        final int boxHeight = 200;
+
+        final int arrowSpacing = 60;  // distance between in- and outgoing arcs
+        final int arrowLength = 55;
+
+        final int xShrinkFactor = 2;
+
+        final int totalHeight = (nodeList.size() - 1) * verticalDistance + boxHeight;
+        final int sidePadding = totalHeight / 2 / xShrinkFactor + arrowLength;
+        final int totalWidth = boxWidth + 2 * sidePadding;
+
+        final Map<Node, Integer> nodePositionMap = new HashMap<>();
+
+        final String arrowHead = "M85.2 50 21.2 82a4.8 4.8 0 0 1-6.4-4.8l6.4-28.16-6.4-28.16a4.8 4.8 0 0 1 6.4-4.8z";
+        return svg().widthAndHeight(totalWidth / 8, totalHeight / 8).viewBox(0, 0, totalWidth, totalHeight)
+                .withClass("p-2 border rounded").with(
+                        defs().with(
+                                marker().attr(dynId("af")).markerWidth(100).markerHeight(100)
+                                        .refX(83 - arrowLength).refY(50)
+                                        .orient("auto").markerUnits("userSpaceOnUse")
+                                        .with(path().fill("black").d(arrowHead)),
+                                marker().attr(dynId("ab")).markerWidth(100).markerHeight(100)
+                                        .refX(83 - arrowLength).refY(50)
+                                        .orient("auto").markerUnits("userSpaceOnUse")
+                                        .with(path().fill("#721c24").d(arrowHead)),
+                                linearGradient().attr(dynId("lg")).attr("x2", 0).attr("y2", "100%").with(
+                                        stop().offset(0).stopColor("#bbb").stopOpacity(0.1),
+                                        stop().offset(1).stopOpacity(0.1)),
+                                clipPath().attr(dynId("cl")).with(
+                                        rect().widthAndHeight(boxWidth, boxHeight).rx(35)),
+                                g().attr(dynId("box")).clipPath(url("cl")).with(
+                                        rect().widthAndHeight(boxWidth, boxHeight).fill("#c6d8ec"),
+                                        rect().widthAndHeight(boxWidth, boxHeight).fill(url("lg"))
+                                )
+                        ),
+                        each(nodeList, (index, node) -> {
+                            final int yPos = index * verticalDistance;
+                            nodePositionMap.put(node, yPos);
+                            final String text = node.getName();
+                            return each(
+                                    use().attr("xlink:href", ref("box"))
+                                            .attr("x", sidePadding)
+                                            .attr("y", yPos),
+                                    g().textAnchor("middle")
+                                            .fontFamily("Verdana,Geneva,DejaVu Sans,sans-serif")
+                                            .textRendering("geometricPrecision")
+                                            .fontSize("110px").with(
+                                            text().attr("x", sidePadding + boxWidth / 2 + 5)
+                                                    .attr("y", 150 + yPos)
+                                                    .fill("#F1F1F1")
+                                                    .fillOpacity(0.5)
+                                                    .withText(text),
+                                            text().attr("x", sidePadding + boxWidth / 2)
+                                                    .attr("y", 140 + yPos)
+                                                    .fill("#000")
+                                                    .withText(text)
+                                    ));
+                        }),
+                        each(slicing.edges(), edge -> {
+                            final int positionFrom = nodePositionMap.get(edge.getFrom());
+                            final int positionTo = nodePositionMap.get(edge.getTo());
+                            if (positionFrom < positionTo) {
+                                return path()
+                                        .d(from(sidePadding + boxWidth,
+                                                positionFrom + boxHeight / 2.0 + arrowSpacing / 2.0)
+                                                .relHorizontalLineTo(arrowLength)
+                                                .relArc((positionTo - positionFrom) / 2.0 / xShrinkFactor,
+                                                        (positionTo - positionFrom - arrowSpacing) / 2.0,
+                                                        180, true, true, 0, positionTo - positionFrom - arrowSpacing))
+                                        .stroke("black").strokeWidth(10).fill("none")
+                                        .condAttr(edge.isIgnored(), "stroke-dasharray", "20")
+                                        .condAttr(edge.isIgnored(), "stroke-opacity", "0.5")
+                                        .markerEnd(url("af"));
+                            } else {
+                                return path()
+                                        .d(from(sidePadding, positionFrom + boxHeight / 2.0 - arrowSpacing / 2.0)
+                                                .relHorizontalLineTo(-arrowLength)
+                                                .relArc((positionFrom - positionTo) / 2.0 / xShrinkFactor,
+                                                        (positionFrom - positionTo - arrowSpacing) / 2.0,
+                                                        180, true, true, 0, positionTo - positionFrom + arrowSpacing))
+                                        .stroke("#721c24").strokeWidth(10).fill("none")
+                                        .condAttr(edge.isIgnored(), "stroke-dasharray", "20")
+                                        .condAttr(edge.isIgnored(), "stroke-opacity", "0.5")
+                                        .markerEnd(url("ab"));
+                            }
+                        })
+                );
     }
 
     private Stream<DomContent> renderNodeTableRow(final Graph graph, final Slicing slicing,

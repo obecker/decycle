@@ -3,6 +3,7 @@ package de.obqo.decycle.graph;
 import de.obqo.decycle.model.Node;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -22,9 +23,9 @@ import java.util.Map;
  * @author Robert Sedgewick
  * @author Kevin Wayne
  */
-public class Topological {
+class Topological {
 
-    private Iterable<Node> order;  // topological order
+    private List<Node> order;  // topological order
     private Map<Node, Integer> rank;
 
     /**
@@ -45,10 +46,10 @@ public class Topological {
     /**
      * Returns a topological order if the directed graph has a topologial order, and some other order otherwise.
      *
-     * @return a topological order of the nodes (as an interable) if the directed graph has a topological order (or
-     * equivalently, if the digraph is a DAG), and some other order otherwise
+     * @return the nodes in topological order if the directed graph has a topological order (or equivalently, if the
+     * digraph is a DAG), and some other order otherwise
      */
-    public Iterable<Node> order() {
+    public List<Node> order() {
         return this.order;
     }
 
