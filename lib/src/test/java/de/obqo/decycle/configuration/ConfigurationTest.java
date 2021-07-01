@@ -17,7 +17,6 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 class ConfigurationTest {
@@ -88,7 +87,6 @@ class ConfigurationTest {
     }
 
     @Test
-    @Disabled("order is not deterministic (yet)")
     void shouldWriteReport() throws IOException {
         final StringBuilder out = new StringBuilder();
 

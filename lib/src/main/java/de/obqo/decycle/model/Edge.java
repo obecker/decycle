@@ -4,8 +4,6 @@ import java.util.Comparator;
 
 import com.google.common.annotations.VisibleForTesting;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
@@ -34,7 +32,6 @@ import lombok.Getter;
  */
 @Getter
 @EqualsAndHashCode(of = { "from", "to", "label" })
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Edge implements Comparable<Edge> {
 
     public static Edge references(final Node from, final Node to, final boolean ignored) {
@@ -54,12 +51,24 @@ public class Edge implements Comparable<Edge> {
         CONTAINS, REFERENCES
     }
 
-    private static final Comparator<Edge> COMPARATOR = Comparator.comparing(Edge::getFrom).thenComparing(Edge::getTo);
+    public static final Comparator<Edge> COMPARATOR = Comparator.comparing(Edge::getFrom).thenComparing(Edge::getTo);
 
+    // stateless identity attributes of an edge
     private final Node from;
     private final Node to;
     private final EdgeLabel label;
+
+    // stateful attributes for REFERENCES edges
     private boolean ignored;
+    private int weight = 1;
+    private boolean violating = false;
+
+    private Edge(final Node from, final Node to, final EdgeLabel label, final boolean ignored) {
+        this.from = from;
+        this.to = to;
+        this.label = label;
+        this.ignored = ignored;
+    }
 
     public boolean isReferencing() {
         return this.label == EdgeLabel.REFERENCES;
@@ -69,8 +78,17 @@ public class Edge implements Comparable<Edge> {
         return this.label == EdgeLabel.CONTAINS;
     }
 
-    public void ignore(final boolean ignored) {
-        this.ignored &= ignored;
+    public void combine(final Edge edge) {
+        this.ignored &= edge.isIgnored();
+        this.weight += edge.weight;
+    }
+
+    public void setViolating() {
+        this.violating = true;
+    }
+
+    public boolean isIncluded() {
+        return !(isIgnored() || isViolating());
     }
 
     public String displayString() {

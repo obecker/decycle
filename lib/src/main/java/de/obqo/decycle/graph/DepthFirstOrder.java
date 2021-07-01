@@ -5,12 +5,14 @@ import de.obqo.decycle.model.Node;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * The {@code DepthFirstOrder} class represents a data type for determining depth-first search ordering of the nodes in
@@ -52,7 +54,7 @@ class DepthFirstOrder {
      * @param g the directed graph
      */
     public DepthFirstOrder(final Slicing g) {
-        for (final Node node : g.nodes()) {
+        for (final Node node : sorted(g.nodes(), Node.COMPARATOR.reversed())) { // for a deterministic order
             if (!this.marked.contains(node)) {
                 depthFirstSearch(g, node);
             }
@@ -64,14 +66,20 @@ class DepthFirstOrder {
         this.marked.add(n);
         this.pre.put(n, this.preCounter++);
         this.preorder.add(n);
-        for (final Edge e : g.outEdges(n)) {
+        for (final Edge e : sorted(g.outEdges(n), Edge.COMPARATOR.reversed())) { // for a deterministic order
             final Node w = e.getTo();
-            if (!e.isIgnored() && !this.marked.contains(w)) {
+            if (e.isIncluded() && !this.marked.contains(w)) {
                 depthFirstSearch(g, w);
             }
         }
         this.postorder.add(n);
         this.post.put(n, this.postCounter++);
+    }
+
+    private <T> Set<T> sorted(final Set<T> set, final Comparator<T> comparator) {
+        final Set<T> result = new TreeSet<>(comparator);
+        result.addAll(set);
+        return result;
     }
 
     /**

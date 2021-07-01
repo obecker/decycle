@@ -34,7 +34,7 @@ public class StronglyConnectedComponentsFinder {
             final Set<Edge> edges = new HashSet<>();
             for (final Node from : component) {
                 for (final Node to : component) {
-                    graph.edgeConnecting(from, to).ifPresent(edges::add);
+                    graph.edgeConnecting(from, to).filter(Edge::isIncluded).ifPresent(edges::add);
                 }
             }
             result.add(edges);
@@ -104,7 +104,7 @@ public class StronglyConnectedComponentsFinder {
         private final Set<Set<Node>> multiNodeComponents;
 
         /**
-         * Computes the strong components of the directed graph {@code grapg}.
+         * Computes the strong components of the directed graph {@code graph}.
          *
          * @param graph the directed graph
          */
@@ -133,7 +133,7 @@ public class StronglyConnectedComponentsFinder {
             this.low.put(node, min);
             stack.push(node);
             for (final Edge edge : this.graph.outEdges(node)) {
-                if (!edge.isIgnored()) {
+                if (edge.isIncluded()) {
                     final Node next = edge.getTo();
                     if (!this.marked.contains(next)) {
                         depthFirstSearch(next, stack);

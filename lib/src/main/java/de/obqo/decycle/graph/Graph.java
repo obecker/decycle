@@ -11,7 +11,9 @@ import de.obqo.decycle.model.Node;
 import de.obqo.decycle.model.NodeFilter;
 import de.obqo.decycle.slicer.Categorizer;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -34,6 +36,8 @@ public class Graph implements SlicingSource {
     private final EdgeFilter ignoredEdgesFilter;
 
     private final MutableNetwork<Node, Edge> internalGraph = NetworkBuilder.directed().build();
+
+    private final Map<String, Slicing> slicingCache = new HashMap<>();
 
     public Graph() {
         this(null);
@@ -124,6 +128,10 @@ public class Graph implements SlicingSource {
 
     @Override
     public Slicing slicing(final String name) {
+        return this.slicingCache.computeIfAbsent(name, this::computeSlicing);
+    }
+
+    private MutableSlicing computeSlicing(final String name) {
         final var slice = MutableSlicing.create(name);
 
         final var sliceNodeFinder = new SliceNodeFinder(name, this.internalGraph);
@@ -137,8 +145,8 @@ public class Graph implements SlicingSource {
                 .forEach(edge -> sliceNodeFinder.find(edge.getFrom()).ifPresent(n1 ->
                         sliceNodeFinder.find(edge.getTo()).filter(not(n1::equals)).ifPresent(n2 ->
                                 slice.edgeConnecting(n1, n2).ifPresentOrElse(
-                                        // if present, set/toggle ignored flag
-                                        slideEdge -> slideEdge.ignore(edge.isIgnored()),
+                                        // if present, combine with existing edge (set ignored flag, increase weight)
+                                        slideEdge -> slideEdge.combine(edge),
                                         // else add new slice edge
                                         () -> slice.addEdge(Edge.references(n1, n2, edge.isIgnored()))))));
 
