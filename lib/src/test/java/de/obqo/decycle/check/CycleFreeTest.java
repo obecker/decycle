@@ -5,14 +5,17 @@ import static de.obqo.decycle.check.SimpleDependency.dependenciesIn;
 import static de.obqo.decycle.model.Node.classNode;
 import static de.obqo.decycle.slicer.ParallelCategorizer.parallel;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.InstanceOfAssertFactories.iterable;
 
 import de.obqo.decycle.graph.Graph;
+import de.obqo.decycle.model.Edge;
 import de.obqo.decycle.model.Node;
 import de.obqo.decycle.model.NodeFilter;
 import de.obqo.decycle.slicer.IgnoredDependenciesFilter;
 import de.obqo.decycle.slicer.IgnoredDependency;
 import de.obqo.decycle.slicer.PackageCategorizer;
 
+import java.util.List;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
@@ -78,5 +81,35 @@ class CycleFreeTest {
         g.connect(classNode("de.p3.C1"), classNode("de.p1.A2"));
 
         assertThat(dependenciesIn(this.cycleFree.violations(g))).isEmpty();
+    }
+
+    @Test
+    void shouldDetectViolatingEdgesWithinACycle() {
+        final var g = new Graph(new PackageCategorizer());
+        // three dependencies from de.p1 to de.p2
+        g.connect(classNode("de.p1.A1"), classNode("de.p2.B1"));
+        g.connect(classNode("de.p1.A1"), classNode("de.p2.B2"));
+        g.connect(classNode("de.p1.A2"), classNode("de.p2.B2"));
+        // one dependency from de.p2 to de.p3 -> will be considered violating
+        g.connect(classNode("de.p2.B1"), classNode("de.p3.C2"));
+        // two dependencies from de.p3 to de.p1
+        g.connect(classNode("de.p3.C1"), classNode("de.p1.A2"));
+        g.connect(classNode("de.p3.C2"), classNode("de.p1.A1"));
+
+        final List<Constraint.Violation> violations = this.cycleFree.violations(g);
+        assertThat(violations).singleElement().extracting(Constraint.Violation::getDependencies, iterable(Edge.class))
+                .hasSize(3)
+                .anySatisfy(edge -> {
+                    assertThat(new SimpleDependency(edge)).isEqualTo(d("de.p1", "de.p2"));
+                    assertThat(edge.isViolating()).isFalse();
+                })
+                .anySatisfy(e -> {
+                    assertThat(new SimpleDependency(e)).isEqualTo(d("de.p2", "de.p3"));
+                    assertThat(e.isViolating()).isTrue();
+                })
+                .anySatisfy(e -> {
+                    assertThat(new SimpleDependency(e)).isEqualTo(d("de.p3", "de.p1"));
+                    assertThat(e.isViolating()).isFalse();
+                });
     }
 }

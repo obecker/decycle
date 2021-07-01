@@ -40,7 +40,7 @@ public class Node implements Comparable<Node> {
         return new Node(type, name);
     }
 
-    private static final Comparator<Node> COMPARATOR = Comparator.comparing(Node::getName);
+    public static final Comparator<Node> COMPARATOR = Comparator.comparing(Node::getName);
 
     private final @NonNull String type;
 

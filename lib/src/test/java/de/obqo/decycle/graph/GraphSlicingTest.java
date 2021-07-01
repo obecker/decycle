@@ -164,4 +164,40 @@ class GraphSlicingTest {
         assertThat(slices.edgeConnecting(a, b)).hasValueSatisfying(edge -> assertThat(edge.isIgnored()).isFalse());
         assertThat(slices.edgeConnecting(a, c)).hasValueSatisfying(edge -> assertThat(edge.isIgnored()).isTrue());
     }
+
+    @Test
+    void shouldComputeWeightForSliceEdges() {
+        // given
+        final var SLICE = "Slice";
+        final var cat = parallel(new PackageCategorizer(), new PatternMatchingCategorizer(SLICE, "package.(*).**"));
+        final var g = new Graph(cat, NodeFilter.ALL);
+
+        final var a1 = classNode("package.a.A1");
+        final var a2 = classNode("package.a.A2");
+        final var b1 = classNode("package.b.B1");
+        final var b2 = classNode("package.b.B2");
+        final var bsub1 = classNode("package.b.sub.B1");
+        final var c1 = classNode("package.c.C1");
+        final var c2 = classNode("package.c.C2");
+        // a -> b
+        g.connect(a1, b1);
+        g.connect(a2, b2);
+        g.connect(a1, b2);
+        g.connect(a1, bsub1);
+        g.connect(a2, bsub1);
+        // a -> c
+        g.connect(a1, c1);
+        g.connect(a1, c1); // duplicate, not counted
+        g.connect(a2, c2);
+
+        // when
+        final Slicing slices = g.slicing(SLICE);
+        final Node a = sliceNode(SLICE, "a");
+        final Node b = sliceNode(SLICE, "b");
+        final Node c = sliceNode(SLICE, "c");
+
+        // then
+        assertThat(slices.edgeConnecting(a, b)).hasValueSatisfying(edge -> assertThat(edge.getWeight()).isEqualTo(5));
+        assertThat(slices.edgeConnecting(a, c)).hasValueSatisfying(edge -> assertThat(edge.getWeight()).isEqualTo(2));
+    }
 }
