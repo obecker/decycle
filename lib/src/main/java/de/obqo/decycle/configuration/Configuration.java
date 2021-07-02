@@ -172,7 +172,7 @@ public class Configuration {
                 .sorted(Comparator.comparing(Violation::getSliceType).thenComparing(Violation::getName))
                 .collect(toList());
         if (this.report != null) {
-            new HtmlReport().writeReport(this.graph, violations, this.report, this.reportTitle, this.minifyReport);
+            new HtmlReport(this.minifyReport).writeReport(this.graph, violations, this.report, this.reportTitle);
         }
         return violations;
     }

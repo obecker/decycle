@@ -70,22 +70,23 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import org.javastack.fontmetrics.SimpleFontMetrics;
-
 import j2html.TagCreator;
 import j2html.rendering.FlatHtml;
 import j2html.rendering.IndentedHtml;
 import j2html.tags.DomContent;
 import j2html.tags.specialized.ScriptTag;
 import j2html.tags.specialized.StyleTag;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 public class HtmlReport {
 
     private static final SliceComparator SLICE_COMPARATOR = new SliceComparator();
-    private static final SimpleFontMetrics metrics = SimpleFontMetrics.getInstance();
+
+    private final boolean minify;
 
     public void writeReport(final Graph graph, final List<Violation> violations, final Appendable out,
-            final String title, final boolean minify) {
+            final String title) {
 
         resetDynIds();
 
@@ -113,17 +114,17 @@ public class HtmlReport {
                         link().withRel("stylesheet")
                                 .withHref(
                                         "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css"),
-                        inlineStyle(minify, "/report/custom.css"),
+                        inlineStyle(this.minify, "/report/custom.css"),
                         // https://code.jquery.com
                         script().withSrc("https://code.jquery.com/jquery-3.6.0.min.js")
                                 .attr("integrity", "sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=")
                                 .attr("crossorigin", "anonymous"),
-                        inlineScript(minify, "/report/custom.js")
+                        inlineScript(this.minify, "/report/custom.js")
                 ),
                 body(
                         div().withClass("container-fluid p-3").with(
                                 div().withClass("mx-2").with(
-                                        inlineMarkup(minify, "/report/logo.svg"),
+                                        inlineMarkup(this.minify, "/report/logo.svg"),
                                         hr().withClass("mt-1"),
                                         h1().withClass("mb-3")
                                                 .withText("Violation Report" + (title != null ? " for " + title : "")),
@@ -146,7 +147,7 @@ public class HtmlReport {
         );
 
         try {
-            html.render(minify ? FlatHtml.into(out) : IndentedHtml.into(out));
+            html.render(this.minify ? FlatHtml.into(out) : IndentedHtml.into(out));
         } catch (final IOException exception) {
             throw new UncheckedIOException(exception);
         }
@@ -214,6 +215,7 @@ public class HtmlReport {
 
     private SvgTag dependencyGraph(final Slicing slicing) {
         final List<Node> nodeList = slicing.orderedNodes();
+        final FontMetricsSupport metrics = FontMetricsSupport.get(this.minify);
         final int maxTextWidth = nodeList.stream().map(Node::getName).mapToInt(metrics::widthOf).max().orElse(0);
         final int verticalDistance = 420;
         final int boxWidth = maxTextWidth + 100;
