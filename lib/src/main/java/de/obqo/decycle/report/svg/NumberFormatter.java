@@ -5,11 +5,11 @@ import java.util.Locale;
 
 class NumberFormatter {
 
-    private static NumberFormat numberFormat;
+    private static final NumberFormat numberFormat;
 
     static {
         numberFormat = NumberFormat.getInstance(Locale.ENGLISH);
-        numberFormat.setMaximumFractionDigits(3);
+        numberFormat.setMaximumFractionDigits(2);
         numberFormat.setMinimumIntegerDigits(0);
         numberFormat.setGroupingUsed(false);
     }

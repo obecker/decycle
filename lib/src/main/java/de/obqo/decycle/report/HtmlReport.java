@@ -56,6 +56,7 @@ import static java.util.stream.Collectors.toList;
 import de.obqo.decycle.check.Constraint.Violation;
 import de.obqo.decycle.graph.Graph;
 import de.obqo.decycle.graph.Slicing;
+import de.obqo.decycle.model.Edge;
 import de.obqo.decycle.model.Node;
 import de.obqo.decycle.report.svg.SvgTag;
 
@@ -222,6 +223,7 @@ public class HtmlReport {
         final int arrowLength = 55;
 
         final int xShrinkFactor = 2;
+        final int svgShrinkFactor = 8;
 
         final int totalPadding = 100;
         final int totalHeight = (nodeList.size() - 1) * verticalDistance + boxHeight + 2 * totalPadding;
@@ -235,8 +237,9 @@ public class HtmlReport {
         final Map<Node, Integer> nodePositionMap = new HashMap<>();
 
         final String arrowHead = "M85.2 50 21.2 82a4.8 4.8 0 0 1-6.4-4.8l6.4-28.16-6.4-28.16a4.8 4.8 0 0 1 6.4-4.8z";
-        return svg().widthAndHeight(totalWidth / 8, totalHeight / 8).viewBox(0, 0, totalWidth, totalHeight)
-                .withClass("border rounded mr-3").with(
+        return svg().widthAndHeight(totalWidth / svgShrinkFactor, totalHeight / svgShrinkFactor)
+                .viewBox(0, 0, totalWidth, totalHeight)
+                .withClass("dependency-graph border rounded mr-3").with(
                         defs().with(
                                 marker().attr(dynId("af")).markerWidth(100).markerHeight(100)
                                         .refX(83 - arrowLength).refY(50)
@@ -260,25 +263,22 @@ public class HtmlReport {
                             final int yPos = index * verticalDistance + totalPadding;
                             nodePositionMap.put(node, yPos);
                             final String text = node.getName();
+                            final String hrefTarget = "#" + slicing.getSliceType() + "-" + node.getName();
                             return each(
-                                    use().attr("xlink:href", ref("box"))
+                                    use().attr("xlink:href", ref("box")).attr("href", ref("box"))
                                             .attr("x", leftBox)
                                             .attr("y", yPos),
-                                    g().textAnchor("middle")
-                                            .fontFamily("Verdana,Geneva,DejaVu Sans,sans-serif")
-                                            .textRendering("geometricPrecision")
-                                            .fontSize("110px").with(
-                                            a().withHref("#" + slicing.getSliceType() + "-" + node.getName()).with(
-                                                    text().attr("x", centerBox + 5)
-                                                            .attr("y", 150 + yPos)
-                                                            .fill("#F1F1F1")
-                                                            .fillOpacity(0.5)
-                                                            .withText(text),
-                                                    text().attr("x", centerBox)
-                                                            .attr("y", 140 + yPos)
-                                                            .fill("#000")
-                                                            .withText(text))
-                                    ));
+                                    a().attr("xlink:href", hrefTarget).withHref(hrefTarget).with(
+                                            text().attr("x", centerBox + 5)
+                                                    .attr("y", 150 + yPos)
+                                                    .fill("#F1F1F1")
+                                                    .fillOpacity(0.5)
+                                                    .withText(text),
+                                            text().attr("x", centerBox)
+                                                    .attr("y", 140 + yPos)
+                                                    .fill("#000")
+                                                    .withText(text))
+                            );
                         }),
                         each(slicing.edges().stream().sorted().map(edge -> {
                             final int positionFrom = nodePositionMap.get(edge.getFrom());
@@ -290,9 +290,9 @@ public class HtmlReport {
                                                 .relArc((positionTo - positionFrom) / 2.0 / xShrinkFactor,
                                                         (positionTo - positionFrom - arrowSpacing) / 2.0,
                                                         180, true, true, 0, positionTo - positionFrom - arrowSpacing))
-                                        .stroke("black").strokeWidth(10).fill("none")
-                                        .condAttr(edge.isIgnored(), "stroke-dasharray", "20")
-                                        .condAttr(edge.isIgnored(), "stroke-opacity", "0.5")
+                                        .stroke("black").strokeWidth(arcWidth(edge)).fill("none")
+                                        .condAttr(edge.isIgnored(), "stroke-dasharray", 20)
+                                        .condAttr(edge.isIgnored(), "stroke-opacity", 0.7)
                                         .markerEnd(url("af"));
                             } else {
                                 return path()
@@ -301,13 +301,21 @@ public class HtmlReport {
                                                 .relArc((positionFrom - positionTo) / 2.0 / xShrinkFactor,
                                                         (positionFrom - positionTo - arrowSpacing) / 2.0,
                                                         180, true, true, 0, positionTo - positionFrom + arrowSpacing))
-                                        .stroke("#721c24").strokeWidth(10).fill("none")
-                                        .condAttr(edge.isIgnored(), "stroke-dasharray", "20")
-                                        .condAttr(edge.isIgnored(), "stroke-opacity", "0.5")
+                                        .stroke("#721c24").strokeWidth(arcWidth(edge)).fill("none")
+                                        .condAttr(edge.isIgnored(), "stroke-dasharray", 20)
+                                        .condAttr(edge.isIgnored(), "stroke-opacity", 0.7)
                                         .markerEnd(url("ab"));
                             }
                         }))
                 );
+    }
+
+    private static double arcWidth(final Edge edge) {
+        // compute the arc width as a logarithmic value of the edge weight (number of class dependencies)
+        // minimum weight is 1, which results in a minimum width of about 4
+        // since the width/height of the SVG is 1/8 of the viewBox (see svgShrinkFactor), this results in 0.5px,
+        // which should be neatly displayable on a 4K screen
+        return Math.log1p(edge.getWeight()) * 6;
     }
 
     private Stream<DomContent> renderNodeTableRow(final Graph graph, final Slicing slicing,
