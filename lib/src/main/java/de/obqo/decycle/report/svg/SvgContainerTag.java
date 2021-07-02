@@ -10,7 +10,11 @@ class SvgContainerTag<T extends SvgContainerTag<T>> extends ContainerTag<T> impl
         super(tagName);
     }
 
-    T attr(final String name, final double value) {
+    public T attr(final String name, final double value) {
         return attr(name, formatNumber(value));
+    }
+
+    public T condAttr(final boolean condition, final String name, final double value) {
+        return condAttr(condition, name, formatNumber(value));
     }
 }

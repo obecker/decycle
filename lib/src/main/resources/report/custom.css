@@ -90,3 +90,10 @@ span.class-node.highlight {
     color: white;
     background-color: darkblue;
 }
+
+svg.dependency-graph {
+    font-family: Verdana,Geneva,DejaVu Sans,sans-serif;
+    font-size: 110px;
+    text-anchor: middle;
+    text-rendering: geometricPrecision;
+}
