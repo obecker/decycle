@@ -1,6 +1,6 @@
 package de.obqo.decycle.report.svg;
 
-public class RectTag extends SvgContainerTag<RectTag> {
+public class RectTag extends SvgContainerTag<RectTag> implements ICoordAttr<RectTag> {
 
     public RectTag() {
         super("rect");
@@ -16,14 +16,6 @@ public class RectTag extends SvgContainerTag<RectTag> {
 
     public RectTag widthAndHeight(final double width, final double height) {
         return width(width).height(height);
-    }
-
-    public RectTag x(final double x) {
-        return attr("x", x);
-    }
-
-    public RectTag y(final double y) {
-        return attr("y", y);
     }
 
     public RectTag rx(final double rx) {

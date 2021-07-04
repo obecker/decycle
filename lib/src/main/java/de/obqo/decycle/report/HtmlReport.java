@@ -267,19 +267,11 @@ public class HtmlReport {
                             final String text = node.getName();
                             final String hrefTarget = "#" + slicing.getSliceType() + "-" + node.getName();
                             return each(
-                                    use().attr("xlink:href", ref("box")).attr("href", ref("box"))
-                                            .attr("x", leftBox)
-                                            .attr("y", yPos),
+                                    use().href(ref("box")).x(leftBox).y(yPos),
                                     a().attr("xlink:href", hrefTarget).withHref(hrefTarget).with(
-                                            text().attr("x", centerBox + 5)
-                                                    .attr("y", 150 + yPos)
-                                                    .fill("#F1F1F1")
-                                                    .fillOpacity(0.5)
+                                            text().x(centerBox + 5).y(150 + yPos).fill("#F1F1F1").fillOpacity(0.5)
                                                     .withText(text),
-                                            text().attr("x", centerBox)
-                                                    .attr("y", 140 + yPos)
-                                                    .fill("#000")
-                                                    .withText(text))
+                                            text().x(centerBox).y(140 + yPos).fill("#000").withText(text))
                             );
                         }),
                         each(slicing.edges().stream().sorted().map(edge -> {

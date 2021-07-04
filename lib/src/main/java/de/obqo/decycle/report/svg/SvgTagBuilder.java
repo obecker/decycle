@@ -39,15 +39,15 @@ public class SvgTagBuilder {
         return new GenericSvgTag("g");
     }
 
-    public static GenericSvgTag text() {
-        return new GenericSvgTag("text");
+    public static TextTag text() {
+        return new TextTag();
     }
 
     public static GenericSvgTag defs() {
         return new GenericSvgTag("defs");
     }
 
-    public static GenericSvgTag use() {
-        return new GenericSvgTag("use");
+    public static UseTag use() {
+        return new UseTag();
     }
 }
