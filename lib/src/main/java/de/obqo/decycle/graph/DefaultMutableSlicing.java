@@ -54,6 +54,6 @@ class DefaultMutableSlicing implements MutableSlicing {
 
     @Override
     public List<Node> orderedNodes() {
-        return new Topological(this).order();
+        return Topological.order(this);
     }
 }

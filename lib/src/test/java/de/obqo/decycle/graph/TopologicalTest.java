@@ -7,6 +7,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import de.obqo.decycle.model.Edge;
 import de.obqo.decycle.model.Node;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 
 class TopologicalTest {
@@ -30,9 +32,9 @@ class TopologicalTest {
         g.connect(n("c"), n("d"));
         g.connect(n("b"), n("c"));
 
-        final Topological topological = new Topological(g.slicing(PACKAGE));
+        final List<Node> order = Topological.order(g.slicing(PACKAGE));
 
-        assertThat(topological.order()).extracting(Node::getName).containsExactly("a", "b", "c", "d");
+        assertThat(order).extracting(Node::getName).containsExactly("a", "b", "c", "d");
     }
 
     @Test
@@ -45,8 +47,8 @@ class TopologicalTest {
         g.connect(n("b"), n("d"));
         g.connect(n("c"), n("d"));
 
-        final Topological topological = new Topological(g.slicing(PACKAGE));
+        final List<Node> order = Topological.order(g.slicing(PACKAGE));
 
-        assertThat(topological.order()).extracting(Node::getName).containsExactly("a", "b", "c", "d", "e");
+        assertThat(order).extracting(Node::getName).containsExactly("a", "b", "c", "d", "e");
     }
 }
