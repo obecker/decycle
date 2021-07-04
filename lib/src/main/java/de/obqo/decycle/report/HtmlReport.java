@@ -70,10 +70,12 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import j2html.Config;
 import j2html.TagCreator;
 import j2html.rendering.FlatHtml;
 import j2html.rendering.IndentedHtml;
 import j2html.tags.DomContent;
+import j2html.tags.specialized.HtmlTag;
 import j2html.tags.specialized.ScriptTag;
 import j2html.tags.specialized.StyleTag;
 import lombok.RequiredArgsConstructor;
@@ -90,12 +92,23 @@ public class HtmlReport {
 
         resetDynIds();
 
+        final HtmlTag html = buildHtml(graph, violations, title);
+
+        final Config config = Config.defaults().withTextEscaper(ImprovedTextEscaper::escape);
+        try {
+            html.render(this.minify ? FlatHtml.into(out, config) : IndentedHtml.into(out, config));
+        } catch (final IOException exception) {
+            throw new UncheckedIOException(exception);
+        }
+    }
+
+    private HtmlTag buildHtml(final Graph graph, final List<Violation> violations, final String title) {
         final var sliceSections = graph.sliceTypes().stream()
                 .filter(Predicate.not(Node.CLASS::equals))
                 .sorted(SLICE_COMPARATOR)
-                .map(sliceType -> renderSliceSection(graph, violations, sliceType));
+                .map(sliceType -> buildSliceSection(graph, violations, sliceType));
 
-        final var html = html().withLang("en").with(
+        return html().withLang("en").with(
                 head(
                         meta().withCharset("UTF-8"),
                         meta().withName("viewport")
@@ -128,9 +141,9 @@ public class HtmlReport {
                                         hr().withClass("mt-1"),
                                         h1().withClass("mb-3")
                                                 .withText("Violation Report" + (title != null ? " for " + title : "")),
-                                        getViolationDiv(violations),
+                                        buildViolationDiv(violations),
                                         div().withClass("row").with(each(violations,
-                                                vio -> dependencyGraph(vio.getViolatingSubgraph()))),
+                                                vio -> buildDependencyImage(vio.getViolatingSubgraph()))),
                                         each(sliceSections),
                                         hr().withClass("row"),
                                         div().withClass("footer small").with(
@@ -145,12 +158,6 @@ public class HtmlReport {
                         )
                 )
         );
-
-        try {
-            html.render(this.minify ? FlatHtml.into(out) : IndentedHtml.into(out));
-        } catch (final IOException exception) {
-            throw new UncheckedIOException(exception);
-        }
     }
 
     private StyleTag inlineStyle(final boolean minify, final String path) {
@@ -165,7 +172,7 @@ public class HtmlReport {
         return minify ? rawHtmlWithInlineFile_min(path) : rawHtmlWithInlineFile(path);
     }
 
-    private DomContent getViolationDiv(final List<Violation> violations) {
+    private DomContent buildViolationDiv(final List<Violation> violations) {
         return violations.isEmpty()
                 ? div().withClass("violations border rounded-lg pb-1 mb-3 alert-success row").with(
                 h1().withClass("m-0 pt-2").with(i().withClass("bi bi-check-circle-fill")),
@@ -175,10 +182,10 @@ public class HtmlReport {
                 each(violations.stream()
                         .sorted(Comparator.comparing(Violation::getSliceType, SLICE_COMPARATOR)
                                 .thenComparing(Violation::getName))
-                        .flatMap(this::getViolationDivColumns)));
+                        .flatMap(this::buildViolationDivColumns)));
     }
 
-    private Stream<DomContent> getViolationDivColumns(final Violation v) {
+    private Stream<DomContent> buildViolationDivColumns(final Violation v) {
         return Stream.of(
                 div().withClass("col-4 name mt-1").with(b(replaceArrows(v.getName()))),
                 div().withClass("col-8 dependencies mt-1")
@@ -192,7 +199,7 @@ public class HtmlReport {
         return name.replace("->", "→").replace("=>", "⇨");
     }
 
-    private DomContent renderSliceSection(final Graph graph, final List<Violation> violations, final String sliceType) {
+    private DomContent buildSliceSection(final Graph graph, final List<Violation> violations, final String sliceType) {
         final Map<String, Map<String, List<String>>> violationsIndex =
                 violations.stream()
                         .filter(v -> v.getSliceType().equals(sliceType))
@@ -208,12 +215,12 @@ public class HtmlReport {
                 dl().withClass("slices row border rounded-lg py-1").with(
                         slicing.nodes().stream()
                                 .sorted()
-                                .flatMap(node -> renderNodeTableRow(graph, slicing, violationsIndex, node))),
-                div().withClass("row").with(dependencyGraph(slicing))
+                                .flatMap(node -> buildNodeTableRow(graph, slicing, violationsIndex, node))),
+                div().withClass("row").with(buildDependencyImage(slicing))
         );
     }
 
-    private SvgTag dependencyGraph(final Slicing slicing) {
+    private SvgTag buildDependencyImage(final Slicing slicing) {
         final List<Node> nodeList = slicing.orderedNodes();
         final FontMetricsSupport metrics = FontMetricsSupport.get(this.minify);
         final int maxTextWidth = nodeList.stream().map(Node::getName).mapToInt(metrics::widthOf).max().orElse(0);
@@ -312,7 +319,7 @@ public class HtmlReport {
         return Math.log1p(edge.getWeight()) * 6;
     }
 
-    private Stream<DomContent> renderNodeTableRow(final Graph graph, final Slicing slicing,
+    private Stream<DomContent> buildNodeTableRow(final Graph graph, final Slicing slicing,
             final Map<String, Map<String, List<String>>> violationsIndex,
             final Node node) {
         final Map<String, List<String>> fromViolations = violationsIndex.getOrDefault(node.getName(), Map.of());
@@ -324,10 +331,10 @@ public class HtmlReport {
                         .with(a(node.getName()).withId(node.getType() + "-" + node.getName())),
                 dd().withClasses("col-sm-8", "border-top", "py-1", "mb-0", errorClass)
                         .with(ul().withClass("references list-unstyled mb-0")
-                                .with(renderOutEdgesList(graph, slicing, node, fromViolations))));
+                                .with(buildOutEdgesList(graph, slicing, node, fromViolations))));
     }
 
-    private Stream<DomContent> renderOutEdgesList(final Graph graph, final Slicing slicing, final Node node,
+    private Stream<DomContent> buildOutEdgesList(final Graph graph, final Slicing slicing, final Node node,
             final Map<String, List<String>> fromViolations) {
         return slicing.outEdges(node)
                 .stream()
