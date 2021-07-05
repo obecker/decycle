@@ -8,8 +8,10 @@ plugins {
 val asmVersion: String by project
 val guavaVersion: String by project
 val j2htmlVersion: String by project
+val fontmetricsVersion: String by project
 val junitVersion: String by project
 val assertjVersion: String by project
+val slf4jVersion: String by project
 
 dependencies {
     implementation("org.ow2.asm:asm:${asmVersion}")
@@ -17,13 +19,13 @@ dependencies {
         exclude(group = "org.checkerframework")
     }
     implementation( "com.j2html:j2html:${j2htmlVersion}")
-    implementation("org.javastack:fontmetrics:1.0.0")
-    testImplementation("org.slf4j:slf4j-jdk14:1.7.30")
+    implementation("org.javastack:fontmetrics:${fontmetricsVersion}")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
     testImplementation("org.junit.jupiter:junit-jupiter-params:$junitVersion")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
     testImplementation("org.assertj:assertj-core:${assertjVersion}")
+    testImplementation("org.slf4j:slf4j-jdk14:${slf4jVersion}") // needed for fontmetrics
 }
 
 configure<JavaPluginConvention> {
