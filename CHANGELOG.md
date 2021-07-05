@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.4.0 - 2021-07-05
+   - Add links between packages/slices in the dependency tables
+   - Add image(s) depicting the dependency graph and cycles
+
 ## 0.3.1 – 2021-06-07
    - Republication of 0.3.0 due to a wrong dependency in the gradle plugin 
 
