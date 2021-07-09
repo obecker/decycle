@@ -58,6 +58,7 @@ import de.obqo.decycle.graph.Graph;
 import de.obqo.decycle.graph.Slicing;
 import de.obqo.decycle.model.Edge;
 import de.obqo.decycle.model.Node;
+import de.obqo.decycle.report.svg.MarkerTag;
 import de.obqo.decycle.report.svg.SvgTag;
 
 import java.io.IOException;
@@ -245,19 +246,14 @@ public class HtmlReport {
 
         final Map<Node, Integer> nodePositionMap = new HashMap<>();
 
-        final String arrowHead = "M85.2 50 21.2 82a4.8 4.8 0 0 1-6.4-4.8l6.4-28.16-6.4-28.16a4.8 4.8 0 0 1 6.4-4.8z";
+        final String downColor = "black";
+        final String upColor = "#721c24";
         return svg().widthAndHeight(totalWidth / svgShrinkFactor, totalHeight / svgShrinkFactor)
                 .viewBox(0, 0, totalWidth, totalHeight)
                 .withClass("dependency-graph border rounded mr-3").with(
                         defs().with(
-                                marker().attr(dynId("af")).markerWidth(100).markerHeight(100)
-                                        .refX(83 - arrowLength).refY(50)
-                                        .orient("auto").markerUnits("userSpaceOnUse")
-                                        .with(path().fill("black").d(arrowHead)),
-                                marker().attr(dynId("ab")).markerWidth(100).markerHeight(100)
-                                        .refX(83 - arrowLength).refY(50)
-                                        .orient("auto").markerUnits("userSpaceOnUse")
-                                        .with(path().fill("#721c24").d(arrowHead)),
+                                arrowHeadMarker("ad", downColor, 83 - arrowLength, 50),
+                                arrowHeadMarker("au", upColor, 83 - arrowLength, 50),
                                 linearGradient().attr(dynId("lg")).attr("x2", 0).attr("y2", "100%").with(
                                         stop().offset(0).stopColor("#bbb").stopOpacity(0.1),
                                         stop().offset(1).stopOpacity(0.1)),
@@ -273,42 +269,50 @@ public class HtmlReport {
                             nodePositionMap.put(node, yPos);
                             final String text = node.getName();
                             final String hrefTarget = "#" + slicing.getSliceType() + "-" + node.getName();
-                            return each(
-                                    use().href(ref("box")).x(leftBox).y(yPos),
-                                    a().attr("xlink:href", hrefTarget).withHref(hrefTarget).with(
+                            return a().attr("xlink:href", hrefTarget).withHref(hrefTarget).withClasses("node")
+                                    .attr("data-name", nodeClassName(node))
+                                    .with(
+                                            use().href(ref("box")).x(leftBox).y(yPos),
                                             text().x(centerBox + 5).y(150 + yPos).fill("#F1F1F1").fillOpacity(0.5)
                                                     .withText(text),
-                                            text().x(centerBox).y(140 + yPos).fill("#000").withText(text))
-                            );
+                                            text().x(centerBox).y(140 + yPos).fill("#000").withText(text));
                         }),
                         each(slicing.edges().stream().sorted().map(edge -> {
                             final int positionFrom = nodePositionMap.get(edge.getFrom());
                             final int positionTo = nodePositionMap.get(edge.getTo());
+                            final String fromName = nodeClassName(edge.getFrom());
+                            final String toName = nodeClassName(edge.getTo());
                             if (positionFrom < positionTo) {
                                 return path()
+                                        .withClasses(fromName, toName, "edge", iff(edge.isIgnored(), "ignored"))
                                         .d(from(rightBox, positionFrom + (boxHeight + arrowSpacing) / 2.0)
                                                 .relHorizontalLineTo(arrowLength)
                                                 .relArc((positionTo - positionFrom) / 2.0 / xShrinkFactor,
                                                         (positionTo - positionFrom - arrowSpacing) / 2.0,
                                                         180, true, true, 0, positionTo - positionFrom - arrowSpacing))
-                                        .stroke("black").strokeWidth(arcWidth(edge)).fill("none")
-                                        .condAttr(edge.isIgnored(), "stroke-dasharray", 20)
-                                        .condAttr(edge.isIgnored(), "stroke-opacity", 0.7)
-                                        .markerEnd(url("af"));
+                                        .stroke(downColor).strokeWidth(arcWidth(edge))
+                                        .markerEnd(url("ad"));
                             } else {
                                 return path()
+                                        .withClasses(fromName, toName, "edge", iff(edge.isIgnored(), "ignored"))
                                         .d(from(leftBox, positionFrom + (boxHeight - arrowSpacing) / 2.0)
                                                 .relHorizontalLineTo(-arrowLength)
                                                 .relArc((positionFrom - positionTo) / 2.0 / xShrinkFactor,
                                                         (positionFrom - positionTo - arrowSpacing) / 2.0,
                                                         180, true, true, 0, positionTo - positionFrom + arrowSpacing))
-                                        .stroke("#721c24").strokeWidth(arcWidth(edge)).fill("none")
-                                        .condAttr(edge.isIgnored(), "stroke-dasharray", 20)
-                                        .condAttr(edge.isIgnored(), "stroke-opacity", 0.7)
-                                        .markerEnd(url("ab"));
+                                        .stroke(upColor).strokeWidth(arcWidth(edge))
+                                        .markerEnd(url("au"));
                             }
                         }))
                 );
+    }
+
+    private MarkerTag arrowHeadMarker(final String id, final String downColor, final int refX, final int refY) {
+        final String path = "M85.2 50 21.2 82a4.8 4.8 0 0 1-6.4-4.8l6.4-28.16-6.4-28.16a4.8 4.8 0 0 1 6.4-4.8z";
+        return marker().attr(dynId(id)).markerWidth(100).markerHeight(100)
+                .refX(refX).refY(refY)
+                .orient("auto").markerUnits("userSpaceOnUse")
+                .with(path().fill(downColor).d(path));
     }
 
     private static double arcWidth(final Edge edge) {
@@ -317,6 +321,10 @@ public class HtmlReport {
         // since the width/height of the SVG is 1/8 of the viewBox (see svgShrinkFactor), this results in 0.5px,
         // which should be neatly displayable on a 4K screen
         return Math.log1p(edge.getWeight()) * 6;
+    }
+
+    private static String nodeClassName(final Node node) {
+        return "n-" + node.getName().replace('.', '-');
     }
 
     private Stream<DomContent> buildNodeTableRow(final Graph graph, final Slicing slicing,

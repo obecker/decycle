@@ -108,6 +108,19 @@
                 text-anchor: middle;
                 text-rendering: geometricPrecision;
             }
+            svg.dependency-graph path.edge {
+                fill: none;
+                transition: opacity 500ms ease-in-out;
+                opacity: 1;
+            }
+            svg.dependency-graph.hover path.edge:not(.show) {
+                transition: opacity 500ms ease-in-out;
+                opacity: 0;
+            }
+            svg.dependency-graph path.ignored {
+                stroke-dasharray: 20;
+                stroke-opacity: 0.7;
+            }
         </style>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous">
         </script>
@@ -130,6 +143,12 @@
               }).mouseout(function() {
                 h(this).removeClass('highlight');
               });
+            
+              let et = function() {
+                let n = $(this).data('name');
+                $(this).parents('svg').toggleClass('hover').find('path.' + n).toggleClass('show')
+              };
+              $('svg.dependency-graph a.node').mouseover(et).mouseout(et);
             });
         </script>
     </head>
@@ -885,11 +904,11 @@
                     <div class="row">
                         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="320" height="102" viewBox="0 0 2564 820" class="dependency-graph border rounded mr-3">
                             <defs>
-                                <marker id="af1" markerWidth="100" markerHeight="100" refX="28" refY="50" orient="auto" markerUnits="userSpaceOnUse">
+                                <marker id="ad1" markerWidth="100" markerHeight="100" refX="28" refY="50" orient="auto" markerUnits="userSpaceOnUse">
                                     <path fill="black" d="M85.2 50 21.2 82a4.8 4.8 0 0 1-6.4-4.8l6.4-28.16-6.4-28.16a4.8 4.8 0 0 1 6.4-4.8z">
                                     </path>
                                 </marker>
-                                <marker id="ab1" markerWidth="100" markerHeight="100" refX="28" refY="50" orient="auto" markerUnits="userSpaceOnUse">
+                                <marker id="au1" markerWidth="100" markerHeight="100" refX="28" refY="50" orient="auto" markerUnits="userSpaceOnUse">
                                     <path fill="#721c24" d="M85.2 50 21.2 82a4.8 4.8 0 0 1-6.4-4.8l6.4-28.16-6.4-28.16a4.8 4.8 0 0 1 6.4-4.8z">
                                     </path>
                                 </marker>
@@ -910,9 +929,9 @@
                                     </rect>
                                 </g>
                             </defs>
-                            <use xlink:href="#box1" href="#box1" x="310" y="100">
-                            </use>
-                            <a xlink:href="#Package-de.obqo.decycle.demo.base.from" href="#Package-de.obqo.decycle.demo.base.from">
+                            <a xlink:href="#Package-de.obqo.decycle.demo.base.from" href="#Package-de.obqo.decycle.demo.base.from" class="node" data-name="n-de-obqo-decycle-demo-base-from">
+                                <use xlink:href="#box1" href="#box1" x="310" y="100">
+                                </use>
                                 <text x="1287" y="250" fill="#F1F1F1" fill-opacity=".5">
                                     de.obqo.decycle.demo.base.from
                                 </text>
@@ -920,9 +939,9 @@
                                     de.obqo.decycle.demo.base.from
                                 </text>
                             </a>
-                            <use xlink:href="#box1" href="#box1" x="310" y="520">
-                            </use>
-                            <a xlink:href="#Package-de.obqo.decycle.demo.base.to" href="#Package-de.obqo.decycle.demo.base.to">
+                            <a xlink:href="#Package-de.obqo.decycle.demo.base.to" href="#Package-de.obqo.decycle.demo.base.to" class="node" data-name="n-de-obqo-decycle-demo-base-to">
+                                <use xlink:href="#box1" href="#box1" x="310" y="520">
+                                </use>
                                 <text x="1287" y="670" fill="#F1F1F1" fill-opacity=".5">
                                     de.obqo.decycle.demo.base.to
                                 </text>
@@ -930,7 +949,7 @@
                                     de.obqo.decycle.demo.base.to
                                 </text>
                             </a>
-                            <path d="M2254 230h55a105 180 180 1 1 0 360" stroke="black" stroke-width="25.74" fill="none" marker-end="url(#af1)">
+                            <path class="n-de-obqo-decycle-demo-base-from n-de-obqo-decycle-demo-base-to edge" d="M2254 230h55a105 180 180 1 1 0 360" stroke="black" stroke-width="25.74" marker-end="url(#ad1)">
                             </path>
                         </svg>
                     </div>

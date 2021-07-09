@@ -97,3 +97,16 @@ svg.dependency-graph {
     text-anchor: middle;
     text-rendering: geometricPrecision;
 }
+svg.dependency-graph path.edge {
+    fill: none;
+    transition: opacity 500ms ease-in-out;
+    opacity: 1;
+}
+svg.dependency-graph.hover path.edge:not(.show) {
+    transition: opacity 500ms ease-in-out;
+    opacity: 0;
+}
+svg.dependency-graph path.ignored {
+    stroke-dasharray: 20;
+    stroke-opacity: 0.7;
+}
