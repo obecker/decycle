@@ -42,69 +42,69 @@ public class DecyclePluginFunctionalTest {
 
     @Test
     void shouldSucceed() {
-        BuildResult result = build("success.gradle");
+        final BuildResult result = build("success.gradle");
         assertBuildResult(result, TaskOutcome.SUCCESS, "decycleMain");
         assertBuildResult(result, TaskOutcome.SUCCESS, "decycleTest");
     }
 
     @Test
     void shouldSucceedWithIgnoredDependencies() {
-        BuildResult result = build("ignoring.gradle");
+        final BuildResult result = build("ignoring.gradle");
         assertBuildResult(result, TaskOutcome.SUCCESS, "decycleMain");
         assertBuildResult(result, TaskOutcome.SUCCESS, "decycleTest");
     }
 
     @Test
     void shouldSucceedWithIgnoredFromDependencies() {
-        BuildResult result = build("ignoring-from.gradle");
+        final BuildResult result = build("ignoring-from.gradle");
         assertBuildResult(result, TaskOutcome.SUCCESS, "decycleMain");
         assertBuildResult(result, TaskOutcome.SUCCESS, "decycleTest");
     }
 
     @Test
     void shouldSucceedWithIgnoredToDependencies() {
-        BuildResult result = build("ignoring-to.gradle");
+        final BuildResult result = build("ignoring-to.gradle");
         assertBuildResult(result, TaskOutcome.SUCCESS, "decycleMain");
         assertBuildResult(result, TaskOutcome.SUCCESS, "decycleTest");
     }
 
     @Test
     void shouldFailBecauseOfCycles() {
-        BuildResult result = buildAndFail("cycle.gradle");
+        final BuildResult result = buildAndFail("cycle.gradle");
         assertBuildResult(result, TaskOutcome.FAILED, "decycleMain")
                 .contains("demo.cycle.a → demo.cycle.b, demo.cycle.b → demo.cycle.a");
     }
 
     @Test
     void shouldFailBecauseOfCyclesWithDefaultConfiguration() {
-        BuildResult result = buildAndFail("default.gradle");
+        final BuildResult result = buildAndFail("default.gradle");
         assertBuildResult(result, TaskOutcome.FAILED, "decycleMain")
                 .contains("demo.cycle.a → demo.cycle.b, demo.cycle.b → demo.cycle.a");
     }
 
     @Test
     void shouldSucceedWithSlicings() {
-        BuildResult result = build("allowed.gradle");
+        final BuildResult result = build("allowed.gradle");
         assertBuildResult(result, TaskOutcome.SUCCESS, "decycleMain");
     }
 
     @Test
     void shouldFailBecauseOfDisallowedSlices() {
-        BuildResult result = buildAndFail("disallowed.gradle");
+        final BuildResult result = buildAndFail("disallowed.gradle");
         assertBuildResult(result, TaskOutcome.FAILED, "decycleMain")
                 .contains("x → z");
     }
 
     @Test
     void shouldFailWithSliceCycles() {
-        BuildResult result = buildAndFail("slices-cycle.gradle");
+        final BuildResult result = buildAndFail("slices-cycle.gradle");
         assertBuildResult(result, TaskOutcome.FAILED, "decycleMain")
                 .contains("a → b, b → a");
     }
 
     @Test
     void shouldFailWithMultipleViolations() {
-        BuildResult result = buildAndFail("multiple.gradle");
+        final BuildResult result = buildAndFail("multiple.gradle");
         assertBuildResult(result, TaskOutcome.FAILED, "decycleMain")
                 .contains("more")
                 .contains("demo.cycle.a → demo.cycle.b, demo.cycle.b → demo.cycle.a");
@@ -112,7 +112,7 @@ public class DecyclePluginFunctionalTest {
 
     @Test
     void shouldSucceedOnTestSources() {
-        BuildResult result = build("test-sources.gradle");
+        final BuildResult result = build("test-sources.gradle");
         assertBuildResult(result, TaskOutcome.SUCCESS, "decycleTest");
 
         assertThat(result.task(":decycleMain")).isNull();
@@ -120,7 +120,7 @@ public class DecyclePluginFunctionalTest {
 
     @Test
     void shouldSucceedWithAdditionalSourceSets() {
-        BuildResult result = build("source-sets.gradle");
+        final BuildResult result = build("source-sets.gradle");
         assertBuildResult(result, TaskOutcome.SUCCESS, "decycleMain");
         assertBuildResult(result, TaskOutcome.SUCCESS, "decycleTest");
         assertBuildResult(result, TaskOutcome.SUCCESS, "decycleShared");
@@ -128,23 +128,32 @@ public class DecyclePluginFunctionalTest {
 
     @Test
     void shouldFailBecauseOfIncompleteSlicingConfiguration() {
-        BuildResult result = buildAndFail("error-missing-pattern.gradle");
+        final BuildResult result = buildAndFail("error-missing-pattern.gradle");
         assertBuildResult(result, TaskOutcome.FAILED, "decycleMain")
                 .contains("Slicing 'module' has no pattern definition");
     }
 
     @Test
     void shouldFailBecauseOfWrongIgnoringListConfiguration() {
-        BuildResult result = buildAndFail("error-ignoring-list.gradle");
+        final BuildResult result = buildAndFail("error-ignoring-list.gradle");
         assertBuildResult(result, TaskOutcome.FAILED, null)
-                .contains("decycle: ignoring must be used with from: and to: values, found demo.module.b.**, demo.module.a.**, c");
+                .contains("decycle: ignoring must be used with from: and to: values, " +
+                        "found demo.module.b.**, demo.module.a.**, c");
     }
 
     @Test
     void shouldFailBecauseOfWrongIgnoringMapConfiguration() {
-        BuildResult result = buildAndFail("error-ignoring-map.gradle");
+        final BuildResult result = buildAndFail("error-ignoring-map.gradle");
         assertBuildResult(result, TaskOutcome.FAILED, null)
                 .contains("ignoring must only have from: and to: values, found and:, via:");
+    }
+
+    @Test
+    void shouldSucceedWithIgnoreFailures() {
+        final BuildResult result = build("ignoreFailures.gradle");
+        assertBuildResult(result, TaskOutcome.SUCCESS, "decycleMain").contains(
+                "\nViolations detected: Violation(slicing=Package, name=no cycles, " +
+                        "dependencies=[demo.cycle.a → demo.cycle.b, demo.cycle.b → demo.cycle.a])\n");
     }
 
     private BuildResult build(final String buildFile) {

@@ -68,4 +68,8 @@ public class DecycleExtension {
     public void slicings(final Action<NamedDomainObjectContainer<SlicingExtension>> action) {
         action.execute(this.slicings);
     }
+
+    public void ignoreFailures(final boolean ignoreFailures) {
+        this.configuration.setIgnoreFailures(ignoreFailures);
+    }
 }

@@ -71,9 +71,14 @@ public abstract class DecycleWorker implements WorkAction<DecycleWorkerParameter
             logger.debug("decycle result: {}", violations);
 
             if (!violations.isEmpty()) {
-                throw new GradleException(String.format("%s\nSee the report at: %s",
+                final String message = String.format("%s\nSee the report at: %s",
                         violations.stream().map(Constraint.Violation::displayString).collect(joining("\n")),
-                        reportFile));
+                        reportFile);
+                if (configuration.isIgnoreFailures()) {
+                    logger.warn("Violations detected: {}", message);
+                } else {
+                    throw new GradleException(message);
+                }
             }
         } catch (final IOException ioException) {
             throw new GradleException(ioException.getMessage(), ioException);

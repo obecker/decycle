@@ -53,6 +53,7 @@ The plugin adds a `decycle` configuration object to the build, that offers the f
             ...
         }
     }
+    <b>ignoreFailures</b> false
 }
 </pre>
 
@@ -64,7 +65,7 @@ they will be added to the existing configuration.)
 * `sourceSets`
   defines the source sets that should be analyzed.
   By default all source sets defined in the gradle build file are considered.
-  That means this option is most useful if you only want a subset of the source sets to be checked.
+  Use this option if you only want a subset of the source sets to be checked.
 
 * `including`
   defines ant style string patterns for the classes that should be included (default: all).
@@ -72,7 +73,7 @@ they will be added to the existing configuration.)
   otherwise the report will also contain all dependencies to JDK and external packages.
 
 * `excluding`
-  defines ant style string patterns for the classes that should be excluded (default: none)
+  defines ant style string patterns for the classes that should be excluded (default: none).
 
 * `ignoring`
   defines a dependency (or an ant style string pattern for a set of dependencies) that should be ignored
@@ -99,6 +100,8 @@ they will be added to the existing configuration.)
         * a string (referencing the name of the pattern/slice)
         * <code>anyOf(<i>slice, ...</i>)</code>
         * <code>oneOf(<i>slice, ...</i>)</code>
+    
+* `ignoreFailures` whether to allow the build to continue if there are constraint violations (default: `false`).
 
 For the time being, until I have created a complete documentation, please have a look at the 
 orignal documentation for [degraph](http://riy.github.io/degraph/documentation.html) for understanding the concepts of
