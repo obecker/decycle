@@ -49,21 +49,21 @@ public class DecyclePluginFunctionalTest {
 
     @Test
     void shouldSucceedWithIgnoredDependencies() {
-        BuildResult result = build("ignore.gradle");
+        BuildResult result = build("ignoring.gradle");
         assertBuildResult(result, TaskOutcome.SUCCESS, "decycleMain");
         assertBuildResult(result, TaskOutcome.SUCCESS, "decycleTest");
     }
 
     @Test
     void shouldSucceedWithIgnoredFromDependencies() {
-        BuildResult result = build("ignore-from.gradle");
+        BuildResult result = build("ignoring-from.gradle");
         assertBuildResult(result, TaskOutcome.SUCCESS, "decycleMain");
         assertBuildResult(result, TaskOutcome.SUCCESS, "decycleTest");
     }
 
     @Test
     void shouldSucceedWithIgnoredToDependencies() {
-        BuildResult result = build("ignore-to.gradle");
+        BuildResult result = build("ignoring-to.gradle");
         assertBuildResult(result, TaskOutcome.SUCCESS, "decycleMain");
         assertBuildResult(result, TaskOutcome.SUCCESS, "decycleTest");
     }
@@ -134,17 +134,17 @@ public class DecyclePluginFunctionalTest {
     }
 
     @Test
-    void shouldFailBecauseOfWrongIgnoreListConfiguration() {
-        BuildResult result = buildAndFail("error-ignore-list.gradle");
+    void shouldFailBecauseOfWrongIgnoringListConfiguration() {
+        BuildResult result = buildAndFail("error-ignoring-list.gradle");
         assertBuildResult(result, TaskOutcome.FAILED, null)
-                .contains("decycle: ignore must be used with from: and to: values, found demo.module.b.**, demo.module.a.**, c");
+                .contains("decycle: ignoring must be used with from: and to: values, found demo.module.b.**, demo.module.a.**, c");
     }
 
     @Test
-    void shouldFailBecauseOfWrongIgnoreMapConfiguration() {
-        BuildResult result = buildAndFail("error-ignore-map.gradle");
+    void shouldFailBecauseOfWrongIgnoringMapConfiguration() {
+        BuildResult result = buildAndFail("error-ignoring-map.gradle");
         assertBuildResult(result, TaskOutcome.FAILED, null)
-                .contains("ignore must only have from: and to: values, found and:, via:");
+                .contains("ignoring must only have from: and to: values, found and:, via:");
     }
 
     private BuildResult build(final String buildFile) {
