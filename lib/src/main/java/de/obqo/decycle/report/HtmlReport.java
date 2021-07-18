@@ -141,8 +141,7 @@ public class HtmlReport {
                                         h1().withClass("mb-3")
                                                 .withText("Violation Report" + (title != null ? " for " + title : "")),
                                         buildViolationDiv(violations),
-                                        div().withClass("row").with(each(violations,
-                                                vio -> buildDependencyImage(vio.getViolatingSubgraph()))),
+                                        div().withClass("row").with(each(violations, this::buildViolationImage)),
                                         each(sliceSections),
                                         hr().withClass("row"),
                                         div().withClass("footer small").with(
@@ -224,11 +223,15 @@ public class HtmlReport {
                         slicing.nodes().stream()
                                 .sorted()
                                 .flatMap(node -> buildNodeTableRow(graph, slicing, violationsIndex, node))),
-                div().withClass("row").with(buildDependencyImage(slicing))
+                div().withClass("row").with(buildDependencyImage(slicing, sliceType.displayString(), true))
         );
     }
 
-    private SvgTag buildDependencyImage(final Slicing slicing) {
+    private SvgTag buildViolationImage(final Violation violation) {
+        return buildDependencyImage(violation.getViolatingSubgraph(), replaceArrows(violation.getName()), false);
+    }
+
+    private SvgTag buildDependencyImage(final Slicing slicing, final String title, final boolean capitalizeTitle) {
         final List<Node> nodeList = slicing.orderedNodes();
         final FontMetricsSupport metrics = FontMetricsSupport.get(this.minify);
         final int maxTextWidth = nodeList.stream().map(Node::getName).mapToInt(metrics::widthOf).max().orElse(0);
@@ -243,13 +246,16 @@ public class HtmlReport {
         final int svgShrinkFactor = 8;
 
         final int totalPadding = 100;
-        final int totalHeight = (nodeList.size() - 1) * verticalDistance + boxHeight + 2 * totalPadding;
-        final int arcSpace = totalHeight / 2 / xShrinkFactor + arrowLength - totalPadding / xShrinkFactor;
-        final int totalWidth = boxWidth + 2 * (arcSpace + totalPadding);
+        final int titleWidth = metrics.widthOf(title) * 11 / 10 + 100; // width * 1.1 for bold text
+        final int titleHeight = 190;
+        final int graphHeight = (nodeList.size() - 1) * verticalDistance + boxHeight + 2 * totalPadding;
+        final int arcSpace = graphHeight / 2 / xShrinkFactor + arrowLength - totalPadding / xShrinkFactor;
+        final int totalWidth = Math.max(boxWidth + 2 * (arcSpace + totalPadding), titleWidth);
+        final int totalHeight = graphHeight + titleHeight;
 
-        final int leftBox = arcSpace + totalPadding;
+        final int centerBox = totalWidth / 2;
+        final int leftBox = centerBox - boxWidth / 2;
         final int rightBox = leftBox + boxWidth;
-        final int centerBox = leftBox + boxWidth / 2;
 
         final Map<Node, Integer> nodePositionMap = new HashMap<>();
 
@@ -271,8 +277,12 @@ public class HtmlReport {
                                         rect().widthAndHeight(boxWidth, boxHeight).fill(url("lg"))
                                 )
                         ),
+                        text().x(centerBox).y((titleHeight - 70) / 2.0 + 70).fill("#000").fontWeight("bold")
+                                .condAttr(capitalizeTitle, "style", "text-transform: capitalize")
+                                .withText(title),
+                        path().d(from(0, titleHeight).relHorizontalLineTo(totalWidth)).stroke("#dee2e6").strokeWidth(8),
                         each(nodeList, (index, node) -> {
-                            final int yPos = index * verticalDistance + totalPadding;
+                            final int yPos = index * verticalDistance + totalPadding + titleHeight;
                             nodePositionMap.put(node, yPos);
                             final String text = node.getName();
                             final String hrefTarget = nodeRef(node);

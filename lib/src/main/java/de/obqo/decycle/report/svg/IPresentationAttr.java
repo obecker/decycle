@@ -24,6 +24,10 @@ public interface IPresentationAttr<T extends SvgContainerTag<T>> extends IInstan
         return self().attr("font-family", fontFamily);
     }
 
+    default T fontWeight(final String fontWeight) {
+        return self().attr("font-weight", fontWeight);
+    }
+
     default T fontSize(final String fontSize) {
         return self().attr("font-size", fontSize);
     }
