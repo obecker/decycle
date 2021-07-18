@@ -152,7 +152,7 @@ public class DecyclePluginFunctionalTest {
     void shouldSucceedWithIgnoreFailures() {
         final BuildResult result = build("ignoreFailures.gradle");
         assertBuildResult(result, TaskOutcome.SUCCESS, "decycleMain").contains(
-                "\nViolations detected: Violation(slicing=Package, name=no cycles, " +
+                "\nViolations detected: Violation(slicing=Package, name=cycle, " +
                         "dependencies=[demo.cycle.a → demo.cycle.b, demo.cycle.b → demo.cycle.a])\n");
     }
 

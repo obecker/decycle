@@ -82,7 +82,7 @@ class ConfigurationTest {
         assertThat(violation1.getDependencies()).map(SimpleDependency::new).containsOnly(d("shared", "common"));
 
         final var violation2 = violations.get(1);
-        assertThat(violation2.getName()).isEqualTo("no cycles");
+        assertThat(violation2.getName()).isEqualTo("cycle");
         assertThat(violation2.getDependencies()).map(SimpleDependency::new)
                 .containsOnly(d("common", "shared"), d("shared", "common"));
     }

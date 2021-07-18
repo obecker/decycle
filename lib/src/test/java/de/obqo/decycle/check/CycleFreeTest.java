@@ -53,7 +53,7 @@ class CycleFreeTest {
         g.connect(classNode("de.p3.C1"), classNode("de.p1.A2"));
 
         final List<Violation> violations = this.cycleFree.violations(g);
-        assertThat(violations).hasSize(1).extracting(Violation::getName).containsOnly("no cycles");
+        assertThat(violations).hasSize(1).extracting(Violation::getName).containsOnly("cycle");
         assertThat(dependenciesIn(violations)).containsOnly(
                 d("de.p1", "de.p2"),
                 d("de.p2", "de.p3"),
@@ -71,7 +71,7 @@ class CycleFreeTest {
 
         final List<Violation> violations = this.cycleFree.violations(g);
         assertThat(violations).hasSize(2).extracting(Violation::getName)
-                .containsExactly("no cycles (1)", "no cycles (2)");
+                .containsExactly("cycle (1)", "cycle (2)");
         assertThat(dependenciesIn(violations)).containsOnly(
                 d("de.p1", "de.p2"),
                 d("de.p2", "de.p1"),

@@ -23,7 +23,7 @@ public class CycleFree implements Constraint {
 
     @Override
     public String getShortString() {
-        return "no cycles";
+        return "cycle";
     }
 
     @Override
