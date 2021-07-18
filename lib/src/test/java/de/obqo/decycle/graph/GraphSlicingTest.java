@@ -1,16 +1,16 @@
 package de.obqo.decycle.graph;
 
-import static de.obqo.decycle.model.Node.CLASS;
-import static de.obqo.decycle.model.Node.PACKAGE;
 import static de.obqo.decycle.model.Node.classNode;
 import static de.obqo.decycle.model.Node.packageNode;
 import static de.obqo.decycle.model.Node.sliceNode;
+import static de.obqo.decycle.model.SliceType.customType;
 import static de.obqo.decycle.slicer.ParallelCategorizer.parallel;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import de.obqo.decycle.model.Edge;
 import de.obqo.decycle.model.Node;
 import de.obqo.decycle.model.NodeFilter;
+import de.obqo.decycle.model.SliceType;
 import de.obqo.decycle.slicer.IgnoredDependenciesFilter;
 import de.obqo.decycle.slicer.IgnoredDependency;
 import de.obqo.decycle.slicer.PackageCategorizer;
@@ -21,6 +21,9 @@ import java.util.Set;
 import org.junit.jupiter.api.Test;
 
 class GraphSlicingTest {
+
+    private static final SliceType CLASS = SliceType.classType();
+    private static final SliceType PACKAGE = SliceType.packageType();
 
     @Test
     void packageSliceOfAGraphWithoutPackageShouldBeEmpty() {
@@ -52,7 +55,7 @@ class GraphSlicingTest {
         final var g = new Graph(new PackageCategorizer());
         g.connect(classNode("p.one.Class"), classNode("p.two.Class"));
 
-        assertThat(g.slicing("no such type").nodes()).isEmpty();
+        assertThat(g.slicing(customType("no such type")).nodes()).isEmpty();
     }
 
     @Test
@@ -72,7 +75,7 @@ class GraphSlicingTest {
         g.connect(classNode("package.one.class"), classNode("package.two.class"));
         g.add(sliceNode("x", "x"));
 
-        assertThat(g.sliceTypes()).containsOnly(CLASS, PACKAGE, "x");
+        assertThat(g.sliceTypes()).containsOnly(CLASS, PACKAGE, customType("x"));
     }
 
     @Test
@@ -112,7 +115,7 @@ class GraphSlicingTest {
         assertThat(packageEdgesOneThree).containsOnly(Edge.references(classOneInner, classThreeB));
 
         // given SLICE edge
-        final Slicing slices = g.slicing(SLICE);
+        final Slicing slices = g.slicing(customType(SLICE));
         final Edge sliceEdge = slices.edgeConnecting(sliceNode(SLICE, "two"), sliceNode(SLICE, "three")).orElseThrow();
         assertThat(sliceEdge).isNotNull();
 
@@ -155,7 +158,7 @@ class GraphSlicingTest {
         assertThat(classes.edgeConnecting(a2, c2)).hasValueSatisfying(edge -> assertThat(edge.isIgnored()).isTrue());
 
         // when
-        final Slicing slices = g.slicing(SLICE);
+        final Slicing slices = g.slicing(customType(SLICE));
         final Node a = sliceNode(SLICE, "a");
         final Node b = sliceNode(SLICE, "b");
         final Node c = sliceNode(SLICE, "c");
@@ -191,7 +194,7 @@ class GraphSlicingTest {
         g.connect(a2, c2);
 
         // when
-        final Slicing slices = g.slicing(SLICE);
+        final Slicing slices = g.slicing(customType(SLICE));
         final Node a = sliceNode(SLICE, "a");
         final Node b = sliceNode(SLICE, "b");
         final Node c = sliceNode(SLICE, "c");

@@ -7,6 +7,7 @@ import static de.obqo.decycle.slicer.ParallelCategorizer.parallel;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.InstanceOfAssertFactories.iterable;
 
+import de.obqo.decycle.check.Constraint.Violation;
 import de.obqo.decycle.graph.Graph;
 import de.obqo.decycle.model.Edge;
 import de.obqo.decycle.model.Node;
@@ -51,10 +52,31 @@ class CycleFreeTest {
         g.connect(classNode("de.p2.B1"), classNode("de.p3.C2"));
         g.connect(classNode("de.p3.C1"), classNode("de.p1.A2"));
 
-        assertThat(dependenciesIn(this.cycleFree.violations(g))).containsOnly(
+        final List<Violation> violations = this.cycleFree.violations(g);
+        assertThat(violations).hasSize(1).extracting(Violation::getName).containsOnly("no cycles");
+        assertThat(dependenciesIn(violations)).containsOnly(
                 d("de.p1", "de.p2"),
                 d("de.p2", "de.p3"),
                 d("de.p3", "de.p1")
+        );
+    }
+
+    @Test
+    void shouldDetectMultipleCycles() {
+        final var g = new Graph(new PackageCategorizer());
+        g.connect(classNode("de.p1.A1"), classNode("de.p2.B2"));
+        g.connect(classNode("de.p2.B1"), classNode("de.p1.A2"));
+        g.connect(classNode("de.p3.C1"), classNode("de.p4.D2"));
+        g.connect(classNode("de.p4.D1"), classNode("de.p3.C2"));
+
+        final List<Violation> violations = this.cycleFree.violations(g);
+        assertThat(violations).hasSize(2).extracting(Violation::getName)
+                .containsExactly("no cycles (1)", "no cycles (2)");
+        assertThat(dependenciesIn(violations)).containsOnly(
+                d("de.p1", "de.p2"),
+                d("de.p2", "de.p1"),
+                d("de.p3", "de.p4"),
+                d("de.p4", "de.p3")
         );
     }
 
@@ -96,8 +118,8 @@ class CycleFreeTest {
         g.connect(classNode("de.p3.C1"), classNode("de.p1.A2"));
         g.connect(classNode("de.p3.C2"), classNode("de.p1.A1"));
 
-        final List<Constraint.Violation> violations = this.cycleFree.violations(g);
-        assertThat(violations).singleElement().extracting(Constraint.Violation::getDependencies, iterable(Edge.class))
+        final List<Violation> violations = this.cycleFree.violations(g);
+        assertThat(violations).singleElement().extracting(Violation::getDependencies, iterable(Edge.class))
                 .hasSize(3)
                 .anySatisfy(edge -> {
                     assertThat(new SimpleDependency(edge)).isEqualTo(d("de.p1", "de.p2"));

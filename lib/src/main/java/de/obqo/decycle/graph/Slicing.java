@@ -2,6 +2,7 @@ package de.obqo.decycle.graph;
 
 import de.obqo.decycle.model.Edge;
 import de.obqo.decycle.model.Node;
+import de.obqo.decycle.model.SliceType;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,7 +17,7 @@ import java.util.Set;
  */
 public interface Slicing {
 
-    String getSliceType();
+    SliceType getSliceType();
 
     Set<Node> nodes();
 

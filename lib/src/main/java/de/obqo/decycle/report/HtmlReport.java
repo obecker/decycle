@@ -58,12 +58,12 @@ import de.obqo.decycle.graph.Graph;
 import de.obqo.decycle.graph.Slicing;
 import de.obqo.decycle.model.Edge;
 import de.obqo.decycle.model.Node;
+import de.obqo.decycle.model.SliceType;
 import de.obqo.decycle.report.svg.MarkerTag;
 import de.obqo.decycle.report.svg.SvgTag;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -84,8 +84,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class HtmlReport {
 
-    private static final SliceComparator SLICE_COMPARATOR = new SliceComparator();
-
     private final boolean minify;
 
     public void writeReport(final Graph graph, final List<Violation> violations, final Appendable out,
@@ -105,8 +103,8 @@ public class HtmlReport {
 
     private HtmlTag buildHtml(final Graph graph, final List<Violation> violations, final String title) {
         final var sliceSections = graph.sliceTypes().stream()
-                .filter(Predicate.not(Node.CLASS::equals))
-                .sorted(SLICE_COMPARATOR)
+                .filter(Predicate.not(SliceType::isClassType))
+                .sorted()
                 .map(sliceType -> buildSliceSection(graph, violations, sliceType));
 
         return html().withLang("en").with(
@@ -180,10 +178,7 @@ public class HtmlReport {
                 div().withClass("col-12 mt-1").with(b("No violations found")))
                 : div().withClass("violations border rounded-lg pb-1 mb-3 alert-danger row").with(
                 h1().withClass("m-0 pt-2").with(i().withClass("bi bi-exclamation-triangle-fill")),
-                each(violations.stream()
-                        .sorted(Comparator.comparing(Violation::getSliceType, SLICE_COMPARATOR)
-                                .thenComparing(Violation::getName))
-                        .flatMap(this::buildViolationDivColumns)));
+                each(violations.stream().flatMap(this::buildViolationDivColumns)));
     }
 
     private Stream<DomContent> buildViolationDivColumns(final Violation v) {
@@ -192,7 +187,7 @@ public class HtmlReport {
                 div().withClass("col-8 dependencies mt-1")
                         .with(v.getDependencies().stream().map(dependency ->
                                 div(a(dependency.displayString())
-                                        .withHref("#" + v.getSliceType() + "-" + dependency.getFrom().getName())
+                                        .withHref(nodeRef(dependency.getFrom()))
                                         .withClass("alert-link")))));
     }
 
@@ -200,7 +195,19 @@ public class HtmlReport {
         return name.replace("->", "→").replace("=>", "⇨");
     }
 
-    private DomContent buildSliceSection(final Graph graph, final List<Violation> violations, final String sliceType) {
+    private String nodeIdentifier(final Node node) {
+        return nodeAnchor("", node);
+    }
+
+    private String nodeRef(final Node node) {
+        return nodeAnchor("#", node);
+    }
+
+    private String nodeAnchor(final String prefix, final Node node) {
+        return prefix + (node.getType().isSliceType() ? "s-" : "") + node.getType().getName() + "-" + node.getName();
+    }
+
+    private DomContent buildSliceSection(final Graph graph, final List<Violation> violations, final SliceType sliceType) {
         final Map<String, Map<String, List<String>>> violationsIndex =
                 violations.stream()
                         .filter(v -> v.getSliceType().equals(sliceType))
@@ -212,7 +219,7 @@ public class HtmlReport {
         final Slicing slicing = graph.slicing(sliceType);
 
         return div().withClass("pt-2").with(
-                h2(sliceType).withClass("slice text-capitalize mt-2"),
+                h2(sliceType.displayString()).withClass("slice text-capitalize mt-2"),
                 dl().withClass("slices row border rounded-lg py-1").with(
                         slicing.nodes().stream()
                                 .sorted()
@@ -268,7 +275,7 @@ public class HtmlReport {
                             final int yPos = index * verticalDistance + totalPadding;
                             nodePositionMap.put(node, yPos);
                             final String text = node.getName();
-                            final String hrefTarget = "#" + slicing.getSliceType() + "-" + node.getName();
+                            final String hrefTarget = nodeRef(node);
                             return a().attr("xlink:href", hrefTarget).withHref(hrefTarget).withClasses("node")
                                     .attr("data-name", nodeClassName(node))
                                     .with(
@@ -336,7 +343,7 @@ public class HtmlReport {
         return Stream.of(
                 dt().withClasses("col-sm-4", "border-top", "py-1", "text-truncate", errorClass)
                         .withTitle(node.getName())
-                        .with(a(node.getName()).withId(node.getType() + "-" + node.getName())),
+                        .with(a(node.getName()).withId(nodeIdentifier(node))),
                 dd().withClasses("col-sm-8", "border-top", "py-1", "mb-0", errorClass)
                         .with(ul().withClass("references list-unstyled mb-0")
                                 .with(buildOutEdgesList(graph, slicing, node, fromViolations))));
@@ -358,7 +365,7 @@ public class HtmlReport {
                                                     .withTitle("Show class dependencies"),
                                             i().withClasses("bi", "bi-arrows-collapse", iff(!hasViolations, "hidden"))
                                                     .withTitle("Hide class dependencies")),
-                                    a().withHref("#" + slicing.getSliceType() + "-" + edge.getTo().getName())
+                                    a().withHref(nodeRef(edge.getTo()))
                                             .withClass("mr-2")
                                             .with(wrap(edge.isIgnored(), TagCreator::del,
                                                     text(edge.getTo().getName()))),
@@ -384,20 +391,5 @@ public class HtmlReport {
     private static DomContent wrap(final boolean condition, final Function<DomContent[], DomContent> wrapper,
             final DomContent... contents) {
         return condition ? wrapper.apply(contents) : each(contents);
-    }
-
-    private static class SliceComparator implements Comparator<String> {
-
-        @Override
-        public int compare(final String slice1, final String slice2) {
-            // Put the PACKAGE slice always at the first position
-            if (Node.PACKAGE.equals(slice1)) {
-                return -1;
-            }
-            if (Node.PACKAGE.equals(slice2)) {
-                return 1;
-            }
-            return slice1.compareTo(slice2);
-        }
     }
 }

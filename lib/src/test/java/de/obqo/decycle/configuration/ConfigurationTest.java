@@ -2,6 +2,7 @@ package de.obqo.decycle.configuration;
 
 import static de.obqo.decycle.check.Layer.anyOf;
 import static de.obqo.decycle.check.SimpleDependency.d;
+import static de.obqo.decycle.model.SliceType.customType;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import de.obqo.decycle.check.Constraint;
@@ -74,7 +75,7 @@ class ConfigurationTest {
 
         new FileWriter("build/demo.html").append(out.toString()).close();
 
-        assertThat(violations).hasSize(2).extracting(Constraint.Violation::getSliceType).allMatch("subpackage"::equals);
+        assertThat(violations).hasSize(2).extracting(Constraint.Violation::getSliceType).allMatch(customType("subpackage")::equals);
 
         final var violation1 = violations.get(0);
         assertThat(violation1.getName()).isEqualTo("common => (helper, shared)");

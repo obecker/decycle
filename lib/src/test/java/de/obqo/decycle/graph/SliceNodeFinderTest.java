@@ -3,6 +3,8 @@ package de.obqo.decycle.graph;
 import static de.obqo.decycle.model.Node.classNode;
 import static de.obqo.decycle.model.Node.packageNode;
 import static de.obqo.decycle.model.Node.sliceNode;
+import static de.obqo.decycle.model.SliceType.packageType;
+import static de.obqo.decycle.model.SliceType.customType;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import de.obqo.decycle.model.Edge;
@@ -38,7 +40,7 @@ class SliceNodeFinderTest {
 
     @Test
     void shouldFindNothingForAnEmptyGraph() {
-        final var finder = new SliceNodeFinder("x", graph());
+        final var finder = new SliceNodeFinder(customType("x"), graph());
 
         assertThat(finder.find(n("z"))).isEmpty();
     }
@@ -47,7 +49,7 @@ class SliceNodeFinderTest {
     void shouldReturnTheNodeForASliceNode() {
         final var p = packageNode("p");
         final var g = graph(p);
-        final var finder = new SliceNodeFinder(Node.PACKAGE, g);
+        final var finder = new SliceNodeFinder(packageType(), g);
 
         assertThat(finder.find(p)).hasValue(p);
     }
@@ -56,7 +58,7 @@ class SliceNodeFinderTest {
     void shouldFindNothingIfNodeIsOfADifferentSlice() {
         final var p = packageNode("p");
         final var g = graph(p);
-        final var finder = new SliceNodeFinder("does not exist", g);
+        final var finder = new SliceNodeFinder(customType("does not exist"), g);
 
         assertThat(finder.find(p)).isEmpty();
     }
@@ -65,7 +67,7 @@ class SliceNodeFinderTest {
     void shouldTraverseContainsRelationship() {
         final var p = packageNode("p");
         final var g = graph(p, n("x"));
-        final var finder = new SliceNodeFinder(Node.PACKAGE, g);
+        final var finder = new SliceNodeFinder(packageType(), g);
 
         assertThat(finder.find(n("x"))).hasValue(p);
     }
@@ -75,7 +77,7 @@ class SliceNodeFinderTest {
         final var p = packageNode("p");
         final var c = classNode("p.c");
         final var g = graph(p, c);
-        final var finder = new SliceNodeFinder(Node.PACKAGE, g);
+        final var finder = new SliceNodeFinder(packageType(), g);
 
         assertThat(finder.find(c)).hasValue(p);
     }

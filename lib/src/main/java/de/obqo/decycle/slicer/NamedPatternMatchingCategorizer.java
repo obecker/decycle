@@ -1,6 +1,7 @@
 package de.obqo.decycle.slicer;
 
 import de.obqo.decycle.model.Node;
+import de.obqo.decycle.model.SliceType;
 
 import java.util.Optional;
 import java.util.Set;
@@ -24,12 +25,12 @@ import java.util.Set;
  */
 public class NamedPatternMatchingCategorizer implements Categorizer {
 
-    private final String sliceType;
+    private final SliceType sliceType;
     private final PatternMatcher matcher;
     private final String name;
 
     public NamedPatternMatchingCategorizer(final String sliceType, final String name, final String pattern) {
-        this.sliceType = sliceType;
+        this.sliceType = SliceType.customType(sliceType);
         this.name = name;
         this.matcher = new PatternMatcher(pattern);
     }

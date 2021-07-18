@@ -6,6 +6,7 @@ import de.obqo.decycle.graph.MutableSlicing;
 import de.obqo.decycle.graph.SlicingSource;
 import de.obqo.decycle.model.Edge;
 import de.obqo.decycle.model.Node;
+import de.obqo.decycle.model.SliceType;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public abstract class SlicedConstraint implements Constraint {
 
-    private final String sliceType;
+    private final SliceType sliceType;
     final List<Layer> layers;
     private final String arrow;
 

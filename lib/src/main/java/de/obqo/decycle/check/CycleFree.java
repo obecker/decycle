@@ -6,7 +6,7 @@ import static de.obqo.decycle.graph.StronglyConnectedComponentsFinder.findCompon
 import de.obqo.decycle.graph.Slicing;
 import de.obqo.decycle.graph.SlicingSource;
 import de.obqo.decycle.model.Edge;
-import de.obqo.decycle.model.Node;
+import de.obqo.decycle.model.SliceType;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -28,17 +28,25 @@ public class CycleFree implements Constraint {
 
     @Override
     public List<Violation> violations(final SlicingSource slicingSource) {
-        final List<Violation> list = new ArrayList<>();
-        for (final String sliceType : slicingSource.sliceTypes()) {
-            if (!Node.CLASS.equals(sliceType)) {
+        final List<Slicing> violatingSubgraphs = new ArrayList<>();
+        for (final SliceType sliceType : slicingSource.sliceTypes()) {
+            if (!sliceType.isClassType()) {
                 for (final Set<Edge> comp : findComponents(slicingSource.slicing(sliceType))) {
                     final Slicing violatingSubgraph = create(sliceType, comp);
                     identifyViolations(violatingSubgraph);
-                    list.add(new Violation(getShortString(), violatingSubgraph));
+                    violatingSubgraphs.add(violatingSubgraph);
                 }
             }
         }
-        return list;
+
+        final List<Violation> violations = new ArrayList<>();
+        final boolean multiple = violatingSubgraphs.size() > 1;
+        for (int i = 0; i < violatingSubgraphs.size(); i++) {
+            violations.add(new Violation(
+                    multiple ? String.format("%s (%d)", getShortString(), i + 1) : getShortString(),
+                    violatingSubgraphs.get(i)));
+        }
+        return violations;
     }
 
     private void identifyViolations(final Slicing subgraph) {

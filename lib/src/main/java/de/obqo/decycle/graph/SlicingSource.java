@@ -1,11 +1,13 @@
 package de.obqo.decycle.graph;
 
+import de.obqo.decycle.model.SliceType;
+
 import java.util.Set;
 
 public interface SlicingSource {
 
-    Set<String> sliceTypes();
+    Set<SliceType> sliceTypes();
 
-    Slicing slicing(String name);
+    Slicing slicing(SliceType sliceType);
 
 }

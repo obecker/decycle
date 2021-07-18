@@ -5,6 +5,7 @@ import static java.util.stream.Collectors.joining;
 import de.obqo.decycle.graph.Slicing;
 import de.obqo.decycle.graph.SlicingSource;
 import de.obqo.decycle.model.Edge;
+import de.obqo.decycle.model.SliceType;
 
 import java.util.List;
 import java.util.Set;
@@ -24,7 +25,7 @@ public interface Constraint {
         String name;
         Slicing violatingSubgraph;
 
-        public String getSliceType() {
+        public SliceType getSliceType() {
             return this.violatingSubgraph.getSliceType();
         }
 
@@ -35,7 +36,7 @@ public interface Constraint {
         public String displayString() {
             return String.format(
                     "Violation(slicing=%s, name=%s, dependencies=[%s])",
-                    getSliceType(),
+                    getSliceType().displayString(),
                     this.name,
                     getDependencies().stream().map(Edge::displayString).collect(joining(", "))
             );

@@ -2,6 +2,7 @@ package de.obqo.decycle.graph;
 
 import de.obqo.decycle.model.Edge;
 import de.obqo.decycle.model.Node;
+import de.obqo.decycle.model.SliceType;
 
 import java.util.Optional;
 import java.util.Set;
@@ -15,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 @SuppressWarnings("UnstableApiUsage")
 class SliceNodeFinder {
 
-    private final String sliceType;
+    private final SliceType sliceType;
     private final Network<Node, Edge> internalGraph;
 
     Optional<Node> find(final Node node) {

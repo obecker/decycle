@@ -1,7 +1,7 @@
 package de.obqo.decycle.graph;
 
-import static de.obqo.decycle.model.Node.PACKAGE;
 import static de.obqo.decycle.model.Node.packageNode;
+import static de.obqo.decycle.model.SliceType.packageType;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import de.obqo.decycle.model.Edge;
@@ -32,7 +32,7 @@ class TopologicalTest {
         g.connect(n("c"), n("d"));
         g.connect(n("b"), n("c"));
 
-        final List<Node> order = Topological.order(g.slicing(PACKAGE));
+        final List<Node> order = Topological.order(g.slicing(packageType()));
 
         assertThat(order).extracting(Node::getName).containsExactly("a", "b", "c", "d");
     }
@@ -47,7 +47,7 @@ class TopologicalTest {
         g.connect(n("b"), n("d"));
         g.connect(n("c"), n("d"));
 
-        final List<Node> order = Topological.order(g.slicing(PACKAGE));
+        final List<Node> order = Topological.order(g.slicing(packageType()));
 
         assertThat(order).extracting(Node::getName).containsExactly("a", "b", "c", "d", "e");
     }

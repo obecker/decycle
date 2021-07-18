@@ -1,5 +1,7 @@
 package de.obqo.decycle.check;
 
+import static de.obqo.decycle.model.SliceType.customType;
+
 import de.obqo.decycle.model.Node;
 
 import java.util.List;
@@ -8,7 +10,7 @@ import java.util.Objects;
 public class DirectLayeringConstraint extends SlicedConstraint {
 
     public DirectLayeringConstraint(final String sliceType, final List<Layer> layers) {
-        super(sliceType, layers, " => ");
+        super(customType(sliceType), layers, " => ");
     }
 
     @Override

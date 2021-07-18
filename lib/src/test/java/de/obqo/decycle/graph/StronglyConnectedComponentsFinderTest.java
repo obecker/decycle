@@ -1,6 +1,7 @@
 package de.obqo.decycle.graph;
 
 import static de.obqo.decycle.model.Node.packageNode;
+import static de.obqo.decycle.model.SliceType.packageType;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import de.obqo.decycle.model.Edge;
@@ -31,7 +32,7 @@ class StronglyConnectedComponentsFinderTest {
         g.add(n("b"));
         g.add(n("c"));
 
-        final var components = StronglyConnectedComponentsFinder.findComponents(g.slicing(Node.PACKAGE));
+        final var components = StronglyConnectedComponentsFinder.findComponents(g.slicing(packageType()));
 
         assertThat(components).isEmpty();
     }
@@ -43,7 +44,7 @@ class StronglyConnectedComponentsFinderTest {
         g.connect(n("b"), n("c"));
         g.connect(n("c"), n("d"));
 
-        final var components = StronglyConnectedComponentsFinder.findComponents(g.slicing(Node.PACKAGE));
+        final var components = StronglyConnectedComponentsFinder.findComponents(g.slicing(packageType()));
 
         assertThat(components).isEmpty();
     }
@@ -54,7 +55,7 @@ class StronglyConnectedComponentsFinderTest {
         g.connect(n("a"), n("b"));
         g.connect(n("b"), n("a"));
 
-        final var components = StronglyConnectedComponentsFinder.findComponents(g.slicing(Node.PACKAGE));
+        final var components = StronglyConnectedComponentsFinder.findComponents(g.slicing(packageType()));
 
         assertThat(components).containsOnly(Set.of(e("a", "b"), e("b", "a")));
     }
@@ -80,7 +81,7 @@ class StronglyConnectedComponentsFinderTest {
         g.connect(z, y);
         g.connect(b, z);
 
-        final var components = StronglyConnectedComponentsFinder.findComponents(g.slicing(Node.PACKAGE));
+        final var components = StronglyConnectedComponentsFinder.findComponents(g.slicing(packageType()));
 
         assertThat(components).containsOnly(Set.of(e(a, b), e(b, c), e(c, a)), Set.of(e(y, z), e(z, y)));
     }
@@ -108,7 +109,7 @@ class StronglyConnectedComponentsFinderTest {
         g.connect(z, x);
         g.connect(y, x);
 
-        final var components = StronglyConnectedComponentsFinder.findComponents(g.slicing(Node.PACKAGE));
+        final var components = StronglyConnectedComponentsFinder.findComponents(g.slicing(packageType()));
 
         assertThat(components).containsOnly(
                 Set.of(e(a, b), e(b, c), e(c, d), e(d, a), e(a, c), e(d, b)),

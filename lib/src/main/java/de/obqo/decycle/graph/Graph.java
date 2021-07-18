@@ -9,6 +9,7 @@ import de.obqo.decycle.model.Edge;
 import de.obqo.decycle.model.EdgeFilter;
 import de.obqo.decycle.model.Node;
 import de.obqo.decycle.model.NodeFilter;
+import de.obqo.decycle.model.SliceType;
 import de.obqo.decycle.slicer.Categorizer;
 
 import java.util.HashMap;
@@ -24,9 +25,10 @@ import com.google.common.graph.NetworkBuilder;
 
 /**
  * A {@link Graph} represents the network resulting from analyzing the classes of a given classpath. It contains {@link
- * Node#CLASS class} {@link Node nodes} that are connected among each other by {@link Edge.EdgeLabel#REFERENCES
- * referencing} {@link Edge edges} as well as {@link Node#PACKAGE package} and slice nodes that are connected to class
- * nodes by {@link Edge.EdgeLabel#CONTAINS containing} {@link Edge edges}.
+ * SliceType#classType() class} {@link Node nodes} that are connected among each other by {@link
+ * Edge.EdgeLabel#REFERENCES referencing} {@link Edge edges} as well as {@link SliceType#packageType() package} and
+ * {@link SliceType#customType(String) custom slice} nodes that are connected to class nodes by {@link
+ * Edge.EdgeLabel#CONTAINS containing} {@link Edge edges}.
  */
 @SuppressWarnings("UnstableApiUsage")
 public class Graph implements SlicingSource {
@@ -37,7 +39,7 @@ public class Graph implements SlicingSource {
 
     private final MutableNetwork<Node, Edge> internalGraph = NetworkBuilder.directed().build();
 
-    private final Map<String, Slicing> slicingCache = new HashMap<>();
+    private final Map<SliceType, Slicing> slicingCache = new HashMap<>();
 
     public Graph() {
         this(null);
@@ -122,22 +124,22 @@ public class Graph implements SlicingSource {
     }
 
     @Override
-    public Set<String> sliceTypes() {
+    public Set<SliceType> sliceTypes() {
         return this.internalGraph.nodes().stream().map(Node::getType).collect(Collectors.toSet());
     }
 
     @Override
-    public Slicing slicing(final String name) {
-        return this.slicingCache.computeIfAbsent(name, this::computeSlicing);
+    public Slicing slicing(final SliceType sliceType) {
+        return this.slicingCache.computeIfAbsent(sliceType, this::computeSlicing);
     }
 
-    private MutableSlicing computeSlicing(final String name) {
-        final var slice = MutableSlicing.create(name);
+    private MutableSlicing computeSlicing(final SliceType sliceType) {
+        final var slice = MutableSlicing.create(sliceType);
 
-        final var sliceNodeFinder = new SliceNodeFinder(name, this.internalGraph);
+        final var sliceNodeFinder = new SliceNodeFinder(sliceType, this.internalGraph);
 
         this.internalGraph.nodes().stream()
-                .filter(n -> n.hasType(name))
+                .filter(n -> n.hasType(sliceType))
                 .forEach(slice::addNode);
 
         this.internalGraph.edges().stream()
@@ -168,7 +170,7 @@ public class Graph implements SlicingSource {
     }
 
     private Stream<Node> containingClassNodes(final Node node) {
-        return node.getType().equals(Node.CLASS) ? Stream.of(node) : this.internalGraph.outEdges(node)
+        return node.getType().isClassType() ? Stream.of(node) : this.internalGraph.outEdges(node)
                 .stream().filter(Edge::isContaining)
                 .map(Edge::getTo)
                 .flatMap(this::containingClassNodes);

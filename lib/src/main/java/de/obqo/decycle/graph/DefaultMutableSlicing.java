@@ -2,6 +2,7 @@ package de.obqo.decycle.graph;
 
 import de.obqo.decycle.model.Edge;
 import de.obqo.decycle.model.Node;
+import de.obqo.decycle.model.SliceType;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 class DefaultMutableSlicing implements MutableSlicing {
 
     @Getter
-    private final String sliceType;
+    private final SliceType sliceType;
 
     private final MutableNetwork<Node, Edge> network = NetworkBuilder.directed().build();
 
