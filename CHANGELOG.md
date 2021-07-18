@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 0.5.0 - 2021-07-18
+   - Hide other dependency arcs when hovering over the nodes in a dependency image
+   - Add a title to the dependency image  
+   - Add configuration option 'ignoreFailures' to the gradle plugin
+
 ## 0.4.0 - 2021-07-05
    - Add links between packages/slices in the dependency tables
    - Add image(s) depicting the dependency graph and cycles
