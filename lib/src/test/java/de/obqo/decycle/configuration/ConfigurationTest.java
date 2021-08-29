@@ -18,9 +18,17 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 
+import org.assertj.core.api.SoftAssertions;
+import org.assertj.core.api.junit.jupiter.InjectSoftAssertions;
+import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
+@ExtendWith(SoftAssertionsExtension.class)
 class ConfigurationTest {
+
+    @InjectSoftAssertions
+    private SoftAssertions softly;
 
     @Test
     void projectConfigurationShouldHaveNoConstraintViolations() throws IOException {
@@ -48,10 +56,11 @@ class ConfigurationTest {
                 .build()
                 .check())
                 .isEmpty();
-        new FileWriter("build/demobase.html").append(out.toString()).close();
 
-        final String expectedReport = readResource("ConfigurationTest-shouldReportAllDependencies.html");
-        assertThat(out.toString()).isEqualTo(expectedReport);
+        final String report = out.toString();
+        new FileWriter("build/demobase.html").append(report).close();
+
+        assertReport(report, "ConfigurationTest-shouldReportAllDependencies.html");
     }
 
     @Test
@@ -101,14 +110,31 @@ class ConfigurationTest {
                 .build()
                 .check();
 
-        new FileWriter("build/test.html").append(out.toString()).close();
+        final String report = out.toString();
+        new FileWriter("build/test.html").append(report).close();
 
-        final String expectedReport = readResource("ConfigurationTest-shouldWriteReport.html");
-        assertThat(out.toString()).isEqualTo(expectedReport);
+        assertReport(report, "ConfigurationTest-shouldWriteReport.html");
+    }
+
+    private void assertReport(final String actualReport, final String filename) {
+        final String expectedReport = readResource(filename);
+
+        // this assertion is more useful locally (in the IDE)
+        this.softly.assertThat(sanitizeLineSeparators(actualReport)).isEqualTo(sanitizeLineSeparators(expectedReport));
+
+        // this assertion is more useful on a CI server (in gitlab actions)
+        final String[] actualLines = actualReport.split("\\R");
+        final String[] expectedLines = expectedReport.split("\\R");
+        this.softly.assertThat(actualLines).containsExactly(expectedLines);
     }
 
     private String readResource(final String filename) {
         final Scanner s = new Scanner(ConfigurationTest.class.getResourceAsStream(filename)).useDelimiter("\\A");
         return s.hasNext() ? s.next() : "";
+    }
+
+    private String sanitizeLineSeparators(final String input) {
+        // normalize line separators to cope with different OS settings
+        return input.replaceAll("\\R", "\n");
     }
 }
