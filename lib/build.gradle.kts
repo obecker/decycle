@@ -2,7 +2,7 @@ plugins {
     `java-library`
     `maven-publish`
     signing
-    id("io.freefair.lombok") version "6.0.0-m2"
+    id("io.freefair.lombok") version "6.1.0"
 }
 
 val asmVersion: String by project

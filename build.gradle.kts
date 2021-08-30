@@ -2,7 +2,7 @@ group = "de.obqo.decycle"
 version = "0.6.0-SNAPSHOT"
 
 tasks.wrapper {
-    gradleVersion = "6.9"
+    gradleVersion = "7.2"
     distributionType = Wrapper.DistributionType.ALL
 }
 
