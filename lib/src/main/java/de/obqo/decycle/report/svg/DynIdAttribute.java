@@ -8,6 +8,9 @@ import j2html.attributes.Attribute;
 /**
  * Dynamic {@code id} attribute that will get a number appended to its value in order to achieve uniqueness within a
  * HTML document. To be used for generated SVG that may appear multiple times in the same document.
+ * <p>
+ * Note: it is necessary to {@link #dynId(String) create} the id before creating any {@link #dynRef(String) references}
+ * or {@link #dynUrl(String) urls}.
  */
 public class DynIdAttribute extends Attribute {
 
@@ -40,9 +43,9 @@ public class DynIdAttribute extends Attribute {
      * Creates a reference (or a target anchor) for the given {@code id} (for example for the target of an xlink)
      *
      * @param value the (base) value of the target {@code id} attribute
-     * @return the {@code id} reference: {@code "#value<n>"}
+     * @return the {@code id} reference: {@code "#value<n>"} for the last created id
      */
-    public static String ref(final String value) {
+    public static String dynRef(final String value) {
         return "#" + value + idMap.get().get(value);
     }
 
@@ -51,9 +54,9 @@ public class DynIdAttribute extends Attribute {
      * for example in SVG presentation attributes)
      *
      * @param value the (base) value of the target {@code id} attribute
-     * @return the {@code url()} function: {@code "url(#value<n>)"}
+     * @return the {@code url()} function: {@code "url(#value<n>)"} for the last created id
      */
-    public static String url(final String value) {
+    public static String dynUrl(final String value) {
         return "url(#" + value + idMap.get().get(value) + ")";
     }
 }

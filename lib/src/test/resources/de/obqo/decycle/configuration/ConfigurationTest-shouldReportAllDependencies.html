@@ -2,12 +2,13 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="referrer" content="no-referrer">
         <title>
             Decycle Report
         </title>
         <link href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIGZpbGw9ImJsYWNrIiB2aWV3Qm94PSIwIDAgMTYgMTYiPjxkZWZzPjxwYXRoIGlkPSJhIiBkPSJNMCAwbC0xLjUtM2EuMzUuMzUgMCAwIDEgLjQtLjQ1bDEuMTEuMyAxLjExLS4zYS4zNS4zNSAwIDAgMSAuNC40NXoiIC8+PGcgaWQ9ImUiPjxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgZD0iTTcuOTcgNC41YTQgNCAwIDEgMC0zLjk3IDMuNXYtMWEzIDMgMCAwIDEtMi45NS0yLjV6bS0xLjAyLTFhMyAzIDAgMCAwLTUuOSAweiIgdHJhbnNmb3JtPSJyb3RhdGUoLTQ1IDQgNCkiIC8+PHVzZSB4bGluazpocmVmPSIjYSIgeD0iNy43NSIgeT0iNSIgdHJhbnNmb3JtPSJyb3RhdGUoLTEzMiA3Ljc1IDUpIiAvPjwvZz48ZyBpZD0iYyI+PHBhdGggZD0iTTggMTVhNyA3IDAgMSAxIDctN2EuNSAwLjc1IDAgMSAxLTEgMGE2IDYgMCAxIDAtNiA2eiIgdHJhbnNmb3JtPSJyb3RhdGUoNDUsIDgsIDgpIi8+PHVzZSB4bGluazpocmVmPSIjYSIgeD0iNC44IiB5PSIxNCIgdHJhbnNmb3JtPSJyb3RhdGUoLTQyIDQuOCAxNCkiLz48L2c+PC9kZWZzPjx1c2UgeGxpbms6aHJlZj0iI2UiIHg9IjQiIHk9IjQiIC8+PHVzZSB4bGluazpocmVmPSIjYyIgeD0iMCIgeT0iMCIgLz48L3N2Zz4=" rel="icon" type="image/svg+xml">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" integrity="sha256-PDJQdTN7dolQWDASIoBVrjkuOEaI137FI15sqI3Oxu8=" crossorigin="anonymous">
         <style>
             html {
                 font-size: 14px;
@@ -121,9 +122,33 @@
                 stroke-dasharray: 20;
                 stroke-opacity: 0.7;
             }
+            svg.dependency-graph path.tip {
+                fill: none;
+                stroke: white;
+                stroke-opacity: 0;
+                stroke-width: 60;
+            }
+            
+            .tooltipster-content ul {
+                list-style: none;
+                margin: 0;
+                padding: 0;
+                font-size: smaller;
+                line-height: 1.2rem;
+            }
+            body .tooltipster-sidetip .tooltipster-content {
+                padding: 6px;
+            }
         </style>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous">
         </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/svg.js/3.1.1/svg.min.js" integrity="sha512-Aj0P6wguH3GVlCfbvTyMM90Zq886ePyMEYlZooRfx+3wcSYyUa6Uv4iAjoJ7yiWdKamqQzKp7yr/TkMQ8EEWbQ==" crossorigin="anonymous">
+        </script>
+        <script src="https://cdn.jsdelivr.net/npm/tooltipster@4.2.8/dist/js/tooltipster.bundle.min.js" integrity="sha256-v8akIv8SCqn5f3mbVB7vEWprIizxPh6oV0yhao/dbB4=" crossorigin="anonymous">
+        </script>
+        <script src="https://cdn.jsdelivr.net/npm/tooltipster@4.2.8/dist/js/plugins/tooltipster/SVG/tooltipster-SVG.min.js" integrity="sha256-b9JNfGq08bjI5FVdN3ZhjWBSRsOyF6ucACQwlvgVEU4=" crossorigin="anonymous">
+        </script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tooltipster@4.2.8/dist/css/tooltipster.bundle.min.css" integrity="sha256-Qc4lCfqZWYaHF5hgEOFrYzSIX9Rrxk0NPHRac+08QeQ=" crossorigin="anonymous">
         <script>
             $(function() {
               $('ul.references > li > a.toggle-display').click(function() {
@@ -137,7 +162,6 @@
               let h = function(span) {
                 return $('span.class-node[data-name="' + $(span).data('name') + '"]');
               };
-            
               $('span.class-node').mouseover(function() {
                 h(this).addClass('highlight');
               }).mouseout(function() {
@@ -149,6 +173,17 @@
                 $(this).parents('svg').toggleClass('hover').find('path.' + n).toggleClass('show')
               };
               $('svg.dependency-graph a.node').mouseover(et).mouseout(et);
+            
+              let tt = function() {
+                $(this).prev().toggleClass('show').parents('svg').toggleClass('hover');
+              };
+              $('svg.dependency-graph path.tip').mouseover(tt).mouseout(tt).tooltipster({
+                functionInit: function(instance, helper) {
+                  let ref = $(helper.origin).data('ref');
+                  let $content = $('<ul></ul>').append($('#' + ref).children().clone());
+                  instance.content($content);
+                }
+              });
             });
         </script>
     </head>
@@ -238,7 +273,7 @@
                                     <a href="#Package-de.obqo.decycle.demo.base.to" class="mr-2">
                                         de.obqo.decycle.demo.base.to
                                     </a>
-                                    <ul class="class-references list-unstyled mb-1">
+                                    <ul id="e1" class="class-references list-unstyled mb-1">
                                         <li>
                                             <span class="class-node" data-name="de.obqo.decycle.demo.base.from.FromAnnotation">
                                                 de.obqo.decycle.demo.base.from.FromAnnotation
@@ -902,7 +937,7 @@
                         </dd>
                     </dl>
                     <div class="row">
-                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="320" height="126" viewBox="0 0 2564 1010" class="dependency-graph border rounded mr-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="326" height="126" viewBox="0 0 2614 1010" class="dependency-graph border rounded mr-3">
                             <defs>
                                 <marker id="ad1" markerWidth="100" markerHeight="100" refX="28" refY="50" orient="auto" markerUnits="userSpaceOnUse">
                                     <path fill="black" d="M85.2 50 21.2 82a4.8 4.8 0 0 1-6.4-4.8l6.4-28.16-6.4-28.16a4.8 4.8 0 0 1 6.4-4.8z">
@@ -919,42 +954,44 @@
                                     </stop>
                                 </linearGradient>
                                 <clipPath id="cl1">
-                                    <rect width="1944" height="200" rx="35">
+                                    <rect width="1994" height="200" rx="35">
                                     </rect>
                                 </clipPath>
                                 <g id="box1" clip-path="url(#cl1)">
-                                    <rect width="1944" height="200" fill="#c6d8ec">
+                                    <rect width="1994" height="200" fill="#c6d8ec">
                                     </rect>
-                                    <rect width="1944" height="200" fill="url(#lg1)">
+                                    <rect width="1994" height="200" fill="url(#lg1)">
                                     </rect>
                                 </g>
                             </defs>
-                            <text x="1282" y="130" fill="#000" font-weight="bold" style="text-transform: capitalize">
+                            <text x="1307" y="130" fill="#000" font-weight="bold" style="text-transform: capitalize">
                                 Package
                             </text>
-                            <path d="M0 190h2564" stroke="#dee2e6" stroke-width="8">
+                            <path d="M0 190h2614" stroke="#dee2e6" stroke-width="8">
                             </path>
                             <a xlink:href="#Package-de.obqo.decycle.demo.base.from" href="#Package-de.obqo.decycle.demo.base.from" class="node" data-name="n-de-obqo-decycle-demo-base-from">
                                 <use xlink:href="#box1" href="#box1" x="310" y="290">
                                 </use>
-                                <text x="1287" y="440" fill="#F1F1F1" fill-opacity=".5">
+                                <text x="1312" y="440" fill="#F1F1F1" fill-opacity=".5">
                                     de.obqo.decycle.demo.base.from
                                 </text>
-                                <text x="1282" y="430" fill="#000">
+                                <text x="1307" y="430" fill="#000">
                                     de.obqo.decycle.demo.base.from
                                 </text>
                             </a>
                             <a xlink:href="#Package-de.obqo.decycle.demo.base.to" href="#Package-de.obqo.decycle.demo.base.to" class="node" data-name="n-de-obqo-decycle-demo-base-to">
                                 <use xlink:href="#box1" href="#box1" x="310" y="710">
                                 </use>
-                                <text x="1287" y="860" fill="#F1F1F1" fill-opacity=".5">
+                                <text x="1312" y="860" fill="#F1F1F1" fill-opacity=".5">
                                     de.obqo.decycle.demo.base.to
                                 </text>
-                                <text x="1282" y="850" fill="#000">
+                                <text x="1307" y="850" fill="#000">
                                     de.obqo.decycle.demo.base.to
                                 </text>
                             </a>
-                            <path class="n-de-obqo-decycle-demo-base-from n-de-obqo-decycle-demo-base-to edge" d="M2254 420h55a105 180 180 1 1 0 360" stroke="black" stroke-width="25.74" marker-end="url(#ad1)">
+                            <path class="n-de-obqo-decycle-demo-base-from n-de-obqo-decycle-demo-base-to edge" d="M2304 420h55a105 180 180 1 1 0 360" stroke="black" stroke-width="25.74" marker-end="url(#ad1)">
+                            </path>
+                            <path class="tip" data-ref="e1" d="M2304 420h55a105 180 180 1 1 0 360h-55">
                             </path>
                         </svg>
                     </div>

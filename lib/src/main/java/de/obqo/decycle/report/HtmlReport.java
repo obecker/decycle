@@ -4,9 +4,9 @@ import static de.obqo.decycle.report.MarkupReader.base64FromFile_min;
 import static de.obqo.decycle.report.MarkupReader.rawHtmlWithInlineFile;
 import static de.obqo.decycle.report.MarkupReader.rawHtmlWithInlineFile_min;
 import static de.obqo.decycle.report.svg.DynIdAttribute.dynId;
-import static de.obqo.decycle.report.svg.DynIdAttribute.ref;
+import static de.obqo.decycle.report.svg.DynIdAttribute.dynRef;
 import static de.obqo.decycle.report.svg.DynIdAttribute.resetDynIds;
-import static de.obqo.decycle.report.svg.DynIdAttribute.url;
+import static de.obqo.decycle.report.svg.DynIdAttribute.dynUrl;
 import static de.obqo.decycle.report.svg.PathBuilder.from;
 import static de.obqo.decycle.report.svg.SvgTagBuilder.clipPath;
 import static de.obqo.decycle.report.svg.SvgTagBuilder.defs;
@@ -86,6 +86,8 @@ public class HtmlReport {
 
     private final boolean minify;
 
+    private final IdMapper<Edge> edgeIds = new IdMapper<>("e");
+
     public void writeReport(final Graph graph, final List<Violation> violations, final Appendable out,
             final String title) {
 
@@ -112,24 +114,42 @@ public class HtmlReport {
                         meta().withCharset("UTF-8"),
                         meta().withName("viewport")
                                 .withContent("width=device-width, initial-scale=1, shrink-to-fit=no"),
+                        meta().withName("referrer").withContent("no-referrer"),
                         title((title != null ? title + " - " : "") + "Decycle Report"),
                         link().withHref("data:image/svg+xml;base64," + base64FromFile_min("/report/icon.svg"))
                                 .withRel("icon").withType("image/svg+xml"),
                         // https://getbootstrap.com/docs/4.6/getting-started/introduction/
                         link().withRel("stylesheet")
-                                .withHref(
-                                        "https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css")
+                                .withHref("https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css")
                                 .attr("integrity",
                                         "sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l")
                                 .attr("crossorigin", "anonymous"),
                         // https://icons.getbootstrap.com/#usage
                         link().withRel("stylesheet")
-                                .withHref(
-                                        "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css"),
+                                .withHref("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css")
+                                .attr("integrity",
+                                        "sha256-PDJQdTN7dolQWDASIoBVrjkuOEaI137FI15sqI3Oxu8=")
+                                .attr("crossorigin", "anonymous"),
                         inlineStyle(this.minify, "/report/custom.css"),
                         // https://code.jquery.com
                         script().withSrc("https://code.jquery.com/jquery-3.6.0.min.js")
                                 .attr("integrity", "sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=")
+                                .attr("crossorigin", "anonymous"),
+                        // https://cdnjs.com/libraries/svg.js (required by tooltipster)
+                        script().withSrc("https://cdnjs.cloudflare.com/ajax/libs/svg.js/3.1.1/svg.min.js")
+                                .attr("integrity",
+                                        "sha512-Aj0P6wguH3GVlCfbvTyMM90Zq886ePyMEYlZooRfx+3wcSYyUa6Uv4iAjoJ7yiWdKamqQzKp7yr/TkMQ8EEWbQ==")
+                                .attr("crossorigin", "anonymous"),
+                        // https://www.jsdelivr.com/package/npm/tooltipster
+                        script().withSrc("https://cdn.jsdelivr.net/npm/tooltipster@4.2.8/dist/js/tooltipster.bundle.min.js")
+                                .attr("integrity", "sha256-v8akIv8SCqn5f3mbVB7vEWprIizxPh6oV0yhao/dbB4=")
+                                .attr("crossorigin", "anonymous"),
+                        script().withSrc("https://cdn.jsdelivr.net/npm/tooltipster@4.2.8/dist/js/plugins/tooltipster/SVG/tooltipster-SVG.min.js")
+                                .attr("integrity", "sha256-b9JNfGq08bjI5FVdN3ZhjWBSRsOyF6ucACQwlvgVEU4=")
+                                .attr("crossorigin", "anonymous"),
+                        link().withRel("stylesheet")
+                                .withHref("https://cdn.jsdelivr.net/npm/tooltipster@4.2.8/dist/css/tooltipster.bundle.min.css")
+                                .attr("integrity", "sha256-Qc4lCfqZWYaHF5hgEOFrYzSIX9Rrxk0NPHRac+08QeQ=")
                                 .attr("crossorigin", "anonymous"),
                         inlineScript(this.minify, "/report/custom.js")
                 ),
@@ -236,7 +256,7 @@ public class HtmlReport {
         final FontMetricsSupport metrics = FontMetricsSupport.get(this.minify);
         final int maxTextWidth = nodeList.stream().map(Node::getName).mapToInt(metrics::widthOf).max().orElse(0);
         final int verticalDistance = 420;
-        final int boxWidth = maxTextWidth + 100;
+        final int boxWidth = maxTextWidth + 150;
         final int boxHeight = 200;
 
         final int arrowSpacing = 60;  // distance between in- and outgoing arcs
@@ -272,9 +292,9 @@ public class HtmlReport {
                                         stop().offset(1).stopOpacity(0.1)),
                                 clipPath().attr(dynId("cl")).with(
                                         rect().widthAndHeight(boxWidth, boxHeight).rx(35)),
-                                g().attr(dynId("box")).clipPath(url("cl")).with(
+                                g().attr(dynId("box")).clipPath(dynUrl("cl")).with(
                                         rect().widthAndHeight(boxWidth, boxHeight).fill("#c6d8ec"),
-                                        rect().widthAndHeight(boxWidth, boxHeight).fill(url("lg"))
+                                        rect().widthAndHeight(boxWidth, boxHeight).fill(dynUrl("lg"))
                                 )
                         ),
                         text().x(centerBox).y((titleHeight - 70) / 2.0 + 70).fill("#000").fontWeight("bold")
@@ -289,7 +309,7 @@ public class HtmlReport {
                             return a().attr("xlink:href", hrefTarget).withHref(hrefTarget).withClasses("node")
                                     .attr("data-name", nodeClassName(node))
                                     .with(
-                                            use().href(ref("box")).x(leftBox).y(yPos),
+                                            use().href(dynRef("box")).x(leftBox).y(yPos),
                                             text().x(centerBox + 5).y(150 + yPos).fill("#F1F1F1").fillOpacity(0.5)
                                                     .withText(text),
                                             text().x(centerBox).y(140 + yPos).fill("#000").withText(text));
@@ -300,25 +320,46 @@ public class HtmlReport {
                             final String fromName = nodeClassName(edge.getFrom());
                             final String toName = nodeClassName(edge.getTo());
                             if (positionFrom < positionTo) {
-                                return path()
-                                        .withClasses(fromName, toName, "edge", iff(edge.isIgnored(), "ignored"))
-                                        .d(from(rightBox, positionFrom + (boxHeight + arrowSpacing) / 2.0)
-                                                .relHorizontalLineTo(arrowLength)
-                                                .relArc((positionTo - positionFrom) / 2.0 / xShrinkFactor,
-                                                        (positionTo - positionFrom - arrowSpacing) / 2.0,
-                                                        180, true, true, 0, positionTo - positionFrom - arrowSpacing))
-                                        .stroke(downColor).strokeWidth(arcWidth(edge))
-                                        .markerEnd(url("ad"));
+                                final double fromY = positionFrom + (boxHeight + arrowSpacing) / 2.0;
+                                final double rx = (positionTo - positionFrom) / 2.0 / xShrinkFactor;
+                                final double ry = (positionTo - positionFrom - arrowSpacing) / 2.0;
+                                final double dy = positionTo - positionFrom - arrowSpacing;
+                                return each(
+                                        path()
+                                                .withClasses(fromName, toName, "edge", iff(edge.isIgnored(), "ignored"))
+                                                .d(from(rightBox, fromY)
+                                                        .relHorizontalLineTo(arrowLength)
+                                                        .relArc(rx, ry, 180, true, true, 0, dy))
+                                                .stroke(downColor).strokeWidth(arcWidth(edge))
+                                                .markerEnd(dynUrl("ad")),
+                                        path()
+                                                .withClasses("tip")
+                                                .withData("ref", this.edgeIds.getId(edge))
+                                                .d(from(rightBox, fromY)
+                                                        .relHorizontalLineTo(arrowLength)
+                                                        .relArc(rx, ry, 180, true, true, 0, dy)
+                                                        .relHorizontalLineTo(-arrowLength))
+                                );
                             } else {
-                                return path()
-                                        .withClasses(fromName, toName, "edge", iff(edge.isIgnored(), "ignored"))
-                                        .d(from(leftBox, positionFrom + (boxHeight - arrowSpacing) / 2.0)
-                                                .relHorizontalLineTo(-arrowLength)
-                                                .relArc((positionFrom - positionTo) / 2.0 / xShrinkFactor,
-                                                        (positionFrom - positionTo - arrowSpacing) / 2.0,
-                                                        180, true, true, 0, positionTo - positionFrom + arrowSpacing))
-                                        .stroke(upColor).strokeWidth(arcWidth(edge))
-                                        .markerEnd(url("au"));
+                                final double fromY = positionFrom + (boxHeight - arrowSpacing) / 2.0;
+                                final double rx = (positionFrom - positionTo) / 2.0 / xShrinkFactor;
+                                final double ry = (positionFrom - positionTo - arrowSpacing) / 2.0;
+                                final double dy = positionTo - positionFrom + arrowSpacing;
+                                return each(
+                                        path()
+                                                .withClasses(fromName, toName, "edge", iff(edge.isIgnored(), "ignored"))
+                                                .d(from(leftBox, fromY)
+                                                        .relHorizontalLineTo(-arrowLength)
+                                                        .relArc(rx, ry, 180, true, true, 0, dy))
+                                                .stroke(upColor).strokeWidth(arcWidth(edge))
+                                                .markerEnd(dynUrl("au")),
+                                        path()
+                                                .withClasses("tip")
+                                                .withData("ref", this.edgeIds.getId(edge))
+                                                .d(from(leftBox, fromY)
+                                                        .relHorizontalLineTo(-arrowLength)
+                                                        .relArc(rx, ry, 180, true, true, 0, dy)
+                                                        .relHorizontalLineTo(arrowLength)));
                             }
                         }))
                 );
@@ -383,7 +424,8 @@ public class HtmlReport {
                                             text(" "),
                                             i().withClass("bi bi-exclamation-triangle-fill"),
                                             text(toViolations.stream().collect(joining(", ", " (", ")"))))),
-                                    ul().withClass("class-references list-unstyled mb-1")
+                                    ul().withId(this.edgeIds.getId(edge))
+                                            .withClass("class-references list-unstyled mb-1")
                                             .with(graph.containingClassEdges(edge)
                                                     .stream()
                                                     .sorted()
