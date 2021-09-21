@@ -18,17 +18,9 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 
-import org.assertj.core.api.SoftAssertions;
-import org.assertj.core.api.junit.jupiter.InjectSoftAssertions;
-import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
-@ExtendWith(SoftAssertionsExtension.class)
 class ConfigurationTest {
-
-    @InjectSoftAssertions
-    private SoftAssertions softly;
 
     @Test
     void projectConfigurationShouldHaveNoConstraintViolations() throws IOException {
@@ -118,14 +110,21 @@ class ConfigurationTest {
 
     private void assertReport(final String actualReport, final String filename) {
         final String expectedReport = readResource(filename);
+        if (runsWithinIntelliJ()) {
+            // this assertion is more useful locally (in the IDE)
+            assertThat(sanitizeLineSeparators(actualReport)).isEqualTo(sanitizeLineSeparators(expectedReport));
+        } else {
+            // this assertion is more useful on the command line (including CI server / gitlab actions)
+            final String[] actualLines = actualReport.split("\\R");
+            final String[] expectedLines = expectedReport.split("\\R");
+            assertThat(actualLines).containsExactly(expectedLines);
+        }
+    }
 
-        // this assertion is more useful locally (in the IDE)
-        this.softly.assertThat(sanitizeLineSeparators(actualReport)).isEqualTo(sanitizeLineSeparators(expectedReport));
-
-        // this assertion is more useful on a CI server (in gitlab actions)
-        final String[] actualLines = actualReport.split("\\R");
-        final String[] expectedLines = expectedReport.split("\\R");
-        this.softly.assertThat(actualLines).containsExactly(expectedLines);
+    private boolean runsWithinIntelliJ() {
+        final String command = System.getProperty("sun.java.command");
+        // com.intellij.rt.junit.JUnitStarter
+        return command != null && command.contains("intellij");
     }
 
     private String readResource(final String filename) {
