@@ -124,6 +124,10 @@ svg.dependency-graph path.tip {
     font-size: smaller;
     line-height: 1.2rem;
 }
+.tooltipster-content ul a {
+    color: white;
+    text-decoration: underline dashed;
+}
 body .tooltipster-sidetip .tooltipster-content {
     padding: 6px;
 }

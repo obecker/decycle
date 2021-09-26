@@ -408,7 +408,7 @@ public class HtmlReport {
                 .map(edge -> {
                     final List<String> toViolations = fromViolations.getOrDefault(edge.getTo().getName(), List.of());
                     final boolean hasViolations = !toViolations.isEmpty();
-                    return li()
+                    return li().withId(this.edgeIds.getId(edge))
                             .withClasses("pb-1", iff(hasViolations, "error"))
                             .with(
                                     a().withClass("mr-2 toggle-display").with(
@@ -424,8 +424,7 @@ public class HtmlReport {
                                             text(" "),
                                             i().withClass("bi bi-exclamation-triangle-fill"),
                                             text(toViolations.stream().collect(joining(", ", " (", ")"))))),
-                                    ul().withId(this.edgeIds.getId(edge))
-                                            .withClass("class-references list-unstyled mb-1")
+                                    ul().withClass("class-references list-unstyled mb-1")
                                             .with(graph.containingClassEdges(edge)
                                                     .stream()
                                                     .sorted()
