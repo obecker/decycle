@@ -411,7 +411,7 @@ public class HtmlReport {
                     return li().withId(this.edgeIds.getId(edge))
                             .withClasses("pb-1", iff(hasViolations, "error"))
                             .with(
-                                    a().withClass("mr-2 toggle-display").with(
+                                    a().withClass("toggle-display").with(
                                             i().withClasses("bi", "bi-arrows-expand", iff(hasViolations, "hidden"))
                                                     .withTitle("Show class dependencies"),
                                             i().withClasses("bi", "bi-arrows-collapse", iff(!hasViolations, "hidden"))
