@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.6.0 - 2021-09-29
+   - Add arc tooltips for displaying the class dependencies for this arc in the dependency image
+     (and hide other arcs when hovering over an arc)
+
 ## 0.5.0 - 2021-07-18
    - Hide other dependency arcs when hovering over the nodes in a dependency image
    - Add a title to the dependency image  
