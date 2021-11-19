@@ -30,7 +30,7 @@ class GraphSlicingTest {
         g.add(b);
         g.connect(a, b);
     }
-    
+
     @Test
     void packageSliceOfAGraphWithoutPackageShouldBeEmpty() {
         final var g = new Graph();
@@ -88,7 +88,7 @@ class GraphSlicingTest {
     void shouldFindContainingClassEdges() {
         // given
         final var SLICE = "Slice";
-        final var cat = parallel(new PackageCategorizer(), new PatternMatchingCategorizer(SLICE, "package.(*).**"));
+        final var cat = parallel(new PackageCategorizer(), new PatternMatchingCategorizer(SLICE, "package.{*}.**"));
         final var g = new Graph(cat);
         final var classOne = classNode("package.one.class");
         final var classTwo = classNode("package.two.class");
@@ -137,7 +137,7 @@ class GraphSlicingTest {
     void sliceEdgeShouldBeIgnoredIfAllClassEdgesAreIgnored() {
         // given
         final var SLICE = "Slice";
-        final var cat = parallel(new PackageCategorizer(), new PatternMatchingCategorizer(SLICE, "package.(*).**"));
+        final var cat = parallel(new PackageCategorizer(), new PatternMatchingCategorizer(SLICE, "package.{*}.**"));
         final var ignoredEdgesFilter = new IgnoredDependenciesFilter(
                 Set.of(new IgnoredDependency("package.a.A1", "package.b.B1"),
                         new IgnoredDependency("package.a.**", "package.c.**")));
@@ -178,7 +178,7 @@ class GraphSlicingTest {
     void shouldComputeWeightForSliceEdges() {
         // given
         final var SLICE = "Slice";
-        final var cat = parallel(new PackageCategorizer(), new PatternMatchingCategorizer(SLICE, "package.(*).**"));
+        final var cat = parallel(new PackageCategorizer(), new PatternMatchingCategorizer(SLICE, "package.{*}.**"));
         final var g = new Graph(cat, NodeFilter.ALL);
 
         final var a1 = classNode("package.a.A1");

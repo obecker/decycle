@@ -79,7 +79,7 @@ class ConfigurationTest {
                 .ignoring(List.of(
                         new IgnoredDependency("de.obqo.decycle.demo.common.**", "de.obqo.decycle.demo.util.**"),
                         new IgnoredDependency("de.obqo.decycle.demo.common.*", "de.obqo.decycle.demo.common.impl.*")))
-                .slicings(Map.of("subpackage", List.of(Pattern.parse("de.obqo.decycle.demo.(*).**"))))
+                .slicings(Map.of("subpackage", List.of(Pattern.parse("de.obqo.decycle.demo.{*}.**"))))
                 .constraints(Set.of(
                         new LayeringConstraint("subpackage", List.of(anyOf("common"), anyOf("helper", "util"))),
                         new DirectLayeringConstraint("subpackage", List.of(anyOf("common"), anyOf("helper", "shared")))

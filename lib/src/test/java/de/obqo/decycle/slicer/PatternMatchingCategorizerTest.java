@@ -1,31 +1,33 @@
 package de.obqo.decycle.slicer;
 
 import static de.obqo.decycle.model.Node.classNode;
+import static de.obqo.decycle.model.Node.sliceNode;
 import static org.assertj.core.api.Assertions.assertThat;
-
-import de.obqo.decycle.model.Node;
 
 import org.junit.jupiter.api.Test;
 
 class PatternMatchingCategorizerTest {
 
-    private Node n(final String s) {
-        return Node.sliceNode(s, s);
-    }
-
     @Test
     void shouldNotMatchArbitraryNode() {
-        final var categorizer = new PatternMatchingCategorizer("type", "(some.package.Class)");
-        final var node = n("x");
+        final var categorizer = new PatternMatchingCategorizer("type", "some.package.Class");
+        final var node = classNode("x");
 
         assertThat(categorizer.apply(node)).isEmpty();
     }
 
     @Test
     void shouldCategorizeMatchedGroup() {
-        final var categorizer = new PatternMatchingCategorizer("type", "some.(*).Class");
+        final var categorizer = new PatternMatchingCategorizer("type", "some.{*}.Class");
 
         assertThat(categorizer.apply(classNode("some.package.Class")))
-                .containsOnly(Node.sliceNode("type", "package"));
+                .containsOnly(sliceNode("type", "package"));
+    }
+
+    @Test
+    void shouldNotMatchSliceNodes() {
+        final var categorizer = new PatternMatchingCategorizer("type", "some.{*}.Class");
+
+        assertThat(categorizer.apply(sliceNode("other", "some.package.Class"))).isEmpty();
     }
 }

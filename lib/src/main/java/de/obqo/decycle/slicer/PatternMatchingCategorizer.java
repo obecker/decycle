@@ -40,6 +40,7 @@ public class PatternMatchingCategorizer implements Categorizer {
     @Override
     public Set<Node> apply(final Node node) {
         return Optional.of(node)
+                .filter(n -> !n.getType().isSliceType()) // match only class or package nodes
                 .flatMap(n -> this.matcher.matches(n.getName()))
                 .map(match -> Node.sliceNode(this.sliceType, match))
                 .map(Set::of)
