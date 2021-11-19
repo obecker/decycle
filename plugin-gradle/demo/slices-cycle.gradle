@@ -6,7 +6,7 @@ decycle {
     including 'demo.module.**'
     slicings {
         module {
-            patterns 'demo.module.(*).**'
+            patterns 'demo.module.{*}.**'
         }
     }
 }
