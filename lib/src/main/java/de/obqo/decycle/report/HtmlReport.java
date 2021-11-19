@@ -5,8 +5,8 @@ import static de.obqo.decycle.report.MarkupReader.rawHtmlWithInlineFile;
 import static de.obqo.decycle.report.MarkupReader.rawHtmlWithInlineFile_min;
 import static de.obqo.decycle.report.svg.DynIdAttribute.dynId;
 import static de.obqo.decycle.report.svg.DynIdAttribute.dynRef;
-import static de.obqo.decycle.report.svg.DynIdAttribute.resetDynIds;
 import static de.obqo.decycle.report.svg.DynIdAttribute.dynUrl;
+import static de.obqo.decycle.report.svg.DynIdAttribute.resetDynIds;
 import static de.obqo.decycle.report.svg.PathBuilder.from;
 import static de.obqo.decycle.report.svg.SvgTagBuilder.clipPath;
 import static de.obqo.decycle.report.svg.SvgTagBuilder.defs;
@@ -202,7 +202,7 @@ public class HtmlReport {
 
     private Stream<DomContent> buildViolationDivColumns(final Violation v) {
         return Stream.of(
-                div().withClass("col-4 name mt-1").with(b(replaceArrows(v.getName()))),
+                div().withClass("col-4 name mt-1").with(b(violationTitle(v))),
                 div().withClass("col-8 dependencies mt-1")
                         .with(v.getDependencies().stream().map(dependency ->
                                 div(a(dependency.displayString())
@@ -243,15 +243,23 @@ public class HtmlReport {
                         slicing.nodes().stream()
                                 .sorted()
                                 .flatMap(node -> buildNodeTableRow(graph, slicing, violationsIndex, node))),
-                div().withClass("row").with(buildDependencyImage(slicing, sliceType.displayString(), true))
+                div().withClass("row").with(buildDependencyImage(slicing, sliceType.displayString()))
         );
     }
 
     private SvgTag buildViolationImage(final Violation violation) {
-        return buildDependencyImage(violation.getViolatingSubgraph(), replaceArrows(violation.getName()), false);
+        return buildDependencyImage(violation.getViolatingSubgraph(), violationTitle(violation));
     }
 
-    private SvgTag buildDependencyImage(final Slicing slicing, final String title, final boolean capitalizeTitle) {
+    private String violationTitle(final Violation violation) {
+        return capitalize(violation.getSliceType().displayString()) + " " + replaceArrows(violation.getName());
+    }
+
+    private String capitalize(final String s) {
+        return s.isEmpty() ? s : Character.toUpperCase(s.charAt(0)) + s.substring(1);
+    }
+
+    private SvgTag buildDependencyImage(final Slicing slicing, final String title) {
         final List<Node> nodeList = slicing.orderedNodes();
         final FontMetricsSupport metrics = FontMetricsSupport.get(this.minify);
         final int maxTextWidth = nodeList.stream().map(Node::getName).mapToInt(metrics::widthOf).max().orElse(0);
@@ -298,7 +306,6 @@ public class HtmlReport {
                                 )
                         ),
                         text().x(centerBox).y((titleHeight - 70) / 2.0 + 70).fill("#000").fontWeight("bold")
-                                .condAttr(capitalizeTitle, "style", "text-transform: capitalize")
                                 .withText(title),
                         path().d(from(0, titleHeight).relHorizontalLineTo(totalWidth)).stroke("#dee2e6").strokeWidth(8),
                         each(nodeList, (index, node) -> {
@@ -423,7 +430,7 @@ public class HtmlReport {
                                     iff(hasViolations, span(
                                             text(" "),
                                             i().withClass("bi bi-exclamation-triangle-fill"),
-                                            text(toViolations.stream().collect(joining(", ", " (", ")"))))),
+                                            text(toViolations.stream().collect(joining(", ", " ", ""))))),
                                     ul().withClass("class-references list-unstyled mb-1")
                                             .with(graph.containingClassEdges(edge)
                                                     .stream()
