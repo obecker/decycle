@@ -154,7 +154,7 @@ public class HtmlReport {
                         inlineScript(this.minify, "/report/custom.js")
                 ),
                 body(
-                        div().withClass("container-fluid p-3").with(
+                        div().withClass("container-fluid px-5 py-4").with(
                                 div().withClass("mx-2").with(
                                         inlineMarkup(this.minify, "/report/logo.svg"),
                                         hr().withClass("mt-1"),
@@ -311,15 +311,12 @@ public class HtmlReport {
                         each(nodeList, (index, node) -> {
                             final int yPos = index * verticalDistance + totalPadding + titleHeight;
                             nodePositionMap.put(node, yPos);
-                            final String text = node.getName();
                             final String hrefTarget = nodeRef(node);
                             return a().attr("xlink:href", hrefTarget).withHref(hrefTarget).withClasses("node")
                                     .attr("data-name", nodeClassName(node))
                                     .with(
                                             use().href(dynRef("box")).x(leftBox).y(yPos),
-                                            text().x(centerBox + 5).y(150 + yPos).fill("#F1F1F1").fillOpacity(0.5)
-                                                    .withText(text),
-                                            text().x(centerBox).y(140 + yPos).fill("#000").withText(text));
+                                            text().x(centerBox).y(140 + yPos).fill("#000").withText(node.getName()));
                         }),
                         each(slicing.edges().stream().sorted().map(edge -> {
                             final int positionFrom = nodePositionMap.get(edge.getFrom());

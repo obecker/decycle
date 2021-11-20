@@ -6,10 +6,17 @@ html {
     position: relative;
     min-height: 3.75rem;
 }
+.violations.alert-danger {
+    background: linear-gradient(110deg, #f8d7da, #f5c6cb);
+}
+.violations.alert-success {
+    background: linear-gradient(110deg, #d4edda, #c3e6cb);
+}
 
 .violations > h1 {
     position: absolute;
     right: 0.75rem;
+    text-shadow: 0 0 2px white;
 }
 
 .violations > .name {
@@ -22,10 +29,12 @@ html {
 
 dl.slices {
     background-color: aliceblue;
+    background: linear-gradient(110deg, aliceblue, #e6f3ff);
 }
 
 dt.error, dd.error {
     background-color: lightyellow;
+    background: linear-gradient(180deg, #ffffe3, #ffffd3);
 }
 
 .hidden {
@@ -115,6 +124,12 @@ svg.dependency-graph path.tip {
     stroke: white;
     stroke-opacity: 0;
     stroke-width: 60;
+}
+svg.dependency-graph a.node > text {
+    text-shadow: 0 4px 4px rgba(255,255,255,0.45),
+                 0 8px 8px rgba(255,255,255,0.40),
+                 0 16px 16px rgba(255,255,255,0.35),
+                 0 32px 32px rgba(255,255,255,0.30);
 }
 
 .tooltipster-content ul {

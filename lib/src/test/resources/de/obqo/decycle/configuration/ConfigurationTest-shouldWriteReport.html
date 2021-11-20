@@ -18,10 +18,17 @@
                 position: relative;
                 min-height: 3.75rem;
             }
+            .violations.alert-danger {
+                background: linear-gradient(110deg, #f8d7da, #f5c6cb);
+            }
+            .violations.alert-success {
+                background: linear-gradient(110deg, #d4edda, #c3e6cb);
+            }
             
             .violations > h1 {
                 position: absolute;
                 right: 0.75rem;
+                text-shadow: 0 0 2px white;
             }
             
             .violations > .name {
@@ -34,10 +41,12 @@
             
             dl.slices {
                 background-color: aliceblue;
+                background: linear-gradient(110deg, aliceblue, #e6f3ff);
             }
             
             dt.error, dd.error {
                 background-color: lightyellow;
+                background: linear-gradient(180deg, #ffffe3, #ffffd3);
             }
             
             .hidden {
@@ -128,6 +137,12 @@
                 stroke-opacity: 0;
                 stroke-width: 60;
             }
+            svg.dependency-graph a.node > text {
+                text-shadow: 0 4px 4px rgba(255,255,255,0.45),
+                             0 8px 8px rgba(255,255,255,0.40),
+                             0 16px 16px rgba(255,255,255,0.35),
+                             0 32px 32px rgba(255,255,255,0.30);
+            }
             
             .tooltipster-content ul {
                 list-style: none;
@@ -210,7 +225,7 @@
         </script>
     </head>
     <body>
-        <div class="container-fluid p-3">
+        <div class="container-fluid px-5 py-4">
             <div class="mx-2">
                 <svg xmlns="http://www.w3.org/2000/svg"
                      xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -369,9 +384,6 @@
                         <a xlink:href="#Package-j2html" href="#Package-j2html" class="node" data-name="n-j2html">
                             <use xlink:href="#box1" href="#box1" x="730" y="290">
                             </use>
-                            <text x="1445" y="440" fill="#F1F1F1" fill-opacity=".5">
-                                j2html
-                            </text>
                             <text x="1440" y="430" fill="#000">
                                 j2html
                             </text>
@@ -379,9 +391,6 @@
                         <a xlink:href="#Package-j2html.tags.specialized" href="#Package-j2html.tags.specialized" class="node" data-name="n-j2html-tags-specialized">
                             <use xlink:href="#box1" href="#box1" x="730" y="710">
                             </use>
-                            <text x="1445" y="860" fill="#F1F1F1" fill-opacity=".5">
-                                j2html.tags.specialized
-                            </text>
                             <text x="1440" y="850" fill="#000">
                                 j2html.tags.specialized
                             </text>
@@ -389,9 +398,6 @@
                         <a xlink:href="#Package-j2html.tags.attributes" href="#Package-j2html.tags.attributes" class="node" data-name="n-j2html-tags-attributes">
                             <use xlink:href="#box1" href="#box1" x="730" y="1130">
                             </use>
-                            <text x="1445" y="1280" fill="#F1F1F1" fill-opacity=".5">
-                                j2html.tags.attributes
-                            </text>
                             <text x="1440" y="1270" fill="#000">
                                 j2html.tags.attributes
                             </text>
@@ -399,9 +405,6 @@
                         <a xlink:href="#Package-j2html.tags" href="#Package-j2html.tags" class="node" data-name="n-j2html-tags">
                             <use xlink:href="#box1" href="#box1" x="730" y="1550">
                             </use>
-                            <text x="1445" y="1700" fill="#F1F1F1" fill-opacity=".5">
-                                j2html.tags
-                            </text>
                             <text x="1440" y="1690" fill="#000">
                                 j2html.tags
                             </text>
@@ -409,9 +412,6 @@
                         <a xlink:href="#Package-j2html.attributes" href="#Package-j2html.attributes" class="node" data-name="n-j2html-attributes">
                             <use xlink:href="#box1" href="#box1" x="730" y="1970">
                             </use>
-                            <text x="1445" y="2120" fill="#F1F1F1" fill-opacity=".5">
-                                j2html.attributes
-                            </text>
                             <text x="1440" y="2110" fill="#000">
                                 j2html.attributes
                             </text>
@@ -419,9 +419,6 @@
                         <a xlink:href="#Package-j2html.rendering" href="#Package-j2html.rendering" class="node" data-name="n-j2html-rendering">
                             <use xlink:href="#box1" href="#box1" x="730" y="2390">
                             </use>
-                            <text x="1445" y="2540" fill="#F1F1F1" fill-opacity=".5">
-                                j2html.rendering
-                            </text>
                             <text x="1440" y="2530" fill="#000">
                                 j2html.rendering
                             </text>
@@ -7930,9 +7927,6 @@
                             <a xlink:href="#Package-j2html" href="#Package-j2html" class="node" data-name="n-j2html">
                                 <use xlink:href="#box2" href="#box2" x="835" y="290">
                                 </use>
-                                <text x="1550" y="440" fill="#F1F1F1" fill-opacity=".5">
-                                    j2html
-                                </text>
                                 <text x="1545" y="430" fill="#000">
                                     j2html
                                 </text>
@@ -7940,9 +7934,6 @@
                             <a xlink:href="#Package-j2html.tags.specialized" href="#Package-j2html.tags.specialized" class="node" data-name="n-j2html-tags-specialized">
                                 <use xlink:href="#box2" href="#box2" x="835" y="710">
                                 </use>
-                                <text x="1550" y="860" fill="#F1F1F1" fill-opacity=".5">
-                                    j2html.tags.specialized
-                                </text>
                                 <text x="1545" y="850" fill="#000">
                                     j2html.tags.specialized
                                 </text>
@@ -7950,9 +7941,6 @@
                             <a xlink:href="#Package-j2html.tags.attributes" href="#Package-j2html.tags.attributes" class="node" data-name="n-j2html-tags-attributes">
                                 <use xlink:href="#box2" href="#box2" x="835" y="1130">
                                 </use>
-                                <text x="1550" y="1280" fill="#F1F1F1" fill-opacity=".5">
-                                    j2html.tags.attributes
-                                </text>
                                 <text x="1545" y="1270" fill="#000">
                                     j2html.tags.attributes
                                 </text>
@@ -7960,9 +7948,6 @@
                             <a xlink:href="#Package-j2html.tags" href="#Package-j2html.tags" class="node" data-name="n-j2html-tags">
                                 <use xlink:href="#box2" href="#box2" x="835" y="1550">
                                 </use>
-                                <text x="1550" y="1700" fill="#F1F1F1" fill-opacity=".5">
-                                    j2html.tags
-                                </text>
                                 <text x="1545" y="1690" fill="#000">
                                     j2html.tags
                                 </text>
@@ -7970,9 +7955,6 @@
                             <a xlink:href="#Package-j2html.attributes" href="#Package-j2html.attributes" class="node" data-name="n-j2html-attributes">
                                 <use xlink:href="#box2" href="#box2" x="835" y="1970">
                                 </use>
-                                <text x="1550" y="2120" fill="#F1F1F1" fill-opacity=".5">
-                                    j2html.attributes
-                                </text>
                                 <text x="1545" y="2110" fill="#000">
                                     j2html.attributes
                                 </text>
@@ -7980,9 +7962,6 @@
                             <a xlink:href="#Package-j2html.rendering" href="#Package-j2html.rendering" class="node" data-name="n-j2html-rendering">
                                 <use xlink:href="#box2" href="#box2" x="835" y="2390">
                                 </use>
-                                <text x="1550" y="2540" fill="#F1F1F1" fill-opacity=".5">
-                                    j2html.rendering
-                                </text>
                                 <text x="1545" y="2530" fill="#000">
                                     j2html.rendering
                                 </text>
@@ -7990,9 +7969,6 @@
                             <a xlink:href="#Package-j2html.utils" href="#Package-j2html.utils" class="node" data-name="n-j2html-utils">
                                 <use xlink:href="#box2" href="#box2" x="835" y="2810">
                                 </use>
-                                <text x="1550" y="2960" fill="#F1F1F1" fill-opacity=".5">
-                                    j2html.utils
-                                </text>
                                 <text x="1545" y="2950" fill="#000">
                                     j2html.utils
                                 </text>
