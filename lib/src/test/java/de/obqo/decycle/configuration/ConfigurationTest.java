@@ -9,8 +9,10 @@ import de.obqo.decycle.check.Constraint;
 import de.obqo.decycle.check.DirectLayeringConstraint;
 import de.obqo.decycle.check.LayeringConstraint;
 import de.obqo.decycle.check.SimpleDependency;
+import de.obqo.decycle.report.ResourcesExtractor;
 import de.obqo.decycle.slicer.IgnoredDependency;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
@@ -18,18 +20,29 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 class ConfigurationTest {
 
+    private static final String REPORT_DIR = "build/demo/";
+    private static final String RESOURCES_DIR = "resources";
+
+    @BeforeAll
+    static void beforeAll() throws IOException {
+        final File dir = new File(REPORT_DIR + RESOURCES_DIR);
+        ResourcesExtractor.copyWebJarResources(dir);
+    }
+
     @Test
     void projectConfigurationShouldHaveNoConstraintViolations() throws IOException {
-        try (final FileWriter out = new FileWriter("build/main.html")) {
+        try (final FileWriter out = new FileWriter(REPORT_DIR + "main.html")) {
             assertThat(Configuration.builder()
                     .classpath("build/classes/java/main") // for gradle
 //                    .classpath("out/production/classes") // for IntelliJ
                     .including(List.of("de.obqo.decycle.**"))
                     .report(out)
+                    .reportResourcesPrefix(RESOURCES_DIR)
                     .build()
                     .check())
                     .isEmpty();
@@ -44,13 +57,14 @@ class ConfigurationTest {
 //                .classpath("out/test/classes") // for IntelliJ
                 .including(List.of("de.obqo.decycle.demo.base.**"))
                 .report(out)
+                .reportResourcesPrefix(RESOURCES_DIR)
                 .minifyReport(false)
                 .build()
                 .check())
                 .isEmpty();
 
         final String report = out.toString();
-        new FileWriter("build/demobase.html").append(report).close();
+        new FileWriter(REPORT_DIR + "demobase.html").append(report).close();
 
         assertReport(report, "ConfigurationTest-shouldReportAllDependencies.html");
     }
@@ -71,10 +85,11 @@ class ConfigurationTest {
                         new DirectLayeringConstraint("subpackage", List.of(anyOf("common"), anyOf("helper", "shared")))
                 ))
                 .report(out)
+                .reportResourcesPrefix(RESOURCES_DIR)
                 .build()
                 .check();
 
-        new FileWriter("build/demo.html").append(out.toString()).close();
+        new FileWriter(REPORT_DIR + "demo.html").append(out.toString()).close();
 
         assertThat(violations).hasSize(2).extracting(Constraint.Violation::getSliceType).allMatch(customType("subpackage")::equals);
 
@@ -97,13 +112,14 @@ class ConfigurationTest {
                 .including(List.of("j2html.**"))
                 .ignoring(List.of(new IgnoredDependency("j2html.attributes.Attribute", "j2html.**")))
                 .report(out)
+                .reportResourcesPrefix(RESOURCES_DIR)
                 .reportTitle("j2html")
                 .minifyReport(false)
                 .build()
                 .check();
 
         final String report = out.toString();
-        new FileWriter("build/test.html").append(report).close();
+        new FileWriter(REPORT_DIR + "test.html").append(report).close();
 
         assertReport(report, "ConfigurationTest-shouldWriteReport.html");
     }

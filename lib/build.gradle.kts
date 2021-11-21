@@ -9,6 +9,12 @@ val asmVersion: String by project
 val guavaVersion: String by project
 val j2htmlVersion: String by project
 val fontmetricsVersion: String by project
+val webjarsVersion: String by project
+val bootstrapVersion: String by project
+val bootstrapIconsVersion: String by project
+val jqueryVersion: String by project
+val tooltipsterVersion: String by project
+val svgjsVersion: String by project
 val junitVersion: String by project
 val assertjVersion: String by project
 val slf4jVersion: String by project
@@ -20,6 +26,14 @@ dependencies {
     }
     implementation( "com.j2html:j2html:${j2htmlVersion}")
     implementation("org.javastack:fontmetrics:${fontmetricsVersion}")
+    implementation("org.webjars:webjars-locator-core:${webjarsVersion}") {
+        exclude(group = "com.fasterxml.jackson.core") // not used
+    }
+    runtimeOnly("org.webjars:bootstrap:${bootstrapVersion}")
+    runtimeOnly("org.webjars.npm:bootstrap-icons:${bootstrapIconsVersion}")
+    runtimeOnly("org.webjars:jquery:${jqueryVersion}")
+    runtimeOnly("org.webjars.npm:tooltipster:${tooltipsterVersion}")
+    runtimeOnly("org.webjars:svg.js:${svgjsVersion}")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
     testImplementation("org.junit.jupiter:junit-jupiter-params:$junitVersion")
@@ -28,7 +42,7 @@ dependencies {
     testImplementation("org.slf4j:slf4j-jdk14:${slf4jVersion}") // needed for fontmetrics
 }
 
-configure<JavaPluginConvention> {
+configure<JavaPluginExtension> {
     sourceCompatibility = JavaVersion.VERSION_11
 }
 
