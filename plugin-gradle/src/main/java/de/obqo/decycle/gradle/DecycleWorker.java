@@ -14,6 +14,7 @@ import de.obqo.decycle.configuration.Configuration;
 import de.obqo.decycle.configuration.NamedPattern;
 import de.obqo.decycle.configuration.Pattern;
 import de.obqo.decycle.configuration.UnnamedPattern;
+import de.obqo.decycle.report.ResourcesExtractor;
 import de.obqo.decycle.slicer.IgnoredDependency;
 
 import java.io.File;
@@ -59,7 +60,10 @@ public abstract class DecycleWorker implements WorkAction<DecycleWorkerParameter
         reportFile.getParentFile().mkdirs();
 
         try (final FileWriter writer = new FileWriter(reportFile)) {
+            final String resourcesDirName = createResourcesIfRequired(reportFile);
+
             builder.report(writer);
+            builder.reportResourcesPrefix(resourcesDirName);
             builder.reportTitle(reportTitle);
 
             final Configuration decycleConfig = builder.build();
@@ -83,6 +87,16 @@ public abstract class DecycleWorker implements WorkAction<DecycleWorkerParameter
         } catch (final IOException ioException) {
             throw new GradleException(ioException.getMessage(), ioException);
         }
+    }
+
+    private String createResourcesIfRequired(final File reportFile) throws IOException {
+        final String resourcesDirName = "resources-" + Configuration.class.getPackage().getImplementationVersion();
+        final File resourcesDir = new File(reportFile.getParentFile(), resourcesDirName);
+        if (!resourcesDir.exists()) {
+            resourcesDir.mkdirs();
+            ResourcesExtractor.copyWebJarResources(resourcesDir);
+        }
+        return resourcesDirName;
     }
 
     // Helper methods for converting the plugin's configuration (or extension) instances into decycle objects.

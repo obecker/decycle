@@ -41,6 +41,7 @@ import lombok.NonNull;
  *             .slicings(...)
  *             .constraints(...)
  *             .report(...)
+ *             .reportResourcesPrefix(...)
  *             .reportTitle(...)
  *             .minifyReport(...)
  *             .build()
@@ -72,6 +73,8 @@ public class Configuration {
 
     private final Appendable report;
 
+    private final String reportResourcesPrefix;
+
     private final String reportTitle;
 
     private final boolean minifyReport;
@@ -95,6 +98,9 @@ public class Configuration {
      * @param constraints  Set of additional constraints to be checked (Note: {@link CycleFree} is automatically
      *                     included)
      * @param report       Target of the HTML report (if {@code null}, then no report is written)
+     * @param reportResourcesPrefix Relative path that is prepended to linked CSS and JS resources in the HTML report.
+     *                              These resources must be created independently using
+     *                              {@link de.obqo.decycle.report.ResourcesExtractor#copyWebJarResources(java.io.File)}
      * @param reportTitle  HTML Title to be used in the generated report. Has no effect if no {@code report} was
      *                     configured.
      * @param minifyReport Whether the HTML report should be minified (default is {@code true}). Has no effect if no
@@ -110,6 +116,7 @@ public class Configuration {
             final Map<String, List<Pattern>> slicings,
             final Set<Constraint> constraints,
             final Appendable report,
+            final String reportResourcesPrefix,
             final String reportTitle,
             final Boolean minifyReport) {
         this.classpath = classpath;
@@ -119,6 +126,7 @@ public class Configuration {
         this.ignoring = requireNonNullElse(ignoring, List.of());
         this.constraints = requireNonNullElse(constraints, Set.of());
         this.report = report;
+        this.reportResourcesPrefix = requireNonNullElse(reportResourcesPrefix, "");
         this.reportTitle = reportTitle;
         this.minifyReport = !Boolean.FALSE.equals(minifyReport); // null -> true
 
@@ -172,7 +180,8 @@ public class Configuration {
                 .sorted(Comparator.comparing(Violation::getSliceType).thenComparing(Violation::getName))
                 .collect(toList());
         if (this.report != null) {
-            new HtmlReport(this.minifyReport).writeReport(this.graph, violations, this.report, this.reportTitle);
+            new HtmlReport(this.minifyReport).writeReport(this.graph, violations, this.report,
+                    this.reportResourcesPrefix, this.reportTitle);
         }
         return violations;
     }
