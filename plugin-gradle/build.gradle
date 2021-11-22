@@ -2,7 +2,7 @@ plugins {
     id 'groovy'
     id 'java-gradle-plugin'
     id 'maven-publish'
-    id "com.gradle.plugin-publish" version "0.15.0"
+    id "com.gradle.plugin-publish" version "0.18.0"
 }
 
 ext {
@@ -10,16 +10,6 @@ ext {
 }
 
 sourceCompatibility = 11
-
-tasks.withType(JavaCompile) {
-    options.compilerArgs << "-Xlint:all" << "-Werror"
-}
-
-test {
-    useJUnitPlatform()
-    // we need a deployed library for testing the plugin
-    dependsOn(":decycle-lib:publishLibPublicationToLocalRepository")
-}
 
 task createClasspathManifest {
     def outputDir = file("$buildDir/classpathManifest")
@@ -45,11 +35,25 @@ dependencies {
     testRuntimeOnly files(createClasspathManifest)
 }
 
+clean {
+    delete "demo/build"
+}
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs << "-Xlint:all" << "-Werror"
+}
+
 processResources {
     inputs.property("version", version)
     doLast {
         file("${buildDir}/resources/main/META-INF/gradle-plugins/${pluginId}.properties") << "tool-version=${version}\n"
     }
+}
+
+test {
+    useJUnitPlatform()
+    // we need a deployed library for testing the plugin
+    dependsOn(":decycle-lib:publishLibPublicationToLocalRepository")
 }
 
 pluginBundle {

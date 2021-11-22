@@ -15,7 +15,7 @@ import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.BuildTask;
 import org.gradle.testkit.runner.GradleRunner;
 import org.gradle.testkit.runner.TaskOutcome;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -23,17 +23,18 @@ import org.junit.jupiter.api.Test;
  */
 public class DecyclePluginFunctionalTest {
 
-    private List<File> pluginClasspath;
+    private static List<File> pluginClasspath;
 
-    @BeforeEach
-    void setUp() throws Exception {
-        final URL pluginClasspathResource = getClass().getClassLoader().getResource("plugin-classpath.txt");
+    @BeforeAll
+    static void setUp() throws Exception {
+        final URL pluginClasspathResource =
+                DecyclePluginFunctionalTest.class.getClassLoader().getResource("plugin-classpath.txt");
         if (pluginClasspathResource == null) {
             throw new IllegalStateException("Did not find plugin classpath resource, run `testClasses` build task.");
         }
 
         try (final InputStream is = pluginClasspathResource.openStream()) {
-            this.pluginClasspath = IOUtils.readLines(is, Charset.defaultCharset())
+            pluginClasspath = IOUtils.readLines(is, Charset.defaultCharset())
                     .stream()
                     .map(File::new)
                     .collect(Collectors.toList());
@@ -172,7 +173,7 @@ public class DecyclePluginFunctionalTest {
     }
 
     private GradleRunner buildGradleRunner() {
-        return GradleRunner.create().withProjectDir(new File("demo")).withPluginClasspath(this.pluginClasspath);
+        return GradleRunner.create().withProjectDir(new File("demo")).withPluginClasspath(pluginClasspath);
     }
 
     private AbstractStringAssert<?> assertBuildResult(final BuildResult buildResult, final TaskOutcome expectedOutcome, final String taskName) {
