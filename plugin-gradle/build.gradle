@@ -9,8 +9,6 @@ ext {
     pluginId = 'de.obqo.decycle'
 }
 
-sourceCompatibility = 11
-
 task createClasspathManifest {
     def outputDir = file("$buildDir/classpathManifest")
     def pluginClasspath = sourceSets.main.runtimeClasspath
@@ -41,6 +39,12 @@ clean {
 
 tasks.withType(JavaCompile) {
     options.compilerArgs << "-Xlint:all" << "-Werror"
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(11)
+    }
 }
 
 processResources {

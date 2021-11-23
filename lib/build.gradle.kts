@@ -42,10 +42,6 @@ dependencies {
     testImplementation("org.slf4j:slf4j-jdk14:${slf4jVersion}") // needed for fontmetrics
 }
 
-configure<JavaPluginExtension> {
-    sourceCompatibility = JavaVersion.VERSION_11
-}
-
 tasks.compileJava {
     options.compilerArgs.addAll(listOf("-Xlint:all", "-Xlint:-processing", "-Werror"))
 }
@@ -53,6 +49,9 @@ tasks.compileJava {
 java {
     withSourcesJar()
     withJavadocJar()
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(11))
+    }
 }
 
 lombok {
