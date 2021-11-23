@@ -5,12 +5,13 @@ html {
 .violations {
     position: relative;
     min-height: 3.75rem;
+    box-shadow: #dee2e6 0 1px 3px, #dee2e6 0 1px 6px;
 }
 .violations.alert-danger {
-    background: linear-gradient(110deg, #f8d7da, #f5c6cb);
+    background: linear-gradient(110deg, #f6cbcf, #f9dcdf, #f6cbcf);
 }
 .violations.alert-success {
-    background: linear-gradient(110deg, #d4edda, #c3e6cb);
+    background: linear-gradient(110deg, #c3e6cb, #d4edda, #c3e6cb);
 }
 
 .violations > h1 {
@@ -29,12 +30,13 @@ html {
 
 dl.slices {
     background-color: aliceblue;
-    background: linear-gradient(110deg, aliceblue, #e6f3ff);
+    background: linear-gradient(110deg, #e6f3ff, aliceblue, #e6f3ff);
+    box-shadow: #dee2e6 0 1px 3px, #dee2e6 0 1px 6px;
 }
 
 dt.error, dd.error {
     background-color: lightyellow;
-    background: linear-gradient(180deg, #ffffe3, #ffffd3);
+    background: linear-gradient(180deg, #ffffe3, #ffffd7);
 }
 
 .hidden {
@@ -105,6 +107,8 @@ svg.dependency-graph {
     font-size: 110px;
     text-anchor: middle;
     text-rendering: geometricPrecision;
+    background: linear-gradient(110deg, #f5f5f5, #fdfdfd, #f5f5f5);
+    box-shadow: #dee2e6 0 1px 3px, #dee2e6 0 1px 6px;
 }
 svg.dependency-graph path.edge {
     fill: none;

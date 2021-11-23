@@ -94,7 +94,7 @@ public abstract class DecycleWorker implements WorkAction<DecycleWorkerParameter
         final File resourcesDir = new File(reportFile.getParentFile(), resourcesDirName);
         if (!resourcesDir.exists()) {
             resourcesDir.mkdirs();
-            ResourcesExtractor.copyWebJarResources(resourcesDir);
+            ResourcesExtractor.copyResources(resourcesDir);
         }
         return resourcesDirName;
     }

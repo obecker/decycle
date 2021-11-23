@@ -39,11 +39,7 @@ import static j2html.TagCreator.link;
 import static j2html.TagCreator.meta;
 import static j2html.TagCreator.rawHtml;
 import static j2html.TagCreator.script;
-import static j2html.TagCreator.scriptWithInlineFile;
-import static j2html.TagCreator.scriptWithInlineFile_min;
 import static j2html.TagCreator.span;
-import static j2html.TagCreator.styleWithInlineFile;
-import static j2html.TagCreator.styleWithInlineFile_min;
 import static j2html.TagCreator.text;
 import static j2html.TagCreator.title;
 import static j2html.TagCreator.ul;
@@ -77,8 +73,6 @@ import j2html.rendering.FlatHtml;
 import j2html.rendering.IndentedHtml;
 import j2html.tags.DomContent;
 import j2html.tags.specialized.HtmlTag;
-import j2html.tags.specialized.ScriptTag;
-import j2html.tags.specialized.StyleTag;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -121,13 +115,13 @@ public class HtmlReport {
                                 .withRel("icon").withType("image/svg+xml"),
                         link().withRel("stylesheet").withHref(resourcesPrefix + "/bootstrap.min.css"),
                         link().withRel("stylesheet").withHref(resourcesPrefix + "/bootstrap-icons.css"),
-                        inlineStyle(this.minify, "/report/custom.css"),
+                        link().withRel("stylesheet").withHref(resourcesPrefix + "/custom.css"),
+                        link().withRel("stylesheet").withHref(resourcesPrefix + "/tooltipster.bundle.min.css"),
                         script().withSrc(resourcesPrefix + "/jquery.min.js"),
                         script().withSrc(resourcesPrefix + "/svg.min.js"), // required by tooltipster
                         script().withSrc(resourcesPrefix + "/tooltipster.bundle.min.js"),
                         script().withSrc(resourcesPrefix + "/tooltipster-SVG.min.js"),
-                        link().withRel("stylesheet").withHref(resourcesPrefix + "/tooltipster.bundle.min.css"),
-                        inlineScript(this.minify, "/report/custom.js")
+                        script().withSrc(resourcesPrefix + "/custom.js")
                 ),
                 body(
                         div().withClass("container-fluid px-5 py-4").with(
@@ -152,14 +146,6 @@ public class HtmlReport {
                         )
                 )
         );
-    }
-
-    private StyleTag inlineStyle(final boolean minify, final String path) {
-        return minify ? styleWithInlineFile_min(path) : styleWithInlineFile(path);
-    }
-
-    private ScriptTag inlineScript(final boolean minify, final String path) {
-        return minify ? scriptWithInlineFile_min(path) : scriptWithInlineFile(path);
     }
 
     private DomContent inlineMarkup(final boolean minify, final String path) {

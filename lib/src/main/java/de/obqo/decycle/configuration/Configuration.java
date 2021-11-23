@@ -100,7 +100,7 @@ public class Configuration {
      * @param report       Target of the HTML report (if {@code null}, then no report is written)
      * @param reportResourcesPrefix Relative path that is prepended to linked CSS and JS resources in the HTML report.
      *                              These resources must be created independently using
-     *                              {@link de.obqo.decycle.report.ResourcesExtractor#copyWebJarResources(java.io.File)}
+     *                              {@link de.obqo.decycle.report.ResourcesExtractor#copyResources(java.io.File)}
      * @param reportTitle  HTML Title to be used in the generated report. Has no effect if no {@code report} was
      *                     configured.
      * @param minifyReport Whether the HTML report should be minified (default is {@code true}). Has no effect if no
@@ -126,7 +126,7 @@ public class Configuration {
         this.ignoring = requireNonNullElse(ignoring, List.of());
         this.constraints = requireNonNullElse(constraints, Set.of());
         this.report = report;
-        this.reportResourcesPrefix = requireNonNullElse(reportResourcesPrefix, "");
+        this.reportResourcesPrefix = requireNonNullElse(reportResourcesPrefix, ".");
         this.reportTitle = reportTitle;
         this.minifyReport = !Boolean.FALSE.equals(minifyReport); // null -> true
 
