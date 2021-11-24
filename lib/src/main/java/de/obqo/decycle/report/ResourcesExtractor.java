@@ -1,9 +1,9 @@
 package de.obqo.decycle.report;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+import static java.nio.file.StandardOpenOption.CREATE;
+import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,6 +21,8 @@ public class ResourcesExtractor {
     private static final WebJarAssetLocator locator = new WebJarAssetLocator();
 
     public static void copyResources(final File targetDir) throws IOException {
+        targetDir.mkdirs();
+
         copyLocalResource(targetDir, "custom.css");
         copyLocalResource(targetDir, "custom.js");
 
@@ -36,24 +38,30 @@ public class ResourcesExtractor {
     }
 
     private static void copyLocalResource(final File targetDir, final String name) throws IOException {
-        final File targetFile = new File(targetDir, name);
-        targetFile.getParentFile().mkdirs();
         String content = InlineStaticResource.getFileAsString("/report/" + name);
         if (name.endsWith(".css")) {
             content = CSSMin.compressCss(content);
         } else if (name.endsWith(".js")) {
             content = JSMin.compressJs(content);
         }
-        Files.copy(new ByteArrayInputStream(content.getBytes(UTF_8)), targetFile.toPath(), REPLACE_EXISTING);
+        final File targetFile = getTargetFile(targetDir, name);
+        Files.writeString(targetFile.toPath(), content, CREATE, TRUNCATE_EXISTING);
     }
 
     private static void copyWebJarResource(final File targetDir, final String webjar, final String file)
             throws IOException {
-        final File targetFile = new File(targetDir, file);
-        targetFile.getParentFile().mkdirs();
         final String fullPath = locator.getFullPath(webjar, file);
         final InputStream inputStream = locator.getClass().getClassLoader().getResourceAsStream(fullPath);
         Objects.requireNonNull(inputStream, () -> String.format("Cannot read resource %s", fullPath));
+        final File targetFile = getTargetFile(targetDir, file);
         Files.copy(inputStream, targetFile.toPath(), REPLACE_EXISTING);
+    }
+
+    private static File getTargetFile(final File targetDir, final String name) {
+        final File targetFile = new File(targetDir, name);
+        if (name.contains("/")) {
+            targetFile.getParentFile().mkdirs();
+        }
+        return targetFile;
     }
 }
