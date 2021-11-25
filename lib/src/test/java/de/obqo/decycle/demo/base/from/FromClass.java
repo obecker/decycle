@@ -25,6 +25,7 @@ import de.obqo.decycle.demo.base.to.ParamAnnotation;
 import de.obqo.decycle.demo.base.to.ResourcesClassFactory;
 import de.obqo.decycle.demo.base.to.ReturnType;
 import de.obqo.decycle.demo.base.to.StaticConcreteMember;
+import de.obqo.decycle.demo.base.to.StaticConstant;
 import de.obqo.decycle.demo.base.to.StaticInitializer;
 import de.obqo.decycle.demo.base.to.StaticMember;
 import de.obqo.decycle.demo.base.to.StaticMethodParam;
@@ -56,6 +57,9 @@ public class FromClass<@TypeParamAnnotation T extends GenericTypeForClass> exten
     private Map<Class<?>, Integer> classes = Map.of(ClassObject.class, 0);
 
     private ArrayMember[] array;
+
+    // not reported (constant has been inlined by the compiler)
+    private String s = StaticConstant.CONSTANT_STRING;
 
     static {
         Object o = new StaticInitializer();

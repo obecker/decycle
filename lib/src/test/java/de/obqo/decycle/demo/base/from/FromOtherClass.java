@@ -11,6 +11,7 @@ import de.obqo.decycle.demo.base.to.InFinally;
 import de.obqo.decycle.demo.base.to.InTry;
 import de.obqo.decycle.demo.base.to.MethodParam;
 import de.obqo.decycle.demo.base.to.ReturnType;
+import de.obqo.decycle.demo.base.to.StaticConstant;
 import de.obqo.decycle.demo.base.to.UncheckedException1;
 import de.obqo.decycle.demo.base.to.UncheckedException2;
 
@@ -21,6 +22,8 @@ public class FromOtherClass {
     private final FromClass<?> delegate;
 
     private static GenericMethod<GenericTypeForClass, GenericTypeForList> g = c -> List.of(new GenericTypeForList());
+
+    private Object o = StaticConstant.CONSTANT_OBJECT;
 
     public FromOtherClass(final FromClass<?> delegate) {
         this.delegate = delegate;
