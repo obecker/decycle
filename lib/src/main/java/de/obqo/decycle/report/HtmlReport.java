@@ -154,10 +154,10 @@ public class HtmlReport {
 
     private DomContent buildViolationDiv(final List<Violation> violations) {
         return violations.isEmpty()
-                ? div().withClass("violations border rounded-lg pb-1 mb-3 alert-success row").with(
+                ? div().withClass("violations rounded-lg pb-1 mb-3 alert-success row").with(
                 h1().withClass("m-0 pt-2").with(i().withClass("bi bi-check-circle-fill")),
                 div().withClass("col-12 mt-1").with(b("No violations found")))
-                : div().withClass("violations border rounded-lg pb-1 mb-3 alert-danger row").with(
+                : div().withClass("violations rounded-lg pb-1 mb-3 alert-danger row").with(
                 h1().withClass("m-0 pt-2").with(i().withClass("bi bi-exclamation-triangle-fill")),
                 each(violations.stream().flatMap(this::buildViolationDivColumns)));
     }
@@ -201,7 +201,7 @@ public class HtmlReport {
 
         return div().withClass("pt-2").with(
                 h2(sliceType.displayString()).withClass("slice text-capitalize mt-2"),
-                dl().withClass("slices row border rounded-lg py-1").with(
+                dl().withClass("slices row rounded-lg py-1").with(
                         slicing.nodes().stream()
                                 .sorted()
                                 .flatMap(node -> buildNodeTableRow(graph, slicing, violationsIndex, node))),
