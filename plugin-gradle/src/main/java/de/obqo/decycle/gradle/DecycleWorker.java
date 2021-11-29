@@ -1,6 +1,5 @@
 package de.obqo.decycle.gradle;
 
-import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
@@ -76,8 +75,7 @@ public abstract class DecycleWorker implements WorkAction<DecycleWorkerParameter
 
             if (!violations.isEmpty()) {
                 final String message = String.format("%s\nSee the report at: %s",
-                        violations.stream().map(Constraint.Violation::displayString).collect(joining("\n")),
-                        reportFile);
+                        Constraint.Violation.displayString(violations), reportFile);
                 if (configuration.isIgnoreFailures()) {
                     logger.warn("Violations detected: {}", message);
                 } else {

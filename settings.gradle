@@ -1,7 +1,16 @@
+pluginManagement {
+    plugins {
+        id("io.freefair.lombok") version freefairPluginVersion
+        id("io.freefair.maven-plugin") version freefairPluginVersion
+    }
+}
+
 rootProject.name = 'decycle'
 
 include('decycle-lib')
 include('decycle-gradle-plugin')
+include('decycle-maven-plugin')
 
 project(':decycle-lib').projectDir = file("lib")
 project(':decycle-gradle-plugin').projectDir = file("plugin-gradle")
+project(':decycle-maven-plugin').projectDir = file("plugin-maven")
