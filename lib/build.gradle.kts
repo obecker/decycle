@@ -1,6 +1,6 @@
 plugins {
     `java-library`
-    id("io.freefair.lombok") version "6.1.0"
+    id("io.freefair.lombok")
 }
 
 description = "Java library for detecting and reporting package cycles"
@@ -12,6 +12,7 @@ val guavaVersion: String by project
 val j2htmlVersion: String by project
 val fontmetricsVersion: String by project
 val webjarsVersion: String by project
+val lombokVersion: String by project
 val bootstrapVersion: String by project
 val bootstrapIconsVersion: String by project
 val jqueryVersion: String by project
@@ -57,7 +58,7 @@ java {
 }
 
 lombok {
-    version.set("1.18.20")
+    version.set(lombokVersion)
 }
 
 tasks.test {

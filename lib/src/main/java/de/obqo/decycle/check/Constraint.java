@@ -41,6 +41,10 @@ public interface Constraint {
                     getDependencies().stream().map(Edge::displayString).collect(joining(", "))
             );
         }
+
+        public static String displayString(final List<Violation> violations) {
+            return violations.stream().map(Constraint.Violation::displayString).collect(joining("\n"));
+        }
     }
 
     String getShortString();
