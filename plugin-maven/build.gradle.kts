@@ -6,6 +6,8 @@ plugins {
 
 val junitVersion: String by project
 val assertjVersion: String by project
+val commonsioVersion: String by project
+val slf4jVersion: String by project
 val lombokVersion: String by project
 val mavenVersion: String by project
 val mavenPluginToolsVersion: String by project
@@ -21,6 +23,8 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-params:$junitVersion")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
     testImplementation("org.assertj:assertj-core:${assertjVersion}")
+    testImplementation("commons-io:commons-io:${commonsioVersion}")
+    testRuntimeOnly("org.slf4j:slf4j-jdk14:${slf4jVersion}")
 }
 
 lombok {
