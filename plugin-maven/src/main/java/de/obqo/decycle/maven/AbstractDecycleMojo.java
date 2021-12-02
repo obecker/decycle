@@ -22,29 +22,24 @@ import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.apache.maven.model.Build;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
-import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 
 import lombok.AccessLevel;
 import lombok.Setter;
 
-/**
- * Maven goal for performing decycle checks on the compiled classes (and test classes) of a project.
- * More info: https://github.com/obecker/decycle
- */
-@Mojo(name = "decycle", defaultPhase = LifecyclePhase.VERIFY, threadSafe = true)
 @Setter(AccessLevel.PACKAGE)
-public class DecycleMojo extends AbstractMojo {
+abstract class AbstractDecycleMojo extends AbstractMojo {
 
     private static final java.util.regex.Pattern NAMED_PATTERN = java.util.regex.Pattern.compile("(\\w+)=(.+)");
-    private static final String RESOURCES_DIR = "resources";
+
+    protected static final String MAIN = "main";
+    protected static final String TEST = "test";
+
 
     @Parameter(defaultValue = "${project}", readonly = true, required = true)
     private MavenProject project;
@@ -85,21 +80,29 @@ public class DecycleMojo extends AbstractMojo {
     @Parameter
     private SlicingConfig[] slicings;
 
+    /**
+     * If set to true, then the decycle checks will be skipped. Default is false.
+     */
+    @Parameter(property = "skip.decycle", defaultValue = "false")
+    private boolean skip;
+
+    /**
+     * If set to true, then the decycle check for the main classes will be skipped. Default is false.
+     */
+    @Parameter(property = "skip.decycle.main", defaultValue = "false")
+    private boolean skipMain;
+
+    /**
+     * If set to true, then the decycle check for the test classes will be skipped. Default is false.
+     */
+    @Parameter(property = "skip.decycle.test", defaultValue = "false")
+    private boolean skipTest;
+
     @Override
-    public void execute() throws MojoExecutionException, MojoFailureException {
+    public final void execute() throws MojoExecutionException, MojoFailureException {
         try {
-            final File reportDir = new File(this.project.getModel().getReporting().getOutputDirectory(), "decycle");
-            reportDir.mkdirs();
-            ResourcesExtractor.copyResources(new File(reportDir, RESOURCES_DIR));
-
-            final Build build = this.project.getBuild();
-            final String mainClasses = build.getOutputDirectory();
-            final String testClasses = build.getTestOutputDirectory();
-
-            final List<Constraint.Violation> mainViolations = check(mainClasses, reportDir, "main");
-            final List<Constraint.Violation> testViolations = check(testClasses, reportDir, "test");
-
-            if (!(this.ignoreFailures || mainViolations.isEmpty() && testViolations.isEmpty())) {
+            final List<Constraint.Violation> violations = executeCheck();
+            if (!this.ignoreFailures && !violations.isEmpty()) {
                 throw new MojoFailureException("Decycle check failed");
             }
         } catch (final IOException e) {
@@ -107,14 +110,33 @@ public class DecycleMojo extends AbstractMojo {
         }
     }
 
-    private List<Constraint.Violation> check(final String classpath, final File reportDir, final String sourceSet)
-            throws IOException {
+    protected abstract List<Constraint.Violation> executeCheck() throws IOException;
 
-        final Log log = getLog();
-        if (!new File(classpath).exists()) {
-            log.warn(classpath + " is missing - skipped decycle for " + sourceSet + " classes");
+    protected List<Constraint.Violation> checkMain() throws IOException {
+        if (this.skip || this.skipMain) {
+            getLog().info("Skipped decycle check for main classes");
             return List.of();
         }
+        return check(getMainClasses(), MAIN);
+    }
+
+    protected List<Constraint.Violation> checkTest() throws IOException {
+        if (this.skip || this.skipTest) {
+            getLog().info("Skipped decycle check for test classes");
+            return List.of();
+        }
+        return check(getTestClasses(), TEST);
+    }
+
+    protected List<Constraint.Violation> check(final String classpath, final String sourceSet) throws IOException {
+        final Log log = getLog();
+        if (!new File(classpath).exists()) {
+            log.warn(classpath + " is missing - skipped decycle check for " + sourceSet + " classes");
+            return List.of();
+        }
+
+        final File reportDir = getDecycleReportDir();
+        final String resourcesDirName = createResourcesIfRequired(reportDir);
 
         final File report = new File(reportDir, sourceSet + ".html");
         try (final FileWriter reportWriter = new FileWriter(report)) {
@@ -126,11 +148,11 @@ public class DecycleMojo extends AbstractMojo {
                     .slicings(getSlicings())
                     // TODO constraints(...)
                     .report(reportWriter)
-                    .reportResourcesPrefix(RESOURCES_DIR)
+                    .reportResourcesPrefix(resourcesDirName)
                     .reportTitle(this.project.getName() + " | " + sourceSet)
                     .build();
 
-            log.info("decycle configuration: " + configuration);
+            log.debug("decycle configuration: " + configuration);
 
             final Consumer<String> logHandler = this.ignoreFailures ? log::warn : log::error;
             final List<Constraint.Violation> violations = configuration.check();
@@ -140,6 +162,28 @@ public class DecycleMojo extends AbstractMojo {
             }
             return violations;
         }
+    }
+
+    protected String getMainClasses() {
+        return this.project.getBuild().getOutputDirectory();
+    }
+
+    protected String getTestClasses() {
+        return this.project.getBuild().getTestOutputDirectory();
+    }
+
+    private File getDecycleReportDir() {
+        return new File(this.project.getModel().getReporting().getOutputDirectory(), "decycle");
+    }
+
+    private String createResourcesIfRequired(final File reportDir) throws IOException {
+        final String resourcesDirName = "resources-" + Configuration.class.getPackage().getImplementationVersion();
+        final File resourcesDir = new File(reportDir, resourcesDirName);
+        if (!resourcesDir.exists()) {
+            reportDir.mkdirs();
+            ResourcesExtractor.copyResources(resourcesDir);
+        }
+        return resourcesDirName;
     }
 
     private List<String> tokenize(final String value) {

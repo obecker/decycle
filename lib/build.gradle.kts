@@ -42,7 +42,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-params:$junitVersion")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
     testImplementation("org.assertj:assertj-core:${assertjVersion}")
-    testImplementation("org.slf4j:slf4j-jdk14:${slf4jVersion}") // needed for fontmetrics
+    testRuntimeOnly("org.slf4j:slf4j-jdk14:${slf4jVersion}") // needed for fontmetrics
 }
 
 tasks.compileJava {
