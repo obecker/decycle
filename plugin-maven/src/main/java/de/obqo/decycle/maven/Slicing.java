@@ -5,9 +5,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class IgnoringConfig {
+public class Slicing {
 
-    private String from;
-    private String to;
+    private String name;
+    private String patterns;
 
 }

@@ -59,7 +59,7 @@ abstract class AbstractDecycleMojo extends AbstractMojo {
     /**
      * If set to true, then violations detected by decycle will not cause the build to fail. Default is false.
      */
-    @Parameter(property = "decycle.ignore.failures", defaultValue = "false")
+    @Parameter(property = "decycle.ignoreFailures", defaultValue = "false")
     private boolean ignoreFailures;
 
     /**
@@ -70,7 +70,7 @@ abstract class AbstractDecycleMojo extends AbstractMojo {
      * &lt;value>&lt;from>org.company.model.**&lt;/from>&lt;to>org.company.service.Locator&lt;/to>&lt;/value>
      */
     @Parameter
-    private IgnoringConfig[] ignoring;
+    private Dependency[] ignoring;
 
     /**
      * List of slicing definitions. Each slicing has a name and a comma separated list of patterns. Example element:
@@ -78,24 +78,24 @@ abstract class AbstractDecycleMojo extends AbstractMojo {
      * either an unnamed pattern (like in the example above) or a named pattern having the form 'name=pattern'
      */
     @Parameter
-    private SlicingConfig[] slicings;
+    private Slicing[] slicings;
 
     /**
      * If set to true, then the decycle checks will be skipped. Default is false.
      */
-    @Parameter(property = "skip.decycle", defaultValue = "false")
+    @Parameter(property = "decycle.skip", defaultValue = "false")
     private boolean skip;
 
     /**
      * If set to true, then the decycle check for the main classes will be skipped. Default is false.
      */
-    @Parameter(property = "skip.decycle.main", defaultValue = "false")
+    @Parameter(property = "decycle.skipMain", defaultValue = "false")
     private boolean skipMain;
 
     /**
      * If set to true, then the decycle check for the test classes will be skipped. Default is false.
      */
-    @Parameter(property = "skip.decycle.test", defaultValue = "false")
+    @Parameter(property = "decycle.skipTest", defaultValue = "false")
     private boolean skipTest;
 
     @Override
@@ -198,7 +198,7 @@ abstract class AbstractDecycleMojo extends AbstractMojo {
 
     private Map<String, List<Pattern>> getSlicings() {
         return stream(this.slicings).collect(Collectors.toMap(
-                SlicingConfig::getName,
+                Slicing::getName,
                 config -> tokenize(config.getPatterns()).stream().map(this::toPattern).collect(toList())));
     }
 
