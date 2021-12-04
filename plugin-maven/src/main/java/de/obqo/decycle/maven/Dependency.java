@@ -5,9 +5,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class SlicingConfig {
+public class Dependency {
 
-    private String name;
-    private String patterns;
+    private String from;
+    private String to;
 
 }
