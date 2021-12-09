@@ -32,6 +32,7 @@ class DecyclePlugin implements Plugin<Project> {
 
         // create a new configuration that will be used by the plugin's worker
         final Configuration workerClasspath = project.configurations.create("decycle")
+        workerClasspath.setDescription("The Decycle libraries to be used for this project")
 
         project.afterEvaluate {
 
