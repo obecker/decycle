@@ -148,6 +148,12 @@ svg.dependency-graph a.node > text {
     color: white;
     text-decoration: underline dashed;
 }
-body .tooltipster-sidetip .tooltipster-content {
+body .tooltipster-base .tooltipster-content {
     padding: 6px;
+}
+
+.tooltipster-box {
+    box-shadow: 1px 2px 3px 0 rgba(0,0,0,0.3),
+                2px 4px 2px 1px rgba(0,0,0,0.2),
+                3px 6px 2px 1px rgba(0,0,0,0.1);
 }
