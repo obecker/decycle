@@ -1,9 +1,11 @@
 plugins {
     `java-library`
-    `maven-publish`
-    signing
     id("io.freefair.lombok") version "6.1.0"
 }
+
+description = "Java library for detecting and reporting package cycles"
+
+apply(from = rootProject.file("gradle/publishing.gradle.kts"))
 
 val asmVersion: String by project
 val guavaVersion: String by project
@@ -70,72 +72,9 @@ tasks.jar {
     }
 }
 
-publishing {
-    repositories {
-        maven {
-            name = "local"
-            url = file("$buildDir/repository").toURI()
-        }
-        maven {
-            val ossrhUsername: String? by project
-            val ossrhPassword: String? by project
-            name = "sonatype"
-            url = uri("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
-            credentials {
-                username = ossrhUsername
-                password = ossrhPassword
-            }
-        }
-    }
-    publications {
-        create<MavenPublication>("lib") {
-            from(components["java"])
-            pom {
-                name.set("Decycle Lib")
-                description.set("Java library for detecting and reporting package cycles")
-                url.set("https://github.com/obecker/decycle")
-                licenses {
-                    license {
-                        name.set("The Apache License, Version 2.0")
-                        url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
-                    }
-                }
-                developers {
-                    developer {
-                        id.set("obecker")
-                        name.set("Oliver Becker")
-                    }
-                }
-                scm {
-                    connection.set("https://github.com/obecker/decycle.git")
-                    developerConnection.set("https://github.com/obecker/decycle.git")
-                    url.set("https://github.com/obecker/decycle")
-                }
-            }
-        }
-    }
-}
-
-tasks.withType<PublishToMavenRepository>().configureEach {
-    val isSnapshot = version.toString().endsWith("-SNAPSHOT")
-    if (repository.name == "sonatype" && isSnapshot) {
-        enabled = false
-    }
-}
-
 tasks.register("publishLib") {
     group = "Publishing"
     description = "Publishes decycle-lib to Maven Central via OSS Sonatype"
-    dependsOn("publishLibPublicationToSonatypeRepository")
-}
-
-signing {
-    sign(publishing.publications["lib"])
-}
-
-tasks.withType<Sign>() {
-    onlyIf {
-        project.hasProperty("signing.keyId")
-    }
+    dependsOn("publishJavaPublicationToSonatypeRepository")
 }
 

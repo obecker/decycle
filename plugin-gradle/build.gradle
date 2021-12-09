@@ -57,7 +57,7 @@ processResources {
 test {
     useJUnitPlatform()
     // we need a deployed library for testing the plugin
-    dependsOn(":decycle-lib:publishLibPublicationToLocalRepository")
+    dependsOn(":decycle-lib:publishJavaPublicationToLocalRepository")
 }
 
 pluginBundle {

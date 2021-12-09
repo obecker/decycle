@@ -15,3 +15,7 @@ subprojects {
         mavenCentral()
     }
 }
+
+tasks.register("clean") {
+    delete("build")
+}

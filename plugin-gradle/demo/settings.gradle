@@ -3,7 +3,7 @@ dependencyResolutionManagement {
         mavenCentral()
         maven {
             name = "local"
-            url = file("../../lib/build/repository").toURI()
+            url = file("../../build/repository").toURI()
         }
     }
 }
