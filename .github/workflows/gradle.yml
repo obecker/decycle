@@ -37,3 +37,4 @@ jobs:
             lib/build/reports/
             plugin-gradle/build/reports/
             plugin-gradle/demo/build/reports/decycle/
+            plugin-maven/build/reports/

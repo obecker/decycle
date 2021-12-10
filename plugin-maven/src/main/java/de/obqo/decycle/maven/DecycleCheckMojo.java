@@ -14,7 +14,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 /**
  * Maven goal for performing decycle checks on the compiled classes (and test classes) of a project.
  * Intended to run automatically in the verify phase with
- * &lt;executions>&lt;execution>&lt;goals>&lt;goal>check&lt;/goal>&lt;/goals>&lt;/execution>&lt;/executions>
+ * &lt;executions&gt;&lt;execution&gt;&lt;goals&gt;&lt;goal&gt;check&lt;/goal&gt;&lt;/goals&gt;&lt;/execution&gt;&lt;/executions&gt;
  * More info: https://github.com/obecker/decycle
  */
 @Mojo(name = "check", defaultPhase = LifecyclePhase.VERIFY, threadSafe = true)

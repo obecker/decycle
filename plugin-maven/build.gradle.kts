@@ -4,6 +4,10 @@ plugins {
     id("io.freefair.maven-plugin")
 }
 
+description = "Gradle plugin that executes decycle dependency checks"
+
+apply(from = rootProject.file("gradle/publishing.gradle.kts"))
+
 val junitVersion: String by project
 val assertjVersion: String by project
 val commonsioVersion: String by project
@@ -27,10 +31,36 @@ dependencies {
     testRuntimeOnly("org.slf4j:slf4j-jdk14:${slf4jVersion}")
 }
 
+tasks.compileJava {
+    options.compilerArgs.addAll(listOf("-Xlint:all", "-Xlint:-processing", "-Werror"))
+}
+
+java {
+    withSourcesJar()
+    withJavadocJar()
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(11))
+    }
+}
+
 lombok {
     version.set(lombokVersion)
 }
 
 tasks.test {
     useJUnitPlatform()
+}
+
+tasks.jar {
+    archiveVersion.set("${rootProject.version}")
+    manifest {
+        attributes["Implementation-Version"] = project.version
+        attributes["Automatic-Module-Name"] = project.group
+    }
+}
+
+tasks.register("publishMavenPlugin") {
+    group = "Publishing"
+    description = "Publishes decycle-maven-plugin to Maven Central via OSS Sonatype"
+    dependsOn("publishJavaPublicationToSonatypeRepository")
 }
