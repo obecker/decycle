@@ -10,9 +10,7 @@ import de.obqo.decycle.check.Layer;
 import de.obqo.decycle.check.LayeringConstraint;
 import de.obqo.decycle.check.SlicedConstraint;
 import de.obqo.decycle.configuration.Configuration;
-import de.obqo.decycle.configuration.NamedPattern;
 import de.obqo.decycle.configuration.Pattern;
-import de.obqo.decycle.configuration.UnnamedPattern;
 import de.obqo.decycle.report.ResourcesExtractor;
 import de.obqo.decycle.slicer.IgnoredDependency;
 
@@ -108,17 +106,7 @@ public abstract class DecycleWorker implements WorkAction<DecycleWorkerParameter
     }
 
     private List<Pattern> getPatterns(final SlicingConfiguration slicing) {
-        return slicing.getPatterns().stream().map(this::mapPattern).collect(toList());
-    }
-
-    private Pattern mapPattern(final Object pattern) {
-        // map each NamedPatternConfig to a Decycle NamedPattern
-        if (pattern instanceof NamedPatternConfig) {
-            final NamedPatternConfig namedPattern = (NamedPatternConfig) pattern;
-            return new NamedPattern(namedPattern.getName(), namedPattern.getPattern());
-        } else {
-            return new UnnamedPattern((String) pattern);
-        }
+        return slicing.getPatterns().stream().map(Pattern::parse).collect(toList());
     }
 
     private SlicedConstraint getSlicedConstraint(final SlicingConfiguration slConfig, final AllowConfiguration allow) {

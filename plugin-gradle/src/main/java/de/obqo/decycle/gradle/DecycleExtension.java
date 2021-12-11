@@ -23,7 +23,7 @@ public class DecycleExtension {
     public DecycleExtension(final Project project, final DecycleConfiguration configuration) {
         this.slicings = project.container(
                 SlicingExtension.class,
-                sliceType -> new SlicingExtension(configuration.addSlicing(sliceType)));
+                sliceType -> new SlicingExtension(project, configuration.addSlicing(sliceType)));
         this.configuration = configuration;
     }
 

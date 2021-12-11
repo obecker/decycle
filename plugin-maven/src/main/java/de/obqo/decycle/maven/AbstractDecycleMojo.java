@@ -4,9 +4,7 @@ import static java.util.stream.Collectors.toList;
 
 import de.obqo.decycle.check.Constraint;
 import de.obqo.decycle.configuration.Configuration;
-import de.obqo.decycle.configuration.NamedPattern;
 import de.obqo.decycle.configuration.Pattern;
-import de.obqo.decycle.configuration.UnnamedPattern;
 import de.obqo.decycle.report.ResourcesExtractor;
 import de.obqo.decycle.slicer.IgnoredDependency;
 
@@ -18,7 +16,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
-import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -35,11 +32,8 @@ import lombok.Setter;
 @Setter(AccessLevel.PACKAGE)
 abstract class AbstractDecycleMojo extends AbstractMojo {
 
-    private static final java.util.regex.Pattern NAMED_PATTERN = java.util.regex.Pattern.compile("(\\w+)=(.+)");
-
     protected static final String MAIN = "main";
     protected static final String TEST = "test";
-
 
     @Parameter(defaultValue = "${project}", readonly = true, required = true)
     private MavenProject project;
@@ -75,7 +69,7 @@ abstract class AbstractDecycleMojo extends AbstractMojo {
     /**
      * List of slicing definitions. Each slicing has a name and a comma separated list of patterns. Example element:
      * &lt;value>&lt;name>module&lt;/name>&lt;patterns>org.company.(*).**&lt;/patterns>&lt;/value>. Each pattern is
-     * either an unnamed pattern (like in the example above) or a named pattern having the form 'name=pattern'
+     * either an unnamed pattern (like in the example above) or a named pattern having the form 'pattern=name'
      */
     @Parameter
     private Slicing[] slicings;
@@ -199,12 +193,7 @@ abstract class AbstractDecycleMojo extends AbstractMojo {
     private Map<String, List<Pattern>> getSlicings() {
         return stream(this.slicings).collect(Collectors.toMap(
                 Slicing::getName,
-                config -> tokenize(config.getPatterns()).stream().map(this::toPattern).collect(toList())));
-    }
-
-    private Pattern toPattern(final String string) {
-        final Matcher matcher = NAMED_PATTERN.matcher(string);
-        return matcher.matches() ? new NamedPattern(matcher.group(1), matcher.group(2)) : new UnnamedPattern(string);
+                config -> tokenize(config.getPatterns()).stream().map(Pattern::parse).collect(toList())));
     }
 
     private <T> Stream<T> stream(final T[] array) {

@@ -99,8 +99,8 @@ Within the `configuration` element of the plugin (see [Installation](#installati
    Each slicing is represented by a `slicing` element containing `name` and `patterns` elements, both are required:
    * `name` defines the name of the slicing
    * `patterns` defines a comma separated list of patterns, in which each pattern is either an unnamed pattern
-     (containing parentheses for determining the slice) or a named pattern of the form _slice=pattern_
-     (in which _slice_ is the slice name and _pattern_ is a regular class pattern)
+     (containing parentheses for determining the slice) or a named pattern of the form _pattern=slice_
+     (in which _slice_ is the name of the slice and _pattern_ is a package pattern)
    * Note: for the time being it is not possible to define further constraints for slices
      (like _allow_ or _allowDirect_)
 

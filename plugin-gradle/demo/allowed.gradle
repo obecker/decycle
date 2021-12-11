@@ -6,7 +6,7 @@ decycle {
     including 'demo.other.**'
     slicings {
         module {
-            patterns namedPattern('XX', 'demo.other.x.**'), namedPattern('YY', 'demo.other.y.**'), namedPattern('ZZ', 'demo.other.z.**')
+            patterns 'demo.other.x.**=XX', 'demo.other.y.**=YY', 'demo.other.z.**=ZZ'
             allow anyOf('XX', 'YY'), 'ZZ'
         }
     }

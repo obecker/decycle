@@ -1,6 +1,8 @@
 package de.obqo.decycle.gradle;
 
 import org.gradle.api.GradleException;
+import org.gradle.api.Project;
+import org.gradle.api.logging.Logger;
 
 /**
  * Extension class for the configuration of slicings
@@ -12,19 +14,16 @@ public class SlicingExtension {
     // a NamedDomainObjectContainer can only contain objects having a name property - the name will be used as sliceType
     private final String name;
     private final SlicingConfiguration configuration;
+    private final Logger logger;
 
-    SlicingExtension(final SlicingConfiguration configuration) {
+    SlicingExtension(final Project project, final SlicingConfiguration configuration) {
         this.name = configuration.getSliceType();
         this.configuration = configuration;
+        this.logger = project.getLogger();
     }
 
-    public void patterns(Object... patterns) {
-        for (Object pattern : patterns) {
-            if (!(pattern instanceof String || pattern instanceof NamedPatternConfig)) {
-                throw new GradleException(String.format(
-                        "decycle: patterns must be strings or namedPattern(string), found '%s'",
-                        pattern));
-            }
+    public void patterns(String... patterns) {
+        for (final String pattern : patterns) {
             this.configuration.addPattern(pattern);
         }
     }
@@ -40,7 +39,7 @@ public class SlicingExtension {
     }
 
     private void checkSlices(final String prop, final Object[] slices) {
-        for (Object slice : slices) {
+        for (final Object slice : slices) {
             if (!(slice instanceof String || slice instanceof LayerConfig)) {
                 throw new GradleException(String.format(
                         "decycle: slices after %s must be strings, oneOf(strings), or anyOf(strings), found '%s'",
@@ -50,11 +49,13 @@ public class SlicingExtension {
         }
     }
 
-    public Object namedPattern(final String name, final String pattern) {
+    @Deprecated(forRemoval = true, since = "0.7.0")
+    public String namedPattern(final String name, final String pattern) {
+        this.logger.warn("namedPattern(name, pattern) is deprecated, use the string '{}={}' instead", pattern, name);
         if (name.contains("*") || name.contains(".")) {
             throw new GradleException(String.format("decycle: illegal pattern name '%s' - must contain neither * nor .", name));
         }
-        return new NamedPatternConfig(name, pattern);
+        return pattern + '=' + name;
     }
 
     public Object oneOf(final String... slices) {

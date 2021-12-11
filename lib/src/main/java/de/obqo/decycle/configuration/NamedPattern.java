@@ -6,7 +6,7 @@ import de.obqo.decycle.slicer.NamedPatternMatchingCategorizer;
 import lombok.extern.java.Log;
 
 @Log
-public class NamedPattern implements Pattern {
+class NamedPattern implements Pattern {
 
     private final String name;
     private final String pattern;
@@ -15,7 +15,7 @@ public class NamedPattern implements Pattern {
 
         if (name.contains("*") || name.contains(".")) {
             log.warning("Looks like you use the pattern '" + name +
-                    "' as the NAME of a NamedPattern. Please note that the NAME comes first in such a pattern.");
+                    "' as the NAME of a NamedPattern. Please note that a named pattern has the form <pattern>=<name>.");
         }
 
         this.name = name;
@@ -29,6 +29,6 @@ public class NamedPattern implements Pattern {
 
     @Override
     public String toString() {
-        return this.name + "=" + this.pattern;
+        return this.pattern + "=" + this.name;
     }
 }

@@ -14,7 +14,7 @@ class SlicingConfiguration implements Serializable {
     private static final long serialVersionUID = 10L;
 
     private final String sliceType;
-    private final List<Object> patterns;
+    private final List<String> patterns;
     private final List<AllowConfiguration> allows;
 
     SlicingConfiguration(final String sliceType) {
@@ -27,11 +27,11 @@ class SlicingConfiguration implements Serializable {
         return this.sliceType;
     }
 
-    List<Object> getPatterns() {
+    List<String> getPatterns() {
         return this.patterns;
     }
 
-    void addPattern(final Object pattern) {
+    void addPattern(final String pattern) {
         this.patterns.add(pattern);
     }
 

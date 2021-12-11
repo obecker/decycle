@@ -6,7 +6,7 @@ import de.obqo.decycle.slicer.PatternMatchingCategorizer;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class UnnamedPattern implements Pattern {
+class UnnamedPattern implements Pattern {
 
     private final String pattern;
 
