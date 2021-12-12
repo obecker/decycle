@@ -1,9 +1,11 @@
 plugins {
     `java-library`
     id("io.freefair.lombok")
+    id("io.freefair.maven-publish-java")
 }
 
 description = "Java library for detecting and reporting package cycles"
+val displayName by extra("Decycle Lib")
 
 apply(from = rootProject.file("gradle/publishing.gradle.kts"))
 
@@ -73,9 +75,8 @@ tasks.jar {
     }
 }
 
-tasks.register("publishLib") {
+tasks.register("publishToSonatype") {
     group = "Publishing"
     description = "Publishes decycle-lib to Maven Central via OSS Sonatype"
-    dependsOn("publishJavaPublicationToSonatypeRepository")
+    dependsOn("publishMavenJavaPublicationToSonatypeRepository")
 }
-

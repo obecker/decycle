@@ -1,4 +1,3 @@
-apply(plugin = "maven-publish")
 apply(plugin = "signing")
 
 configure<PublishingExtension> {
@@ -19,10 +18,10 @@ configure<PublishingExtension> {
         }
     }
     publications {
-        create<MavenPublication>("java") {
-            from(components["java"])
+        // publication mavenJava is provided by the io.freefair.maven-publish-java plugin
+        getByName<MavenPublication>("mavenJava").run {
             pom {
-                name.set(project.name)
+                name.set(project.extra["displayName"] as String)
                 description.set(project.description)
                 url.set("https://github.com/obecker/decycle")
                 licenses {
@@ -52,10 +51,6 @@ tasks.withType<PublishToMavenRepository>().configureEach {
     if (repository.name == "sonatype" && isSnapshot) {
         enabled = false
     }
-}
-
-configure<SigningExtension> {
-    sign(the<PublishingExtension>().publications["java"])
 }
 
 tasks.withType<Sign>() {

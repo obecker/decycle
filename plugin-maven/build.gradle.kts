@@ -4,7 +4,8 @@ plugins {
     id("io.freefair.maven-plugin")
 }
 
-description = "Gradle plugin that executes decycle dependency checks"
+description = "Maven plugin that executes decycle dependency checks"
+val displayName by extra("Decycle Maven Plugin")
 
 apply(from = rootProject.file("gradle/publishing.gradle.kts"))
 
@@ -59,8 +60,8 @@ tasks.jar {
     }
 }
 
-tasks.register("publishMavenPlugin") {
+tasks.register("publishToSonatype") {
     group = "Publishing"
     description = "Publishes decycle-maven-plugin to Maven Central via OSS Sonatype"
-    dependsOn("publishJavaPublicationToSonatypeRepository")
+    dependsOn("publishMavenJavaPublicationToSonatypeRepository")
 }
