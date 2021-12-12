@@ -1,6 +1,7 @@
 package de.obqo.decycle.maven;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 import java.io.File;
 import java.io.IOException;
@@ -113,6 +114,20 @@ class DecycleMojoTest {
         // then
         assertThat(new File(DECYCLE_MAIN_DIR)).doesNotExist();
         assertThat(new File(DECYCLE_TEST_DIR)).doesNotExist();
+    }
+
+    @Test
+    void shouldFailForSlicingWithoutName() {
+        // given
+        final DecycleCheckMojo decycleCheckMojo = givenDecycleCheckMojo();
+        final Slicing slicing = new Slicing();
+        slicing.setPatterns("test.pattern");
+        final Slicing[] slicings = { slicing };
+        decycleCheckMojo.setSlicings(slicings);
+
+        // when/then
+        assertThatIllegalArgumentException().isThrownBy(decycleCheckMojo::execute)
+                .withMessage("Missing name of slicing with patterns test.pattern");
     }
 
     private <M extends AbstractDecycleMojo> M givenDecycleMojo(final String projectName, final Supplier<M> factory) {

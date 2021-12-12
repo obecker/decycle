@@ -1,5 +1,6 @@
 package de.obqo.decycle.maven;
 
+import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.toList;
 
 import de.obqo.decycle.check.Constraint;
@@ -181,19 +182,23 @@ abstract class AbstractDecycleMojo extends AbstractMojo {
     }
 
     private List<String> tokenize(final String value) {
-        return Optional.ofNullable(value).map(v -> v.split("\\s*,\\s*")).map(List::of).orElse(List.of());
+        return Optional.ofNullable(value).map(v -> v.split(",")).stream()
+                .flatMap(Arrays::stream)
+                .map(String::trim)
+                .filter(not(String::isEmpty))
+                .collect(toList());
     }
 
     private List<IgnoredDependency> getIgnoredDependencies() {
         return stream(this.ignoring)
-                .map(config -> new IgnoredDependency(config.getFrom(), config.getTo()))
+                .map(dependency -> new IgnoredDependency(dependency.getFrom(), dependency.getTo()))
                 .collect(toList());
     }
 
     private Map<String, List<Pattern>> getSlicings() {
         return stream(this.slicings).collect(Collectors.toMap(
                 Slicing::getName,
-                config -> tokenize(config.getPatterns()).stream().map(Pattern::parse).collect(toList())));
+                slicing -> tokenize(slicing.getPatterns()).stream().map(Pattern::parse).collect(toList())));
     }
 
     private <T> Stream<T> stream(final T[] array) {

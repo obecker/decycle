@@ -61,8 +61,7 @@ public class DecycleExtension {
                             .sorted()
                             .collect(Collectors.joining(", "))));
         }
-        this.configuration.addIgnoredDep(
-                new IgnoreConfig(ignoreSpec.getOrDefault("from", "**"), ignoreSpec.getOrDefault("to", "**")));
+        this.configuration.addIgnoredDep(new IgnoreConfig(ignoreSpec.get("from"), ignoreSpec.get("to")));
     }
 
     public void slicings(final Action<NamedDomainObjectContainer<SlicingExtension>> action) {
