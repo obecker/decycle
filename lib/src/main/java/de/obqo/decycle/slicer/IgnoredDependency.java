@@ -16,10 +16,22 @@ public class IgnoredDependency {
 
     private static final String MATCH_ALL = "**";
 
-    public IgnoredDependency(final String fromPattern, final String toPattern) {
-        this.fromPattern = adjustPattern(fromPattern);
-        this.toPattern = adjustPattern(toPattern);
-        validate();
+    /**
+     * Creates a new {@code IgnoredDependency} by adjusting the given patterns. Patterns will be trimmed and a {@code
+     * null} or blank pattern will be turned into the <em>match all</em> pattern {@code "**"}.
+     *
+     * @param fromPattern the pattern for the source of the dependency (or {@code null} for any)
+     * @param toPattern   the pattern for the target of the dependency (or {@code null} for any)
+     * @return a new {@code IgnoredDependency}
+     */
+    public static IgnoredDependency create(final String fromPattern, final String toPattern) {
+        final String adjustedFrom = adjustPattern(fromPattern);
+        final String adjustedTo = adjustPattern(toPattern);
+        final IgnoredDependency dependency = new IgnoredDependency(adjustedFrom, adjustedTo);
+        if (MATCH_ALL.equals(adjustedFrom) && MATCH_ALL.equals(adjustedTo)) {
+            log.warn("Ignoring all dependencies ({}), is this really intended?", dependency);
+        }
+        return dependency;
     }
 
     private static String adjustPattern(final String pattern) {
@@ -41,12 +53,6 @@ public class IgnoredDependency {
      */
     // @return is used for the lombok generated getter
     String toPattern;
-
-    private void validate() {
-        if (MATCH_ALL.equals(this.fromPattern) && MATCH_ALL.equals(this.toPattern)) {
-            log.warn("Ignoring all dependencies ({}), is this really intended?", this);
-        }
-    }
 
     @Override
     public String toString() {

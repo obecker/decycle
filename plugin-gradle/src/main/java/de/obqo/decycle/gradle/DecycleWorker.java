@@ -101,7 +101,7 @@ public abstract class DecycleWorker implements WorkAction<DecycleWorkerParameter
 
     private List<IgnoredDependency> getIgnoredDependencies(final List<IgnoreConfig> ignoredDeps) {
         return ignoredDeps.stream()
-                .map(ignoredDep -> new IgnoredDependency(ignoredDep.getFrom(), ignoredDep.getTo()))
+                .map(ignoredDep -> IgnoredDependency.create(ignoredDep.getFrom(), ignoredDep.getTo()))
                 .collect(toList());
     }
 

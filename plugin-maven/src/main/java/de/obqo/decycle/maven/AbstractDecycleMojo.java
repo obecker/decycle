@@ -191,7 +191,7 @@ abstract class AbstractDecycleMojo extends AbstractMojo {
 
     private List<IgnoredDependency> getIgnoredDependencies() {
         return stream(this.ignoring)
-                .map(dependency -> new IgnoredDependency(dependency.getFrom(), dependency.getTo()))
+                .map(dependency -> IgnoredDependency.create(dependency.getFrom(), dependency.getTo()))
                 .collect(toList());
     }
 
