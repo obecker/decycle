@@ -46,7 +46,7 @@ configure<PublishingExtension> {
     }
 }
 
-tasks.withType<PublishToMavenRepository>().configureEach {
+tasks.withType<PublishToMavenRepository>() {
     val isSnapshot = version.toString().endsWith("-SNAPSHOT")
     if (repository.name == "sonatype" && isSnapshot) {
         enabled = false
@@ -57,4 +57,12 @@ tasks.withType<Sign>() {
     onlyIf {
         project.hasProperty("signing.keyId")
     }
+}
+
+tasks.withType<Javadoc>() {
+    doLast {
+        // workaround for https://bugs.openjdk.java.net/browse/JDK-8215291 in Java 11
+        file("${destinationDir}/search.js").appendText("getURLPrefix = function(ui) { return ''; };\n")
+    }
+    (options as StandardJavadocDocletOptions).links("https://docs.oracle.com/en/java/javase/11/docs/api/")
 }
