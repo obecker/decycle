@@ -1,4 +1,4 @@
-[![](https://img.shields.io/badge/Maven-unreleased-orange)](https://search.maven.org/artifact/de.obqo.decycle/decycle-maven-plugin)
+[![](https://img.shields.io/maven-central/v/de.obqo.decycle/decycle-maven-plugin.svg)](https://search.maven.org/artifact/de.obqo.decycle/decycle-maven-plugin)
 
 ![decycle](../readme/logo-maven-plugin.svg?raw=true)
 

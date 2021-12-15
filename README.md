@@ -8,7 +8,7 @@ Decycle provides checks for cyclic dependencies between packages and slices of p
 Decycle is based on the ideas of [Degraph](http://riy.github.io/degraph/index.html) that was created by 
 [Jens Schauder](https://github.com/schauder).
 
-The recommended way of integrating Decycle is by using a [Gradle Plugin](plugin-gradle). 
+The recommended way of integrating Decycle is by using the [Gradle](plugin-gradle) or [Maven](plugin-maven) plugins. 
 
 ## Documentation
 
@@ -20,6 +20,8 @@ The recommended way of integrating Decycle is by using a [Gradle Plugin](plugin-
   recommended doing so as the API is not stable yet.
 * [decycle-gradle-plugin](plugin-gradle) is a gradle plugin that uses the core library and performs Decycle checks of the
   project sources within a gradle build.
+* [decycle-maven-plugin](plugin-maven) is a maven plugin that uses the core library and performs Decycle checks of the
+  project sources within the maven verify phase.
 
 ## Building
 

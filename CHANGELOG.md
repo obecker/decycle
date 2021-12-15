@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 0.7.0 - 2021-12-17
+   - Introduce decycle-maven-plugin for executing decycle checks within a maven build
+   - decycle-gradle-plugin: deprecate slicing configuration namedPattern(name, pattern),
+     use 'pattern=name' instead
+   - The generated HTML report got a minor face-lift and doesn't load any longer stylesheets and JS libraries from 
+     public CDN sites, all necessary resources will now be created locally
+
 ## 0.6.0 - 2021-09-29
    - Add arc tooltips for displaying the class dependencies for this arc in the dependency image
      (and hide other arcs when hovering over an arc)

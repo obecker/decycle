@@ -91,8 +91,10 @@ they will be added to the existing configuration.)
   starts the slicings block, each slicing
   is defined by its name (also known as slicing type). A slicing configuration contains:
     * `patterns`
-      a list containing unnamed patterns (String) or named patterns.
-      A named pattern is defined using <code>namedPattern(<i>name</i>, <i>pattern</i>)</code>.
+      a list containing patterns (strings), either named or unnamed.
+      A named pattern is defined using <code><i>pattern</i>=<i>name</i></code>,
+      in an unnamed pattern the name is derived from the matched part in parentheses in the pattern, for example  
+      `org.example.(*).**`. 
     * `allow`
       defines a simple constraint on the defined slices
     * `allowDirect`
