@@ -29,6 +29,12 @@ class CycleFreeTest {
 
     private final CycleFree cycleFree = new CycleFree();
 
+    private void connect(final Graph g, final Node a, final Node b) {
+        g.add(a);
+        g.add(b);
+        g.connect(a, b);
+    }
+
     @Test
     void emptyGraphShouldHaveNoCycles() {
         final var g = new Graph();
@@ -39,8 +45,8 @@ class CycleFreeTest {
     @Test
     void graphWithTwoCyclicNodesWithoutSlicesShouldBeReportedCycleFree() {
         final var g = new Graph();
-        g.connect(n("a"), n("b"));
-        g.connect(n("b"), n("a"));
+        connect(g, n("a"), n("b"));
+        connect(g, n("b"), n("a"));
 
         assertThat(this.cycleFree.violations(g)).isEmpty();
     }
@@ -48,9 +54,9 @@ class CycleFreeTest {
     @Test
     void graphWithCyclicDependenciesBetweenPackagesShouldBeReportedAsCyclic() {
         final var g = new Graph(new PackageCategorizer());
-        g.connect(classNode("de.p1.A1"), classNode("de.p2.B2"));
-        g.connect(classNode("de.p2.B1"), classNode("de.p3.C2"));
-        g.connect(classNode("de.p3.C1"), classNode("de.p1.A2"));
+        connect(g, classNode("de.p1.A1"), classNode("de.p2.B2"));
+        connect(g, classNode("de.p2.B1"), classNode("de.p3.C2"));
+        connect(g, classNode("de.p3.C1"), classNode("de.p1.A2"));
 
         final List<Violation> violations = this.cycleFree.violations(g);
         assertThat(violations).hasSize(1).extracting(Violation::getName).containsOnly("cycle");
@@ -64,10 +70,10 @@ class CycleFreeTest {
     @Test
     void shouldDetectMultipleCycles() {
         final var g = new Graph(new PackageCategorizer());
-        g.connect(classNode("de.p1.A1"), classNode("de.p2.B2"));
-        g.connect(classNode("de.p2.B1"), classNode("de.p1.A2"));
-        g.connect(classNode("de.p3.C1"), classNode("de.p4.D2"));
-        g.connect(classNode("de.p4.D1"), classNode("de.p3.C2"));
+        connect(g, classNode("de.p1.A1"), classNode("de.p2.B2"));
+        connect(g, classNode("de.p2.B1"), classNode("de.p1.A2"));
+        connect(g, classNode("de.p3.C1"), classNode("de.p4.D2"));
+        connect(g, classNode("de.p4.D1"), classNode("de.p3.C2"));
 
         final List<Violation> violations = this.cycleFree.violations(g);
         assertThat(violations).hasSize(2).extracting(Violation::getName)
@@ -83,9 +89,9 @@ class CycleFreeTest {
     @Test
     void shouldDetectCycleWithCombinedSlices() {
         final var g = new Graph(parallel(new PackageCategorizer(), __ -> Set.of(Node.sliceNode("tld", "de"))));
-        g.connect(classNode("de.p1.A1"), classNode("de.p2.B2"));
-        g.connect(classNode("de.p2.B1"), classNode("de.p3.C2"));
-        g.connect(classNode("de.p3.C1"), classNode("de.p1.A2"));
+        connect(g, classNode("de.p1.A1"), classNode("de.p2.B2"));
+        connect(g, classNode("de.p2.B1"), classNode("de.p3.C2"));
+        connect(g, classNode("de.p3.C1"), classNode("de.p1.A2"));
 
         assertThat(dependenciesIn(this.cycleFree.violations(g))).containsOnly(
                 d("de.p1", "de.p2"),
@@ -98,9 +104,9 @@ class CycleFreeTest {
     void ignoredEdgesInCycleShouldBeReportedCycleFree() {
         final var g = new Graph(new PackageCategorizer(), NodeFilter.ALL,
                 new IgnoredDependenciesFilter(Set.of(new IgnoredDependency("de.p3.*", "de.p1.*"))));
-        g.connect(classNode("de.p1.A1"), classNode("de.p2.B2"));
-        g.connect(classNode("de.p2.B1"), classNode("de.p3.C2"));
-        g.connect(classNode("de.p3.C1"), classNode("de.p1.A2"));
+        connect(g, classNode("de.p1.A1"), classNode("de.p2.B2"));
+        connect(g, classNode("de.p2.B1"), classNode("de.p3.C2"));
+        connect(g, classNode("de.p3.C1"), classNode("de.p1.A2"));
 
         assertThat(dependenciesIn(this.cycleFree.violations(g))).isEmpty();
     }
@@ -109,14 +115,14 @@ class CycleFreeTest {
     void shouldDetectViolatingEdgesWithinACycle() {
         final var g = new Graph(new PackageCategorizer());
         // three dependencies from de.p1 to de.p2
-        g.connect(classNode("de.p1.A1"), classNode("de.p2.B1"));
-        g.connect(classNode("de.p1.A1"), classNode("de.p2.B2"));
-        g.connect(classNode("de.p1.A2"), classNode("de.p2.B2"));
+        connect(g, classNode("de.p1.A1"), classNode("de.p2.B1"));
+        connect(g, classNode("de.p1.A1"), classNode("de.p2.B2"));
+        connect(g, classNode("de.p1.A2"), classNode("de.p2.B2"));
         // one dependency from de.p2 to de.p3 -> will be considered violating
-        g.connect(classNode("de.p2.B1"), classNode("de.p3.C2"));
+        connect(g, classNode("de.p2.B1"), classNode("de.p3.C2"));
         // two dependencies from de.p3 to de.p1
-        g.connect(classNode("de.p3.C1"), classNode("de.p1.A2"));
-        g.connect(classNode("de.p3.C2"), classNode("de.p1.A1"));
+        connect(g, classNode("de.p3.C1"), classNode("de.p1.A2"));
+        connect(g, classNode("de.p3.C2"), classNode("de.p1.A1"));
 
         final List<Violation> violations = this.cycleFree.violations(g);
         assertThat(violations).singleElement().extracting(Violation::getDependencies, iterable(Edge.class))

@@ -28,6 +28,7 @@ class GraphBuilder {
     void visitCurrentClass(final String slashSeparatedName) {
         Preconditions.checkState(this.currentNode == null, "Can only visit one class per GraphBuilder");
         this.currentNode = classNodeFromTypeName(slashSeparatedName);
+        this.graph.add(this.currentNode);
     }
 
     static Node classNodeFromTypeName(final String slashSeparatedName) {

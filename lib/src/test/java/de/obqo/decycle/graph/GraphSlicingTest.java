@@ -25,6 +25,12 @@ class GraphSlicingTest {
     private static final SliceType CLASS = SliceType.classType();
     private static final SliceType PACKAGE = SliceType.packageType();
 
+    private void connect(final Graph g, final Node a, final Node b) {
+        g.add(a);
+        g.add(b);
+        g.connect(a, b);
+    }
+    
     @Test
     void packageSliceOfAGraphWithoutPackageShouldBeEmpty() {
         final var g = new Graph();
@@ -44,7 +50,7 @@ class GraphSlicingTest {
     @Test
     void packageSliceOfAGraphWithTwoConnectedClassNodesShouldBeAGraphWithTwoConnectedPackages() {
         final var g = new Graph(new PackageCategorizer());
-        g.connect(classNode("p.one.Class"), classNode("p.two.Class"));
+        connect(g, classNode("p.one.Class"), classNode("p.two.Class"));
 
         assertThat(g.slicing(PACKAGE).edges()).containsOnly(
                 Edge.references(packageNode("p.one"), packageNode("p.two")));
@@ -53,7 +59,7 @@ class GraphSlicingTest {
     @Test
     void graphForNonExistingSliceShouldBeEmpty() {
         final var g = new Graph(new PackageCategorizer());
-        g.connect(classNode("p.one.Class"), classNode("p.two.Class"));
+        connect(g, classNode("p.one.Class"), classNode("p.two.Class"));
 
         assertThat(g.slicing(customType("no such type")).nodes()).isEmpty();
     }
@@ -63,7 +69,7 @@ class GraphSlicingTest {
         // since the slice node will appear anyway we use an edge between to inner classes, to test that they get
         // projected on the correct slice
         final var g = new Graph(new PackageCategorizer());
-        g.connect(classNode("p.one.Class$Inner"), classNode("p.two.Class$Inner"));
+        connect(g, classNode("p.one.Class$Inner"), classNode("p.two.Class$Inner"));
 
         assertThat(g.slicing(PACKAGE).edges()).containsOnly(
                 Edge.references(packageNode("p.one"), packageNode("p.two")));
@@ -72,7 +78,7 @@ class GraphSlicingTest {
     @Test
     void shouldReturnSetOfContainedNodeTypesAsSlices() {
         final var g = new Graph(new PackageCategorizer());
-        g.connect(classNode("package.one.class"), classNode("package.two.class"));
+        connect(g, classNode("package.one.class"), classNode("package.two.class"));
         g.add(sliceNode("x", "x"));
 
         assertThat(g.sliceTypes()).containsOnly(CLASS, PACKAGE, customType("x"));
@@ -89,10 +95,10 @@ class GraphSlicingTest {
         final var classThreeA = classNode("package.three.classA");
         final var classThreeB = classNode("package.three.classB");
         final var classOneInner = classNode("package.one.class$Inner");
-        g.connect(classOne, classTwo);
-        g.connect(classTwo, classThreeA);
-        g.connect(classTwo, classThreeB);
-        g.connect(classOneInner, classThreeB);
+        connect(g, classOne, classTwo);
+        connect(g, classTwo, classThreeA);
+        connect(g, classTwo, classThreeB);
+        connect(g, classOneInner, classThreeB);
 
         // given PACKAGE slice
         final Slicing packages = g.slicing(PACKAGE);
@@ -143,10 +149,10 @@ class GraphSlicingTest {
         final var b2 = classNode("package.b.B2");
         final var c1 = classNode("package.c.C1");
         final var c2 = classNode("package.c.C2");
-        g.connect(a1, b1);
-        g.connect(a2, b2);
-        g.connect(a1, c1);
-        g.connect(a2, c2);
+        connect(g, a1, b1);
+        connect(g, a2, b2);
+        connect(g, a1, c1);
+        connect(g, a2, c2);
 
         // when
         final Slicing classes = g.slicing(CLASS);
@@ -183,15 +189,15 @@ class GraphSlicingTest {
         final var c1 = classNode("package.c.C1");
         final var c2 = classNode("package.c.C2");
         // a -> b
-        g.connect(a1, b1);
-        g.connect(a2, b2);
-        g.connect(a1, b2);
-        g.connect(a1, bsub1);
-        g.connect(a2, bsub1);
+        connect(g, a1, b1);
+        connect(g, a2, b2);
+        connect(g, a1, b2);
+        connect(g, a1, bsub1);
+        connect(g, a2, bsub1);
         // a -> c
-        g.connect(a1, c1);
-        g.connect(a1, c1); // duplicate, not counted
-        g.connect(a2, c2);
+        connect(g, a1, c1);
+        connect(g, a1, c1);
+        connect(g, a2, c2);
 
         // when
         final Slicing slices = g.slicing(customType(SLICE));

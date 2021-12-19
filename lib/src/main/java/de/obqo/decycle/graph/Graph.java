@@ -62,8 +62,6 @@ public class Graph implements SlicingSource {
 
     public void connect(final Node a, final Node b) {
         addReference(a, b);
-        add(a);
-        add(b);
     }
 
     private void addReference(final Node a, final Node b) {
@@ -73,7 +71,7 @@ public class Graph implements SlicingSource {
         }
     }
 
-    void add(final Node node) {
+    public void add(final Node node) {
         if (this.filter.test(node)) {
             addNodeToSlices(node);
         }

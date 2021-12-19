@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 0.8.0 - unreleased
+   - Breaking change: classes that are not itself visited will no longer be considered for packages and slices.
+     This will automatically limit the report to the classes of the project, i.e. classes and packages from the java
+     standard library or from any third-party libraries will no longer appear as dependencies in the report.
+     The typical configuration that contains an `including` for your base package is no longer necessary.
+     (Side effect: the performance of the dependency analysis has been improved.) 
+
 ## 0.7.0 - 2021-12-17
    - Introduce decycle-maven-plugin for executing decycle checks within a maven build
    - decycle-gradle-plugin: deprecate slicing configuration namedPattern(name, pattern),
