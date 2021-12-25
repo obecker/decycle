@@ -56,6 +56,13 @@ processResources {
 
 test {
     useJUnitPlatform()
+    inputs.files project(':decycle-lib').fileTree("build/classes") { // add lib because there's no runtime dependency
+        include "*/main/**"
+    }
+    inputs.files fileTree("demo") {
+        include "*.gradle"
+        include "src/**"
+    }
     // we need a deployed library for testing the plugin
     dependsOn(":decycle-lib:publishMavenJavaPublicationToLocalRepository")
 }
