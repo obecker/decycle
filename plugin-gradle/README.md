@@ -45,7 +45,7 @@ The plugin adds a `decycle` configuration object to the build, that offers the f
     <b>ignoring</b> from: 'org.examples.from.Example', to: 'org.examples.to.**'
     <b>slicings</b> {
         <i>name1</i> {
-            <b>patterns</b> 'org.example.(*).**', ...
+            <b>patterns</b> 'org.example.{*}.**', ...
             <b>allow</b> 'a', 'b', ...
             <b>allowDirect</b> 'x', 'y', ...
         }
@@ -69,8 +69,6 @@ they will be added to the existing configuration.)
 
 * `including`
   defines ant style string patterns for the classes that should be included (default: all).
-  It is recommended to configure an include pattern for your base package (e.g. `com.company.project.**`),
-  otherwise the report will also contain all dependencies to JDK and external packages.
 
 * `excluding`
   defines ant style string patterns for the classes that should be excluded (default: none).
@@ -94,7 +92,7 @@ they will be added to the existing configuration.)
       a list containing patterns (strings), either named or unnamed.
       A named pattern is defined using <code><i>pattern</i>=<i>name</i></code>,
       in an unnamed pattern the name is derived from the matched part in parentheses in the pattern, for example  
-      `org.example.(*).**`. 
+      `org.example.{*}.**`. 
     * `allow`
       defines a simple constraint on the defined slices
     * `allowDirect`

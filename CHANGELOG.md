@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 0.8.0 – unreleased
+## 0.8.0 – 2021-12-27
    - Breaking changes: 
      - Classes that are not itself visited will no longer be considered for packages and slices.
        This will automatically limit the report to the classes of the project. Classes and packages from the java

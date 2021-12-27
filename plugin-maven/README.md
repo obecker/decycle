@@ -61,7 +61,6 @@ Setting the property `decycle.ignoreFailures` will ignore any failures detected 
 Within the `configuration` element of the plugin (see [Installation](#installation) above) the following parameters can be defined:
 
 ```xml
-
 <configuration>
   <including>org.example.includes.**, ...</including>
   <excluding>org.example.excludes.**, ...</excluding>
@@ -74,7 +73,7 @@ Within the `configuration` element of the plugin (see [Installation](#installati
   <slicings>
     <slicing>
       <name>module</name>
-      <patterns>org.example.(*).**, ...</patterns>
+      <patterns>org.example.{*}.**, ...</patterns>
     </slicing>
   </slicings>
   <ignoreFailures>false</ignoreFailures>
@@ -99,8 +98,8 @@ Within the `configuration` element of the plugin (see [Installation](#installati
    Each slicing is represented by a `slicing` element containing `name` and `patterns` elements, both are required:
    * `name` defines the name of the slicing
    * `patterns` defines a comma separated list of patterns, in which each pattern is either an unnamed pattern
-     (containing parentheses for determining the slice) or a named pattern of the form _pattern=slice_
-     (in which _slice_ is the name of the slice and _pattern_ is a package pattern)
+     (containing curly braces for determining the slice) or a named pattern of the form _pattern=slice_
+     (in which _slice_ is the name of the slice and _pattern_ is a simple pattern)
    * Note: for the time being it is not possible to define further constraints for slices
      (like _allow_ or _allowDirect_)
 
