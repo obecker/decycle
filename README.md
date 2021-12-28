@@ -16,12 +16,12 @@ The recommended way of integrating Decycle is by using the [Gradle](plugin-gradl
 
 ## Subprojects
 
-* [decycle-lib](lib) is the core library that might be used within other JVM projects, however currently it is not 
-  recommended doing so as the API is not stable yet.
-* [decycle-gradle-plugin](plugin-gradle) is a gradle plugin that uses the core library and performs Decycle checks of the
-  project sources within a gradle build.
-* [decycle-maven-plugin](plugin-maven) is a maven plugin that uses the core library and performs Decycle checks of the
-  project sources within the maven verify phase.
+* [decycle-gradle-plugin](plugin-gradle) is a Gradle plugin that performs Decycle checks of the project sources within
+  a gradle build.
+* [decycle-maven-plugin](plugin-maven) is a Maven plugin that performs Decycle checks of the project sources within 
+  the maven verify phase.
+* [decycle-lib](lib) is the core library used by both plugins that might also be used within other JVM projects, 
+  however currently it is not recommended doing so as the API is not stable yet.
 
 ## Building
 
