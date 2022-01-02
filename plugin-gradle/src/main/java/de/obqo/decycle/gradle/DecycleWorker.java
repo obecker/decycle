@@ -116,16 +116,16 @@ public abstract class DecycleWorker implements WorkAction<DecycleWorkerParameter
     }
 
     private List<Layer> getSlices(final AllowConfiguration allow) {
-        return Stream.of(allow.getSlices()).map(this::mapLayer).collect(toList());
+        return Stream.of(allow.getLayers()).map(this::mapLayer).collect(toList());
     }
 
-    private Layer mapLayer(final Object slice) {
+    private Layer mapLayer(final Object layer) {
         // map each LayerConfig to a Decycle Layer
-        if (slice instanceof LayerConfig) {
-            final LayerConfig layer = (LayerConfig) slice;
-            return layer.isStrict() ? Layer.oneOf(layer.getSlices()) : Layer.anyOf(layer.getSlices());
+        if (layer instanceof LayerConfig) {
+            final LayerConfig layerConfig = (LayerConfig) layer;
+            return layerConfig.isStrict() ? Layer.oneOf(layerConfig.getSlices()) : Layer.anyOf(layerConfig.getSlices());
         } else {
-            return Layer.anyOf((String) slice);
+            return Layer.anyOf((String) layer);
         }
     }
 }

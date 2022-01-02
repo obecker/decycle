@@ -23,12 +23,12 @@ import lombok.RequiredArgsConstructor;
 public abstract class SlicedConstraint implements Constraint {
 
     private final SliceType sliceType;
-    final List<Layer> layers;
+    protected final List<Layer> layers;
     private final String arrow;
 
-    abstract boolean isViolatedBy(Node n1, Node n2);
+    protected abstract boolean isViolatedBy(Edge edge);
 
-    int indexOf(final Node node) {
+    protected final int indexOf(final Node node) {
         for (int i = 0; i < this.layers.size(); i++) {
             if (this.layers.get(i).contains(node.getName())) {
                 return i;
@@ -37,19 +37,27 @@ public abstract class SlicedConstraint implements Constraint {
         return -1;
     }
 
-    boolean constraintContainsBothNodes(final int i, final int j) {
+    protected final boolean containsBothNodes(final int i, final int j) {
         return i >= 0 && j >= 0;
+    }
+
+    protected final boolean nodesAreInWrongOrder(final int i, final int j) {
+        return i > j;
+    }
+
+    protected final boolean nodesAreInTheSameOneOfLayer(final int i, final int j) {
+        return i == j && this.layers.get(i).denyDependenciesWithinLayer();
     }
 
     @Override
     public List<Violation> violations(final SlicingSource slicingSource) {
-        final var sg = slicingSource.slicing(this.sliceType);
-        final var deps = sg.edges().stream()
+        final var slicing = slicingSource.slicing(this.sliceType);
+        final var violatingDeps = slicing.edges().stream()
                 .filter(not(Edge::isIgnored))
-                .filter(e -> isViolatedBy(e.getFrom(), e.getTo()))
+                .filter(this::isViolatedBy)
                 .collect(Collectors.toSet());
-        return deps.isEmpty() ? List.of()
-                : List.of(new Violation(getShortString(), MutableSlicing.create(this.sliceType, deps)));
+        return violatingDeps.isEmpty() ? List.of()
+                : List.of(new Violation(getShortString(), MutableSlicing.create(this.sliceType, violatingDeps)));
     }
 
     @Override

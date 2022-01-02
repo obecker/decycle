@@ -12,18 +12,18 @@ class AllowConfiguration implements Serializable {
     private static final long serialVersionUID = 10L;
 
     private final boolean direct;
-    private final Object[] slices;
+    private final Object[] layers;
 
-    AllowConfiguration(final boolean direct, final Object[] slices) {
+    AllowConfiguration(final boolean direct, final Object[] layers) {
         this.direct = direct;
-        this.slices = slices;
+        this.layers = layers;
     }
 
     boolean isDirect() {
         return this.direct;
     }
 
-    Object[] getSlices() {
-        return this.slices;
+    Object[] getLayers() {
+        return this.layers;
     }
 }

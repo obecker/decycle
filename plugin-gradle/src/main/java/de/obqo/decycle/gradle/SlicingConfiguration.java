@@ -39,7 +39,7 @@ class SlicingConfiguration implements Serializable {
         return this.allows;
     }
 
-    void addAllow(final boolean direct, final Object[] slices) {
-        this.allows.add(new AllowConfiguration(direct, slices));
+    void addAllow(final boolean direct, final Object[] layers) {
+        this.allows.add(new AllowConfiguration(direct, layers));
     }
 }

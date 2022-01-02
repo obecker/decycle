@@ -22,29 +22,29 @@ public class SlicingExtension {
         this.logger = project.getLogger();
     }
 
-    public void patterns(String... patterns) {
+    public void patterns(final String... patterns) {
         for (final String pattern : patterns) {
             this.configuration.addPattern(pattern);
         }
     }
 
-    public void allow(final Object... slices) {
-        checkSlices("allow", slices);
-        this.configuration.addAllow(false, slices);
+    public void allow(final Object... layers) {
+        checkLayers("allow", layers);
+        this.configuration.addAllow(false, layers);
     }
 
-    public void allowDirect(final Object... slices) {
-        checkSlices("allowDirect", slices);
-        this.configuration.addAllow(true, slices);
+    public void allowDirect(final Object... layers) {
+        checkLayers("allowDirect", layers);
+        this.configuration.addAllow(true, layers);
     }
 
-    private void checkSlices(final String prop, final Object[] slices) {
-        for (final Object slice : slices) {
-            if (!(slice instanceof String || slice instanceof LayerConfig)) {
+    private void checkLayers(final String prop, final Object[] layers) {
+        for (final Object layer : layers) {
+            if (!(layer instanceof String || layer instanceof LayerConfig)) {
                 throw new GradleException(String.format(
-                        "decycle: slices after %s must be strings, oneOf(strings), or anyOf(strings), found '%s'",
+                        "decycle: layers after %s must be strings, oneOf(strings), or anyOf(strings), found '%s'",
                         prop,
-                        slice));
+                        layer));
             }
         }
     }
