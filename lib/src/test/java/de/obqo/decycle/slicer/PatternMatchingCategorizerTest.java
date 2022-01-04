@@ -23,11 +23,4 @@ class PatternMatchingCategorizerTest {
         assertThat(categorizer.apply(classNode("some.package.Class")))
                 .containsOnly(sliceNode("type", "package"));
     }
-
-    @Test
-    void shouldNotMatchSliceNodes() {
-        final var categorizer = new PatternMatchingCategorizer("type", "some.{*}.Class");
-
-        assertThat(categorizer.apply(sliceNode("other", "some.package.Class"))).isEmpty();
-    }
 }

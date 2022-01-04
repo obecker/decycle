@@ -20,16 +20,16 @@ class ParallelCategorizerTest {
 
     @Test
     void parallelCombinationOfSingleCategorizerShouldApplyThisCategorizer() {
-        assertThat(parallel(ListCategorizer.of(n("a"), n("b"), n("c"))).apply(n("b")))
-                .containsOnly(n("c"));
+        assertThat(parallel(MockCategorizer.of(n("a"), n("b"))).apply(n("a")))
+                .containsOnly(n("b"));
     }
 
     @Test
     void parallelCombinationOfMultipleCategorizersShouldReturnTheResultOfAllCategorizers() {
         assertThat(parallel(
-                ListCategorizer.of(n("a"), n("b")),
-                ListCategorizer.of(n("a"), n("c")),
-                ListCategorizer.of(n("a"), n("d"))
+                MockCategorizer.of(n("a"), n("b")),
+                MockCategorizer.of(n("a"), n("c")),
+                MockCategorizer.of(n("a"), n("d"))
         ).apply(n("a")))
                 .containsOnly(n("b"), n("c"), n("d"));
     }

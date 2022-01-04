@@ -149,12 +149,12 @@ public class Configuration {
 
     private Categorizer buildCategorizer() {
         final var slicers =
-                this.slicings.entrySet().stream().map(entry -> buildSlicing(entry.getKey(), entry.getValue()));
+                this.slicings.entrySet().stream().map(entry -> buildSlicer(entry.getKey(), entry.getValue()));
         final var slicersWithPackages = Stream.concat(Stream.of(new PackageCategorizer()), slicers);
         return parallel(slicersWithPackages.toArray(Categorizer[]::new));
     }
 
-    private Categorizer buildSlicing(final String sliceType, final List<Pattern> patterns) {
+    private Categorizer buildSlicer(final String sliceType, final List<Pattern> patterns) {
         return combine(patterns.stream().map(p -> p.toCategorizer(sliceType)).toArray(Categorizer[]::new));
     }
 

@@ -12,7 +12,7 @@ class NamedPatternMatchingCategorizerTest {
 
     @Test
     void shouldReturnNodeOfTypeWithNameOfMatch() {
-        final var categorizer = new NamedPatternMatchingCategorizer("type", "name", "some.package.*");
+        final var categorizer = new NamedPatternMatchingCategorizer("type", "some.package.*", "name");
         final Node node = classNode("some.package.Class");
 
         assertThat(categorizer.apply(node)).containsOnly(sliceNode("type", "name"));
@@ -20,16 +20,8 @@ class NamedPatternMatchingCategorizerTest {
 
     @Test
     void shouldReturnNothingIfNotMatched() {
-        final var categorizer = new NamedPatternMatchingCategorizer("type", "name", "y");
+        final var categorizer = new NamedPatternMatchingCategorizer("type", "y", "name");
         final var node = classNode("x");
-
-        assertThat(categorizer.apply(node)).isEmpty();
-    }
-
-    @Test
-    void shouldNotMatchSliceNodes() {
-        final var categorizer = new NamedPatternMatchingCategorizer("type", "name", "some.package.*");
-        final var node = sliceNode("other", "some.package.Foo");
 
         assertThat(categorizer.apply(node)).isEmpty();
     }

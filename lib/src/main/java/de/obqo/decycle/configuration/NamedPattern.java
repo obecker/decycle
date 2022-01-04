@@ -8,10 +8,10 @@ import lombok.extern.java.Log;
 @Log
 class NamedPattern implements Pattern {
 
-    private final String name;
     private final String pattern;
+    private final String name;
 
-    public NamedPattern(final String name, final String pattern) {
+    public NamedPattern(final String pattern, final String name) {
 
         if (name.contains("*") || name.contains(".")) {
             log.warning("Looks like you use the pattern '" + name +
@@ -24,7 +24,7 @@ class NamedPattern implements Pattern {
 
     @Override
     public Categorizer toCategorizer(final String sliceType) {
-        return new NamedPatternMatchingCategorizer(sliceType, this.name, this.pattern);
+        return new NamedPatternMatchingCategorizer(sliceType, this.pattern, this.name);
     }
 
     @Override

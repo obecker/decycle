@@ -4,7 +4,7 @@ import static de.obqo.decycle.slicer.MultiCategorizer.combine;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import de.obqo.decycle.model.Node;
-import de.obqo.decycle.slicer.ListCategorizer;
+import de.obqo.decycle.slicer.MockCategorizer;
 
 import java.util.Set;
 
@@ -17,19 +17,19 @@ class GraphTest {
     }
 
     @Test
-    void newGraphShouldContainNoTopNodes() {
+    void newGraphShouldContainNoNodes() {
         final var g = new Graph();
 
-        assertThat(g.topNodes()).isEmpty();
+        assertThat(g.allNodes()).isEmpty();
     }
 
     @Test
-    void topNodesShouldContainAddedNodes() {
+    void addNodeShouldBeContainedInGraph() {
         final var g = new Graph();
         final var node = n("a");
         g.add(node);
 
-        assertThat(g.topNodes()).contains(node);
+        assertThat(g.allNodes()).containsOnly(node);
     }
 
     @Test
@@ -42,13 +42,13 @@ class GraphTest {
     }
 
     @Test
-    void shouldAddCategoryForANode() {
+    void categoryShouldBeAddedToGraph() {
         final var category = n("cat");
         final var node = n("n");
         final var g = new Graph(__ -> Set.of(category));
         g.add(node);
 
-        assertThat(g.topNodes()).contains(category);
+        assertThat(g.allNodes()).contains(node, category);
     }
 
     @Test
@@ -70,15 +70,14 @@ class GraphTest {
     }
 
     @Test
-    void categoriesThatArePartOfOtherCategoriesShouldContainEachOther() {
+    void categoryNodesWillNotBeCategorized() {
         final var topCategory = n("top");
         final var subCategory = n("sub");
         final var node = n("a");
-        final var g = new Graph(ListCategorizer.of(node, subCategory, topCategory));
+        final var g = new Graph(MockCategorizer.of(node, subCategory).with(subCategory, topCategory));
         g.add(node);
 
-        assertThat(g.topNodes()).containsOnly(topCategory);
-        assertThat(g.contentsOf(topCategory)).containsOnly(subCategory);
+        assertThat(g.contentsOf(topCategory)).isEmpty();
         assertThat(g.contentsOf(subCategory)).containsOnly(node);
     }
 
@@ -89,8 +88,20 @@ class GraphTest {
         final var b = n("b");
         g.connect(a, b);
 
-        assertThat(g.topNodes()).containsOnly(a, b);
+        assertThat(g.allNodes()).containsOnly(a, b);
         assertThat(g.connectionsOf(a)).containsOnly(b);
+    }
+
+    @Test
+    void shouldNotCategorizeNodesOfAddedEdge() {
+        final var category = n("cat");
+        final var a = n("a");
+        final var b = n("b");
+        final var g = new Graph(__ -> Set.of(category));
+        g.connect(a, b);
+
+        assertThat(g.allNodes()).containsOnly(a, b);
+        assertThat(g.connectionsOf(category)).isEmpty();
     }
 
     @Test
@@ -102,8 +113,8 @@ class GraphTest {
         g.connect(a, b);
         g.connect(a, c);
 
+        assertThat(g.allNodes()).containsOnly(a, b, c);
         assertThat(g.connectionsOf(a)).containsOnly(b, c);
-        assertThat(g.topNodes()).containsOnly(a, b, c);
     }
 
     @Test
@@ -116,38 +127,20 @@ class GraphTest {
     }
 
     @Test
-    void allNodesOfAnEmptyGraphShouldBeEmpty() {
-        final var g = new Graph();
-
-        assertThat(g.allNodes()).isEmpty();
-    }
-
-    @Test
-    void allNodesInAGraphWithoutCategoriesShouldBeTheTopNodes() {
-        final var g = new Graph();
-        g.add(n("a"));
-        g.add(n("23"));
-
-        assertThat(g.allNodes()).isEqualTo(g.topNodes());
-        assertThat(g.allNodes()).isEqualTo(Set.of(n("a"), n("23")));
-    }
-
-    @Test
     void allNodesInAGraphWithCategoriesShouldContainTheNodesAndAllCategories() {
         final var g = new Graph(combine(
-                ListCategorizer.of(n("a"), n("b"), n("c")), ListCategorizer.of(n("23"), n("42"), n("c"))));
+                MockCategorizer.of(n("a"), n("b"), n("c")), MockCategorizer.of(n("23"), n("42"), n("c"))));
         g.add(n("a"));
         g.add(n("23"));
 
         assertThat(g.allNodes()).isEqualTo(Set.of(n("a"), n("b"), n("c"), n("23"), n("42")));
-        assertThat(g.topNodes()).containsOnly(n("c"));
     }
 
     @Test
     void categoriesShouldNotBeFiltered() {
-        final var g = new Graph(ListCategorizer.of(n("a"), n("b")), x -> x.equals(n("a")));
+        final var g = new Graph(MockCategorizer.of(n("a"), n("b")), x -> x.equals(n("a")));
         g.add(n("a"));
 
-        assertThat(g.topNodes()).containsOnly(n("b"));
+        assertThat(g.allNodes()).containsOnly(n("a"), n("b"));
     }
 }

@@ -29,16 +29,15 @@ public class NamedPatternMatchingCategorizer implements Categorizer {
     private final PatternMatcher matcher;
     private final String name;
 
-    public NamedPatternMatchingCategorizer(final String sliceType, final String name, final String pattern) {
+    public NamedPatternMatchingCategorizer(final String sliceType, final String pattern, final String name) {
         this.sliceType = SliceType.customType(sliceType);
-        this.name = name;
         this.matcher = new PatternMatcher(pattern);
+        this.name = name;
     }
 
     @Override
     public Set<Node> apply(final Node node) {
         return Optional.of(node)
-                .filter(n -> !n.getType().isSliceType()) // match only class or package nodes
                 .flatMap(n -> this.matcher.matches(n.getName()))
                 .map(__ -> Node.sliceNode(this.sliceType, this.name))
                 .map(Set::of)

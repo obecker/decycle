@@ -16,10 +16,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.graph.MutableNetwork;
 import com.google.common.graph.NetworkBuilder;
 
@@ -73,37 +75,25 @@ public class Graph implements SlicingSource {
 
     public void add(final Node node) {
         if (this.filter.test(node)) {
-            addNodeToSlices(node);
-        }
-    }
-
-    private void addNodeToSlices(final Node node) {
-        final var categories = this.categorizer.apply(node);
-        if (categories.isEmpty()) {
             this.internalGraph.addNode(node);
-        } else {
-            categories.forEach(category -> {
-                if (!category.equals(node)) {
-                    this.internalGraph.addEdge(category, node, Edge.contains(category, node));
-                    addNodeToSlices(category);
-                }
-            });
+            final var categories = this.categorizer.apply(node);
+            categories.forEach(category -> this.internalGraph.addEdge(category, node, Edge.contains(category, node)));
         }
     }
 
+    @VisibleForTesting
     public Set<Node> allNodes() {
         return this.internalGraph.nodes();
     }
 
-    public Set<Node> topNodes() {
-        return this.internalGraph.nodes().stream()
-                .filter(n -> this.internalGraph.inEdges(n).stream()
-                        .allMatch(Edge::isReferencing))
-                .collect(Collectors.toSet());
+    @VisibleForTesting
+    public Set<Node> contentsOf(final Node group) {
+        return connectedNodes(group, CONTAINS);
     }
 
-    private Set<Edge> outEdges(final Node node) {
-        return this.internalGraph.nodes().contains(node) ? this.internalGraph.outEdges(node) : Set.of();
+    @VisibleForTesting
+    public Set<Node> connectionsOf(final Node node) {
+        return connectedNodes(node, REFERENCES);
     }
 
     private Set<Node> connectedNodes(final Node node, final Edge.EdgeLabel label) {
@@ -113,12 +103,12 @@ public class Graph implements SlicingSource {
                 .collect(Collectors.toSet());
     }
 
-    public Set<Node> contentsOf(final Node group) {
-        return connectedNodes(group, CONTAINS);
+    private Set<Edge> outEdges(final Node node) {
+        return this.internalGraph.nodes().contains(node) ? this.internalGraph.outEdges(node) : Set.of();
     }
 
-    public Set<Node> connectionsOf(final Node node) {
-        return connectedNodes(node, REFERENCES);
+    private Set<Edge> inEdges(final Node node) {
+        return this.internalGraph.nodes().contains(node) ? this.internalGraph.inEdges(node) : Set.of();
     }
 
     @Override
@@ -131,26 +121,35 @@ public class Graph implements SlicingSource {
         return this.slicingCache.computeIfAbsent(sliceType, this::computeSlicing);
     }
 
-    private MutableSlicing computeSlicing(final SliceType sliceType) {
-        final var slice = MutableSlicing.create(sliceType);
-
-        final var sliceNodeFinder = new SliceNodeFinder(sliceType, this.internalGraph);
+    private Slicing computeSlicing(final SliceType sliceType) {
+        final var slicing = MutableSlicing.create(sliceType);
 
         this.internalGraph.nodes().stream()
                 .filter(n -> n.hasType(sliceType))
-                .forEach(slice::addNode);
+                .forEach(slicing::addNode);
 
         this.internalGraph.edges().stream()
                 .filter(Edge::isReferencing)
-                .forEach(edge -> sliceNodeFinder.find(edge.getFrom()).ifPresent(n1 ->
-                        sliceNodeFinder.find(edge.getTo()).filter(not(n1::equals)).ifPresent(n2 ->
-                                slice.edgeConnecting(n1, n2).ifPresentOrElse(
+                .forEach(edge -> findSliceNode(edge.getFrom(), sliceType).ifPresent(from ->
+                        findSliceNode(edge.getTo(), sliceType).filter(not(from::equals)).ifPresent(to ->
+                                slicing.edgeConnecting(from, to).ifPresentOrElse(
                                         // if present, combine with existing edge (set ignored flag, increase weight)
                                         slideEdge -> slideEdge.combine(edge),
                                         // else add new slice edge
-                                        () -> slice.addEdge(Edge.references(n1, n2, edge.isIgnored()))))));
+                                        () -> slicing.addEdge(Edge.references(from, to, edge.isIgnored()))))));
 
-        return slice;
+        return slicing;
+    }
+
+    private Optional<Node> findSliceNode(final Node node, final SliceType sliceType) {
+        return findSliceNodes(node, sliceType).findFirst();
+    }
+
+    private Stream<Node> findSliceNodes(final Node node, final SliceType sliceType) {
+        return node.hasType(sliceType) ? Stream.of(node) : inEdges(node)
+                .stream().filter(Edge::isContaining)
+                .map(Edge::getFrom)
+                .flatMap(from -> findSliceNodes(from, sliceType));
     }
 
     public Set<Edge> containingClassEdges(final Edge edge) {
@@ -168,7 +167,7 @@ public class Graph implements SlicingSource {
     }
 
     private Stream<Node> containingClassNodes(final Node node) {
-        return node.getType().isClassType() ? Stream.of(node) : this.internalGraph.outEdges(node)
+        return node.getType().isClassType() ? Stream.of(node) : outEdges(node)
                 .stream().filter(Edge::isContaining)
                 .map(Edge::getTo)
                 .flatMap(this::containingClassNodes);

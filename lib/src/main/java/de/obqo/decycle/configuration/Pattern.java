@@ -8,6 +8,6 @@ public interface Pattern {
 
     static Pattern parse(final String string) {
         final String[] split = string.split("=", 2);
-        return split.length == 2 ? new NamedPattern(split[1], split[0]) : new UnnamedPattern(string);
+        return split.length == 2 ? new NamedPattern(split[0], split[1]) : new UnnamedPattern(string);
     }
 }
