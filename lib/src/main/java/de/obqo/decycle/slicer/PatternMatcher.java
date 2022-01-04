@@ -15,11 +15,13 @@ import java.util.regex.Pattern;
 import com.google.common.base.Preconditions;
 
 /**
- * Matcher for ant-like patterns of dot-separated package and class names. Supports <code>*</code> for any non-dot
- * character, and <code>**</code> for any character (including dots). Moreover, a pipe symbol <code>|</code> can be used
- * to express alternatives (possibly enclosed in parentheses).
+ * Matcher for ant-like patterns of dot-separated package and class names. Supports <code>?</code> for a single non-dot
+ * character, <code>*</code> for zero or more non-dot characters, and <code>**</code> for any characters (including
+ * dots). Moreover, a pipe symbol <code>|</code> can be used to express alternatives (possibly enclosed in
+ * parentheses).
  * <p>
- * Examples: <code>some.package.**</code>, <code>some.package.*.**</code>, <code>some.package.(foo|bar).**</code>
+ * Examples: <code>some.package.module.Module?</code>, <code>some.package.**</code>, <code>some.package.*.**</code>,
+ * <code>some.package.(foo|bar).**</code>
  * <p>
  * In <em>grouping</em> mode a pattern may contain at most one pair of curly braces. The method {@link #matches(String)}
  * will match the entire input string and returns an {@link Optional} containing the matching substring in curly braces,
@@ -34,7 +36,7 @@ class PatternMatcher {
     private static final String SINGLE_STAR_PLACEHOLDER = "+";
     private static final String DOUBLE_STAR_PLACEHOLDER = "-";
 
-    private static final String ALLOWED_SYMBOLS = ".*|(){}";
+    private static final String ALLOWED_SYMBOLS = ".?*|(){}";
     private static final Set<Integer> ALLOWED_SYMBOL_CHARS =
             ALLOWED_SYMBOLS.chars().boxed().collect(toUnmodifiableSet());
 
@@ -109,7 +111,7 @@ class PatternMatcher {
         validatePattern(p, grouping);
 
         this.group = determineGroup(p);
-        this.pattern = Pattern.compile(replaceGroupingParens(escapeStars(escapeLiterals(p))));
+        this.pattern = Pattern.compile(replaceGroupingParens(replaceWildcards(escapeLiterals(p))));
     }
 
     public Optional<String> matches(final String name) {
@@ -117,11 +119,12 @@ class PatternMatcher {
         return matcher.matches() ? Optional.of(matcher.group(this.group)) : Optional.empty();
     }
 
-    private static String escapeStars(final String p) {
+    private static String replaceWildcards(final String p) {
         return p.replace("**", DOUBLE_STAR_PLACEHOLDER)
                 .replace("*", SINGLE_STAR_PLACEHOLDER)
                 .replace(DOUBLE_STAR_PLACEHOLDER, ".*")
-                .replace(SINGLE_STAR_PLACEHOLDER, "[^.]*");
+                .replace(SINGLE_STAR_PLACEHOLDER, "[^.]*")
+                .replace("?", "[^.]");
     }
 
     private static String escapeLiterals(final String p) {

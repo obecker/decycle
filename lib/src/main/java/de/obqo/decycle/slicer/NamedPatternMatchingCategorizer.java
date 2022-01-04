@@ -7,21 +7,15 @@ import java.util.Optional;
 import java.util.Set;
 
 /**
- * Categorizes package nodes by matching them against ant like patterns.
+ * Categorizes class nodes by matching them against <em>named patterns</em>.
  *
- * <ul>
- *     <li>* matches a node with any name not containing dots</li>
- *     <li>letters and dots match those letters and dots respectively</li>
- *     <li>** matches any combination of letters and dots</li>
- * </ul>
  * <p>
  * The category of a matched node is defined by {@link #name}.
  * <p>
- * Examples:
- * <ul>
- *     <li>de.**.test matches de..test, de.some.test and de.some.other.test</li>
- *     <li>de.*.test matches from the examples given above only de.some.test</li>
- * </ul>
+ * Example:
+ * <code>de.*.test=foo</code> matches <code>de.some.test</code> and creates a slice node with the name <code>foo</code>
+ *
+ * @see PatternMatcher
  */
 public class NamedPatternMatchingCategorizer implements Categorizer {
 

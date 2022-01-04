@@ -94,6 +94,25 @@ class PatternMatcherTest {
         assertThat(matcher.matches("some.pack.age.Class")).hasValue("pack.age");
     }
 
+    @Test
+    void questionMarkShouldMatchSingleCharacter() {
+        final var matcher = new PatternMatcher("some.package.Class?");
+
+        assertThat(matcher.matches("some.package.Class1")).isNotEmpty();
+        assertThat(matcher.matches("some.package.Class2")).isNotEmpty();
+        assertThat(matcher.matches("some.package.ClassX")).isNotEmpty();
+
+        assertThat(matcher.matches("some.package.Class")).isEmpty();
+        assertThat(matcher.matches("some.package.Class12")).isEmpty();
+    }
+
+    @Test
+    void questionMarkShouldNotMatchDot() {
+        final var matcher = new PatternMatcher("some.package?Class");
+
+        assertThat(matcher.matches("some.package.Class")).isEmpty();
+    }
+
     @ParameterizedTest
     @ValueSource(strings = { "de.(one|two).(*).**", "de.(one.(*)).**" })
     void multipleParensAreFine(final String pattern) {
@@ -120,7 +139,7 @@ class PatternMatcherTest {
         return Stream.of(
                 arguments(null, "Pattern string must not be null"),
                 arguments("base.[a-z]+.class",
-                        "Pattern string may contain only characters, digits, and '.*|(){}' - " +
+                        "Pattern string may contain only characters, digits, and '.?*|(){}' - " +
                                 "encountered '[' in pattern 'base.[a-z]+.class'"),
                 arguments("abc(", "Unmatched left parenthesis '(' found in pattern 'abc('"),
                 arguments("abc{", "Unmatched left parenthesis '{' found in pattern 'abc{'"),
