@@ -9,7 +9,6 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.util.logging.Level;
 import java.util.stream.Stream;
 import java.util.zip.ZipFile;
 
@@ -18,9 +17,9 @@ import com.google.common.base.Preconditions;
 import org.objectweb.asm.ClassReader;
 
 import lombok.SneakyThrows;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
-@Log
+@Slf4j
 public class Analyzer {
 
     public Graph analyze(final String classpath, final Categorizer categorizer, final NodeFilter filter,
@@ -62,7 +61,7 @@ public class Analyzer {
             final var reader = new ClassReader(stream);
             reader.accept(new GraphBuildingClassVisitor(graph), 0);
         } catch (final Exception e) {
-            log.log(Level.SEVERE, "Something went wrong when analyzing " + name, e);
+            log.error("Something went wrong when analyzing " + name, e);
         }
     }
 }

@@ -3,9 +3,9 @@ package de.obqo.decycle.configuration;
 import de.obqo.decycle.slicer.Categorizer;
 import de.obqo.decycle.slicer.NamedPatternMatchingCategorizer;
 
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
-@Log
+@Slf4j
 class NamedPattern implements Pattern {
 
     private final String pattern;
@@ -14,8 +14,8 @@ class NamedPattern implements Pattern {
     public NamedPattern(final String pattern, final String name) {
 
         if (name.contains("*") || name.contains(".")) {
-            log.warning("Looks like you use the pattern '" + name +
-                    "' as the NAME of a NamedPattern. Please note that a named pattern has the form <pattern>=<name>.");
+            log.warn("Looks like you use the pattern '{}' as the NAME of a NamedPattern. " +
+                    "Please note that a named pattern has the form <pattern>=<name>.", name);
         }
 
         this.name = name;
