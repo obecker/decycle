@@ -14,7 +14,7 @@ class NamedPattern implements Pattern {
     public NamedPattern(final String pattern, final String name) {
 
         if (name.contains("*") || name.contains(".")) {
-            log.warn("Looks like you use the pattern '{}' as the NAME of a NamedPattern. " +
+            log.warn("Decycle: Looks like you use the pattern '{}' as the NAME of a NamedPattern. " +
                     "Please note that a named pattern has the form <pattern>=<name>.", name);
         }
 

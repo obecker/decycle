@@ -15,7 +15,7 @@ class UnnamedPattern implements Pattern {
         this.pattern = pattern;
         if (pattern != null && pattern.contains("(") && !pattern.contains("{")) {
             log.warn(
-                    "Warning: parentheses found instead of curly braces in slicing pattern '{}'. " +
+                    "Decycle: parentheses found instead of curly braces in slicing pattern '{}'. " +
                             "Please check if you need to migrate your patterns when upgrading from 0.7.0 to 0.8.0",
                     pattern);
         }

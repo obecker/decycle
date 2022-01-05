@@ -61,7 +61,7 @@ public class Analyzer {
             final var reader = new ClassReader(stream);
             reader.accept(new GraphBuildingClassVisitor(graph), 0);
         } catch (final Exception e) {
-            log.error("Something went wrong when analyzing " + name, e);
+            log.error("Decycle: Something went wrong when analyzing " + name, e);
         }
     }
 }

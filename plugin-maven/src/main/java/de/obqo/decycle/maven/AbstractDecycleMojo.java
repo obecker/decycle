@@ -132,7 +132,7 @@ abstract class AbstractDecycleMojo extends AbstractMojo {
     protected List<Constraint.Violation> check(final String classpath, final String sourceSet) throws IOException {
         final Log log = getLog();
         if (!new File(classpath).exists()) {
-            log.warn(classpath + " is missing - skipped decycle check for " + sourceSet + " classes");
+            log.warn("Decycle: " + classpath + " is missing - skipped decycle check for " + sourceSet + " classes");
             return List.of();
         }
 
@@ -143,7 +143,7 @@ abstract class AbstractDecycleMojo extends AbstractMojo {
         try (final FileWriter reportWriter = new FileWriter(report)) {
             final Configuration config = buildConfiguration(classpath, sourceSet, resourcesDirName, reportWriter);
 
-            log.debug("decycle configuration: " + config);
+            log.debug("Decycle configuration: " + config);
 
             final Consumer<String> logHandler = this.ignoreFailures ? log::warn : log::error;
             final List<Constraint.Violation> violations = config.check();

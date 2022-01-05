@@ -65,7 +65,7 @@ public abstract class DecycleWorker implements WorkAction<DecycleWorkerParameter
 
             final Configuration decycleConfig = builder.build();
 
-            logger.info("decycle configuration: {}", decycleConfig);
+            logger.info("Decycle configuration: {}", decycleConfig);
 
             final List<Constraint.Violation> violations = decycleConfig.check();
 

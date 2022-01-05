@@ -29,7 +29,7 @@ public class IgnoredDependency {
         final String adjustedTo = adjustPattern(toPattern);
         final IgnoredDependency dependency = new IgnoredDependency(adjustedFrom, adjustedTo);
         if (MATCH_ALL.equals(adjustedFrom) && MATCH_ALL.equals(adjustedTo)) {
-            log.warn("Ignoring all dependencies ({}), is this really intended?", dependency);
+            log.warn("Decycle: Ignoring all dependencies ({}), is this really intended?", dependency);
         }
         return dependency;
     }
