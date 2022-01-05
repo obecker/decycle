@@ -6,10 +6,10 @@ decycle {
     including 'demo.**'
     slicings {
         module {
-            patterns 'demo.module.(*).**'
+            patterns 'demo.module.{*}.**'
         }
         other {
-            patterns 'demo.other.(*).**'
+            patterns 'demo.other.{*}.**'
             allowDirect 'x', 'y', 'z'
         }
     }
