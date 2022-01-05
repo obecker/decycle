@@ -1,9 +1,13 @@
 package de.obqo.decycle.maven;
 
 import static java.util.function.Predicate.not;
+import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toList;
 
 import de.obqo.decycle.check.Constraint;
+import de.obqo.decycle.check.DirectLayeringConstraint;
+import de.obqo.decycle.check.Layer;
+import de.obqo.decycle.check.LayeringConstraint;
 import de.obqo.decycle.configuration.Configuration;
 import de.obqo.decycle.configuration.Pattern;
 import de.obqo.decycle.report.ResourcesExtractor;
@@ -13,9 +17,11 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -135,28 +141,34 @@ abstract class AbstractDecycleMojo extends AbstractMojo {
 
         final File report = new File(reportDir, sourceSet + ".html");
         try (final FileWriter reportWriter = new FileWriter(report)) {
-            final Configuration configuration = Configuration.builder()
-                    .classpath(classpath)
-                    .including(tokenize(this.including))
-                    .excluding(tokenize(this.excluding))
-                    .ignoring(getIgnoredDependencies())
-                    .slicings(getSlicings())
-                    // TODO constraints(...)
-                    .report(reportWriter)
-                    .reportResourcesPrefix(resourcesDirName)
-                    .reportTitle(this.project.getName() + " | " + sourceSet)
-                    .build();
+            final Configuration config = buildConfiguration(classpath, sourceSet, resourcesDirName, reportWriter);
 
-            log.debug("decycle configuration: " + configuration);
+            log.debug("decycle configuration: " + config);
 
             final Consumer<String> logHandler = this.ignoreFailures ? log::warn : log::error;
-            final List<Constraint.Violation> violations = configuration.check();
+            final List<Constraint.Violation> violations = config.check();
             if (!violations.isEmpty()) {
                 logHandler.accept("Violations detected: " + Constraint.Violation.displayString(violations));
                 logHandler.accept("See the report at: " + report);
             }
             return violations;
         }
+    }
+
+    // visible for testing
+    Configuration buildConfiguration(final String classpath, final String sourceSet,
+            final String resourcesDirName, final FileWriter reportWriter) {
+        return Configuration.builder()
+                .classpath(classpath)
+                .including(tokenizeToList(this.including))
+                .excluding(tokenizeToList(this.excluding))
+                .ignoring(getIgnoredDependencies())
+                .slicings(getSlicings())
+                .constraints(getConstraints())
+                .report(reportWriter)
+                .reportResourcesPrefix(resourcesDirName)
+                .reportTitle(this.project.getName() + " | " + sourceSet)
+                .build();
     }
 
     protected String getMainClasses() {
@@ -181,12 +193,19 @@ abstract class AbstractDecycleMojo extends AbstractMojo {
         return resourcesDirName;
     }
 
-    private List<String> tokenize(final String value) {
+    private Stream<String> tokenize(final String value) {
         return Optional.ofNullable(value).map(v -> v.split(",")).stream()
                 .flatMap(Arrays::stream)
                 .map(String::trim)
-                .filter(not(String::isEmpty))
-                .collect(toList());
+                .filter(not(String::isEmpty));
+    }
+
+    private List<String> tokenizeToList(final String value) {
+        return tokenize(value).collect(toList());
+    }
+
+    private String[] tokenizeToArray(final String value) {
+        return tokenize(value).toArray(String[]::new);
     }
 
     private List<IgnoredDependency> getIgnoredDependencies() {
@@ -198,7 +217,35 @@ abstract class AbstractDecycleMojo extends AbstractMojo {
     private Map<String, List<Pattern>> getSlicings() {
         return stream(this.slicings).collect(Collectors.toMap(
                 Slicing::getName,
-                slicing -> tokenize(slicing.getPatterns()).stream().map(Pattern::parse).collect(toList())));
+                slicing -> tokenize(slicing.getPatterns()).map(Pattern::parse).collect(toList())));
+    }
+
+    private Set<Constraint> getConstraints() {
+        return stream(this.slicings).flatMap(this::mapConstraints).collect(toCollection(LinkedHashSet::new));
+    }
+
+    private Stream<Constraint> mapConstraints(final Slicing slicing) {
+        return stream(slicing.getConstraints()).map(constraint -> mapConstraint(slicing, constraint));
+    }
+
+    private Constraint mapConstraint(final Slicing slicing, final AllowConstraint constraint) {
+        final List<Layer> layers;
+        // The constraint configuration is either simple or complex (never mixed)
+        if (constraint.get() != null) {
+            // this is a simple configuration using <allow>slice1, slice2, ...</allow>
+            layers = tokenize(constraint.get()).map(Layer::anyOf).collect(toList());
+        } else {
+            // this is a complex configuration using <allow><any-of>slice1, slice2</any-of>...</allow>
+            layers = constraint.getLayers().stream().map(this::mapLayers).collect(toList());
+        }
+        return constraint.isDirect()
+                ? new DirectLayeringConstraint(slicing.getName(), layers)
+                : new LayeringConstraint(slicing.getName(), layers);
+    }
+
+    private Layer mapLayers(final de.obqo.decycle.maven.Layer layer) {
+        final String[] slices = tokenizeToArray(layer.getSlices());
+        return layer.isStrict() ? Layer.oneOf(slices) : Layer.anyOf(slices);
     }
 
     private <T> Stream<T> stream(final T[] array) {

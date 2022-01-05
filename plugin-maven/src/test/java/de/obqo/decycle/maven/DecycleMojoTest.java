@@ -3,6 +3,8 @@ package de.obqo.decycle.maven;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
+import de.obqo.decycle.configuration.Configuration;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.function.Supplier;
@@ -128,6 +130,58 @@ class DecycleMojoTest {
         // when/then
         assertThatIllegalArgumentException().isThrownBy(decycleCheckMojo::execute)
                 .withMessage("Missing name of slicing with patterns test.pattern");
+    }
+
+    @Test
+    void shouldParseSlicingConfiguration() {
+        // given
+        final DecycleCheckMojo decycleCheckMojo = givenDecycleCheckMojo();
+        final Slicing slicing1 = new Slicing();
+        slicing1.setName("abc1");
+        slicing1.setPatterns(" test.pattern.*=foo,     some.package.{*}.**");
+        final Slicing slicing2 = new Slicing();
+        slicing2.setName("abc2");
+        slicing2.setPatterns(" some.package.bar.{**} ");
+        final Slicing[] slicings = { slicing1, slicing2 };
+        decycleCheckMojo.setSlicings(slicings);
+
+        // when
+        final Configuration configuration = buildConfiguration(decycleCheckMojo);
+
+        // then
+        assertThat(configuration).asString()
+                .contains("slicings: {abc1=[test.pattern.*=foo, some.package.{*}.**], abc2=[some.package.bar.{**}]}");
+    }
+
+    @Test
+    void shouldParseSlicingConstraints() {
+        // given
+        final DecycleCheckMojo decycleCheckMojo = givenDecycleCheckMojo();
+        final Slicing slicing = new Slicing();
+        slicing.setName("abc");
+        slicing.setPatterns("some.package.{*}.**");
+        final Allow allow = new Allow();
+        allow.set("x,y,z");
+        final AllowDirect allowDirect = new AllowDirect();
+        allowDirect.setAnyOf("a,b");
+        allowDirect.setAnyOf("c,d");
+        allowDirect.setOneOf("x,y");
+        allowDirect.setOneOf("z");
+        final AllowConstraint[] constraints = { allow, allowDirect };
+        slicing.setConstraints(constraints);
+        final Slicing[] slicings = { slicing };
+        decycleCheckMojo.setSlicings(slicings);
+
+        // when
+        final Configuration configuration = buildConfiguration(decycleCheckMojo);
+
+        // then
+        assertThat(configuration).asString()
+                .contains("constraints: [x -> y -> z, (a, b) => (c, d) => [x, y] => z]");
+    }
+
+    private Configuration buildConfiguration(final DecycleCheckMojo decycleCheckMojo) {
+        return decycleCheckMojo.buildConfiguration("build", "main", "resources", null);
     }
 
     private <M extends AbstractDecycleMojo> M givenDecycleMojo(final String projectName, final Supplier<M> factory) {
