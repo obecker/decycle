@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import lombok.Getter;
+
 /**
  * A {@link Layer} represents a set of slices (names of slice {@link de.obqo.decycle.model.Node nodes}) that will be
  * used in a {@link SlicedConstraint}.
@@ -32,6 +34,8 @@ public class Layer {
     }
 
     private final boolean denyDependenciesWithinLayer;
+
+    @Getter
     private final Set<String> slices;
 
     private Layer(final boolean denyDependenciesWithinLayer, final String... slices) {
