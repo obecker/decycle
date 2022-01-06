@@ -74,6 +74,13 @@ Within the `configuration` element of the plugin (see [Installation](#installati
     <slicing>
       <name>module</name>
       <patterns>org.example.{*}.**, ...</patterns>
+      <constraints>
+        <allow>a, b, ...</allow>
+        <allow-direct>
+          <any-of>x</any-of>
+          <any-of>y, z</any-of>
+        </allow-direct>
+      </constraints>
     </slicing>
   </slicings>
   <ignoreFailures>false</ignoreFailures>
@@ -83,25 +90,31 @@ Within the `configuration` element of the plugin (see [Installation](#installati
 </configuration>
 ```
 
- * `including` defines a comma separated list of ant style patterns for the classes that should be included (default: all).
+ * `including` defines a comma separated list of [patterns](../readme/patterns.md) for the classes that should be included (default: all).
   
- * `excluding` defines a comma separated list of ant style patterns for the classes that should be excluded (default: none).
+ * `excluding` defines a comma separated list of [patterns](../readme/patterns.md) for the classes that should be excluded (default: none).
 
  * `ignoring` defines a list of dependencies that should be ignored when checking cycle constraints on the analyzed classes
    (default none). This setting differs from `excluding` as the ignored dependency is not excluded from the dependency graph 
    (i.e. it is present in the report).
-   Each ignored dependency is represented by a `dependency` element containing `from` and `to` patterns, both are optional:
+   Each ignored dependency is represented by a `dependency` element containing `from` and `to` [patterns](../readme/patterns.md), both are optional:
     * `from` defines the source of the dependency (default: all) 
     * `to` defines the target of the dependency (default: all) 
 
- * `slicings` defines a list of slicings for the packages. 
+ * `slicings` defines a list of [slicings](../readme/slicings.md) for the packages. 
    Each slicing is represented by a `slicing` element containing `name` and `patterns` elements, both are required:
    * `name` defines the name of the slicing
-   * `patterns` defines a comma separated list of patterns, in which each pattern is either an unnamed pattern
-     (containing curly braces for determining the slice) or a named pattern of the form _pattern=slice_
-     (in which _slice_ is the name of the slice and _pattern_ is a simple pattern)
-   * Note: for the time being it is not possible to define further constraints for slices
-     (like _allow_ or _allowDirect_)
+   * `patterns` defines a comma separated list of [patterns](../readme/slicings.md#slicing-patterns), in which each 
+     pattern is either an unnamed pattern (containing curly braces for determining the slice) or a named pattern of 
+     the form _pattern=slice_ (in which _slice_ is the name of the slice and _pattern_ is a simple pattern)
+   * `constraints` enables the configuration of [additional constraints](../readme/slicings.md#constraints-on-slices) 
+     on the defined slices
+     * `allow` defines a [simple order constraint](../readme/slicings.md#simple-order-constraints) 
+     * `allow-direct` defines a [strict order constraint](../readme/slicings.md#strict-order-constraints) 
+     * both `allow` and `allow-direct` may either contain a comma separated list of slice names, or they may contain
+       only `any-of` and `one-of` elements (and no direct text content)
+     * `any-of` contains comma separated slices names with an [unspecified slice order](../readme/slicings.md#unspecified-order-of-slices)
+     * `one-of` contains comma separated slices names that [must not depend on each other](../readme/slicings.md#forbidden-dependencies-between-slices)
 
  * `ignoreFailures` whether to allow the build to continue if there are constraint violations (default: false).
    This parameter can also be specified by defining the property `decycle.ignoreFailures`
