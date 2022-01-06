@@ -47,7 +47,7 @@ The plugin adds a `decycle` configuration object to the build, that offers the f
         <i>name1</i> {
             <b>patterns</b> 'org.example.{*}.**', ...
             <b>allow</b> 'a', 'b', ...
-            <b>allowDirect</b> 'x', 'y', ...
+            <b>allowDirect</b> 'x', <b>anyOf</b>('y', 'z'), ...
         }
         <i>name2</i> {
             ...
@@ -68,13 +68,13 @@ they will be added to the existing configuration.)
   Use this option if you only want a subset of the source sets to be checked.
 
 * `including`
-  defines ant style string patterns for the classes that should be included (default: all).
+  defines [patterns](../readme/patterns.md) for the classes that should be included (default: all).
 
 * `excluding`
-  defines ant style string patterns for the classes that should be excluded (default: none).
+  defines [patterns](../readme/patterns.md) for the classes that should be excluded (default: none).
 
 * `ignoring`
-  defines a dependency (or an ant style string pattern for a set of dependencies) that should be ignored
+  defines a dependency (or a [pattern](../readme/patterns.md) for a set of dependencies) that should be ignored
   when checking cycle (and other) constraints on the analyzed classes (default none).
   This setting differs from `excluding` as the ignored dependency is not excluded from the dependency graph
   (i.e. it is present in the report). Multiple ignored dependencies can be configured by using `ignoring` multiple times. 
@@ -86,24 +86,20 @@ they will be added to the existing configuration.)
     * `to`: defines the target of the dependency (default: all)
 
 * `slicings`
-  starts the slicings block, each slicing
-  is defined by its name (also known as slicing type). A slicing configuration contains:
+  starts the slicings block, each [slicing](../readme/slicings.md) has a name (also known as slicing type). 
+  A slicing configuration contains:
     * `patterns`
-      a list containing patterns (strings), either named or unnamed.
+      a list containing [patterns](../readme/patterns.md) (strings), either named or unnamed.
       A named pattern is defined using <code><i>pattern</i>=<i>name</i></code>,
-      in an unnamed pattern the name is derived from the matched part in parentheses in the pattern, for example  
+      in an unnamed pattern the name is derived from the matched part in curly braces in the pattern, for example  
       `org.example.{*}.**`. 
     * `allow`
-      defines a simple constraint on the defined slices
+      defines a [simple order constraint](../readme/slicings.md#simple-order-constraints) on the defined slices
     * `allowDirect`
-      defines a strict constraint on the defined slices. As constraints (both simple and strict) you can use
-        * a string (referencing the name of the pattern/slice)
-        * <code>anyOf(<i>slice, ...</i>)</code>
-        * <code>oneOf(<i>slice, ...</i>)</code>
+      defines a [strict order constraint](../readme/slicings.md#strict-order-constraints) on the defined slices. 
+      As constraints (both simple and strict) you can use
+        * a string (the name of a slice)
+        * <code>anyOf(<i>slice, ...</i>)</code> for an [unspecified slice order](../readme/slicings.md#unspecified-order-of-slices)
+        * <code>oneOf(<i>slice, ...</i>)</code> for [forbidden dependencies between slices](../readme/slicings.md#forbidden-dependencies-between-slices)
     
 * `ignoreFailures` whether to allow the build to continue if there are constraint violations (default: `false`).
-
-For the time being, until I have created a complete documentation, please have a look at the 
-orignal documentation for [degraph](http://riy.github.io/degraph/documentation.html) for understanding the concepts of
-[slicings](http://riy.github.io/degraph/documentation.html#adding-slicings) and constraints on slices.
-
