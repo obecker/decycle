@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## 0.9.0 - unreleased
+   - Breaking changes:
+     - Slicing patterns will now only match classes (and no longer packages).
+       This removes the ambiguity for patterns of the form `com.example.*`.
+       Simple package patterns, e.g. `com.example.foo` now need to be changed to `com.example.foo.*`.
+   - Patterns now support the `?` character for matching one single character
+   - The decycle-maven-plugin now also supports the configuration of custom slicing constraints
+   - Decycle now validates custom slicing constraints and logs a warning if a constraint contains slices that don't
+     exist in the analyzed sources
+
 ## 0.8.0 – 2021-12-27
    - Breaking changes: 
      - Classes that are not itself visited will no longer be considered for packages and slices.
