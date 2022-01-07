@@ -205,7 +205,7 @@ public class HtmlReport {
                         slicing.nodes().stream()
                                 .sorted()
                                 .flatMap(node -> buildNodeTableRow(graph, slicing, violationsIndex, node))),
-                div().withClass("row").with(buildDependencyImage(slicing, sliceType.displayString()))
+                div().withClass("row").with(buildDependencyImage(slicing, capitalize(sliceType.displayString())))
         );
     }
 
