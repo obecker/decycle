@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 0.9.0 - unreleased
+## 0.9.0 – 2022-01-08
    - Breaking changes:
      - Slicing patterns will now only match classes (and no longer packages).
        This removes the ambiguity for patterns of the form `com.example.*`.
