@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="228" height="72" fill="white" viewBox="0 0 57 18">
+  <defs>
+    <path id="arrow"
+          d="M0 0-1-2a.15.15 0 0 1 .15-.2l.88.2.88-.2a.15.15 0 0 1 .15.2z" />
+    <g id="D">
+      <path fill-rule="evenodd"
+            d="M0 0a6.2 6.2 0 1 1 0 12v-8zM.5.5a5.615 5.615 0 1 1 0 11z" />
+      <use xlink:href="#arrow" x="0.25" y="12" />
+      <use xlink:href="#arrow" x="0.25" y="12" transform="rotate(94 .25 11.75)" />
+    </g>
+    <g id="e">
+      <path fill-rule="evenodd"
+            d="M8 4.25a4 4 0 1 0-4 3.75v-.5a3.5 3.5 0 0 1-3.49-3.25zm-.51-.5a3.5 3.5 0 0 0-6.98 0z"
+            transform="rotate(-45 4 4)" />
+      <use xlink:href="#arrow" x="7.1" y="6.36" transform="rotate(-125 7.1 6.36)" />
+      <use xlink:href="#arrow" x="1.2" y="6.76" transform="rotate(45 1.2 6.76)" />
+    </g>
+    <g id="c">
+      <path d="M8 4.25a4 4 0 1 0-4 3.75v-.5a3.5 3.5 0 1 1 3.5-3.25z"
+            transform="rotate(-45 4 4) "/>
+      <use xlink:href="#arrow" x="7.1" y="6.36" transform="rotate(-125 7.1 6.36)" />
+    </g>
+    <g id="y">
+      <path d="M.7 12Q5.5 8 7.5.5h-.55Q5 8 0 12zM0 0Q1.65 4 4.4 7.4l.35-.35Q2.0 3.65.55 0z" />
+      <use xlink:href="#arrow" x="7.5" y="-0.2" transform="rotate(-162 7.5 -.2)" />
+      <use xlink:href="#arrow" x="4.6" y="7.3" transform="rotate(-36 4.6 7.3)" />
+    </g>
+    <g id="l">
+      <path d="M0 0v12h2v-.5h-1.5v-11.5z" />
+      <use xlink:href="#arrow" x="3" y="11.75" transform="rotate(-90 3 11.75)" />
+    </g>
+  </defs>
+
+  <path style="fill:#ced5d7"
+        d="m281 250-26-3c-3-10-6-19-11-28l16-20c2-3 2-8-1-11l-27-27c-3-3-8-3-11-1l-20 16c-9-5-18-9-28-11l-3-26c0-4-4-7-8-7h-37c-4 0-8 3-8 7l-3 26c-10 3-19 6-28 11l-20-16c-3-2-8-2-11 1l-27 27c-3 3-3 8-1 11l16 20c-5 9-9 18-11 28l-26 3c-4 1-7 4-7 8v38c0 4 3 8 7 8l26 3c3 10 6 19 11 28l-16 20c-2 3-2 8 1 11l26 27c3 3 8 3 11 1l20-16c9 5 18 9 28 11l3 25c0 4 4 7 8 7h38c4 0 8-3 8-7l3-26c10-3 19-6 28-11l20 16c3 2 8 2 11-1l27-27c3-3 3-8 1-11l-16-20c5-9 9-18 11-28l26-3c4 0 7-4 7-8v-37c0-4-4-8-7-8z
+           m-137 99c-40 0-72-32-72-72 0-40 32-72 72-72 40 0 72 32 72 72 0 40-32 72-72 72z
+           m315-217-19-2c-2-7-5-14-9-21l12-15c2-2 2-6 0-8l-20-20c-2-2-6-2-8 0l-15 12c-6-4-13-7-21-9l-2-19c0-3-3-5-6-5h-28c-3 0-6 2-6 5l-2 19c-7 2-14 5-21 9l-15-12c-2-2-6-2-8 0l-20 20c-2 2-2 6 0 8l12 15c-4 6-7 14-9 21l-19 2c-3 0-5 3-5 6v28c0 3 2 6 5 6l19 2c2 7 5 14 9 21l-12 15c-2 2-2 6 0 8l20 20c2 2 6 2 8 0l15-12c6 4 14 7 21 9l2 19c0 3 3 5 6 5h28c3 0 6-2 6-5l2-19c7-2 14-5 21-9l15 12c2 2 6 2 8 0l20-20c2-2 2-6 0-8l-12-15c4-6 7-13 9-21l19-2c3 0 5-3 5-6v-28c0-3-2-6-5-6z
+           m-103 74c-30 0-54-24-54-54 0-30 24-54 54-54 30 0 54 24 54 54 0 30-24 54-54 54z"
+        transform="scale(.028) translate(11,67)"
+        opacity=".4" />
+
+  <use xlink:href="#D" x="7" y="1" />
+  <use xlink:href="#e" x="15.5" y="5" />
+  <use xlink:href="#c" x="23" y="5" />
+  <use xlink:href="#y" x="30.5" y="5" />
+  <use xlink:href="#c" x="38.5" y="5" />
+  <use xlink:href="#l" x="46.5" y="1" />
+  <use xlink:href="#e" x="49" y="5" />
+
+</svg>

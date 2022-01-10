@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg"
      xmlns:xlink="http://www.w3.org/1999/xlink"
-     width="208" height="72" fill="currentColor" viewBox="0 0 52 18">
+     width="208" height="72" fill="white" viewBox="0 0 52 18">
   <defs>
     <path id="arrow"
           d="M0 0-1-2a.15.15 0 0 1 .15-.2l.88.2.88-.2a.15.15 0 0 1 .15.2z" />

@@ -1,3 +1,6 @@
+<img src="images/logo.svg#gh-light-mode-only" alt="Decycle" width="104">
+<img src="images/logo-dm.svg#gh-dark-mode-only" alt="Decycle" width="104">
+
 # Slicings
 
 In Decycle a _slicing_ is a grouping of the analyzed classes. Each resulting group is a _slice_ in this grouping.
