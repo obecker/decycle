@@ -1,3 +1,6 @@
+<img src="images/logo.svg#gh-light-mode-only" alt="Decycle" width="104">
+<img src="images/logo-dm.svg#gh-dark-mode-only" alt="Decycle" width="104">
+
 # Limitations
 
 Decycle works on the compiled classes by inspecting the bytecode using

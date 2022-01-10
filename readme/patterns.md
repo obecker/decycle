@@ -1,3 +1,6 @@
+<img src="images/logo.svg#gh-light-mode-only" alt="Decycle" width="104">
+<img src="images/logo-dm.svg#gh-dark-mode-only" alt="Decycle" width="104">
+
 # Patterns
 
 Decycle uses a special pattern syntax that was inspired by [Apache Ant](https://ant.apache.org/manual/dirtasks.html) 

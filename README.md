@@ -1,8 +1,8 @@
 [![Build](https://github.com/obecker/decycle/actions/workflows/gradle.yml/badge.svg)](https://github.com/obecker/decycle/actions/workflows/gradle.yml)
 [![License](https://img.shields.io/github/license/obecker/decycle)](https://github.com/obecker/decycle/blob/master/LICENSE)
 
-
-![decycle](readme/logo.svg?raw=true)
+![Decycle](readme/images/logo.svg#gh-light-mode-only)
+![Decycle](readme/images/logo-dm.svg#gh-dark-mode-only)
 
 Decycle detects [circular dependencies](https://en.wikipedia.org/wiki/Circular_dependency) within packages or 
 [slices](readme/slicings.md) in a Java (or JVM language) project.

@@ -1,6 +1,7 @@
 [![](https://img.shields.io/maven-central/v/de.obqo.decycle/decycle-maven-plugin.svg)](https://search.maven.org/artifact/de.obqo.decycle/decycle-maven-plugin)
 
-![decycle](../readme/logo-maven-plugin.svg?raw=true)
+![Decycle](../readme/images/logo-maven-plugin.svg#gh-light-mode-only)
+![Decycle](../readme/images/logo-maven-plugin-dm.svg#gh-dark-mode-only)
 
 The **Decycle Maven Plugin** adds verification goals to the Maven build that check for package and slice cycles on the classes of a Maven project.
 
