@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>de.obqo.decycle.maven</groupId>
+  <artifactId>maven-demo</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+
+  <properties>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+  </properties>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>de.obqo.decycle</groupId>
+        <artifactId>decycle-maven-plugin</artifactId>
+        <version>${decycleVersion}</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <including>test.**</including>
+          <excluding>test.ex.**</excluding>
+          <ignoring>
+            <dependency>
+              <from>test.ign.From</from>
+              <to>test.ign.*</to>
+            </dependency>
+          </ignoring>
+          <slicings>
+            <slicing>
+              <name>module</name>
+              <patterns>test.{*}.**</patterns>
+              <constraints>
+                <allow>from, to</allow>
+                <allow-direct>
+                  <any-of>from</any-of>
+                  <one-of>to</one-of>
+                </allow-direct>
+              </constraints>
+            </slicing>
+          </slicings>
+          <ignoreFailures>false</ignoreFailures>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>

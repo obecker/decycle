@@ -5,6 +5,8 @@
 
 The **Decycle Maven Plugin** adds verification goals to the Maven build that check for package and slice cycles on the classes of a Maven project.
 
+**Requirements:** Maven ≥ 3.3.1, Java ≥ 11
+
 ## Installation
 
 Add the decycle plugin to the `build` section of your `pom.xml`:

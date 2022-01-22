@@ -1,0 +1,33 @@
+buildscript {
+    repositories {
+        mavenLocal()
+    }
+    dependencies {
+        classpath "de.obqo.decycle:decycle-gradle-plugin:${decycleVersion}"
+    }
+}
+
+apply plugin: "de.obqo.decycle"
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+wrapper {
+    gradleVersion = "5.6"
+}
+
+decycle {
+    sourceSets sourceSets.main
+    including 'test.**'
+    excluding 'test.ex.**'
+    ignoring from: 'test.ign.From', to: 'test.ign.*'
+    slicings {
+        module {
+            patterns 'test.{*}.**'
+            allow 'from', anyOf('to')
+        }
+    }
+    ignoreFailures false
+}
