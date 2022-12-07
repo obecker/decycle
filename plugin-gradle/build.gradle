@@ -61,6 +61,7 @@ test {
     }
     inputs.files fileTree("demo") {
         include "*.gradle"
+        include "*.gradle.kts"
         include "src/**"
     }
     // we need a deployed library for testing the plugin
