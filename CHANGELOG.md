@@ -1,7 +1,9 @@
 # CHANGELOG
 
 ## 0.10.0 - not released yet
-   - Load specific asset versions from webjars - fixes [#16](https://github.com/obecker/decycle/issues/16)
+   - Gradle Plugin: Better support for the Kotlin Gradle DSL (for `sourceSets` and `ingnoring`)
+   - Bugfix: Load specific asset versions from webjars when generating the report
+     (fixes [#16](https://github.com/obecker/decycle/issues/16))
 
 ## 0.9.0 – 2022-01-08
    - Breaking changes:

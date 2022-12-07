@@ -157,6 +157,18 @@ public class DecyclePluginFunctionalTest {
                         "dependencies=[demo.cycle.a → demo.cycle.b, demo.cycle.b → demo.cycle.a])\n");
     }
 
+    @Test
+    void shouldSucceedWithIgnoredDependenciesAsKotlinPair() {
+        final BuildResult result = build("ignoring-kt.gradle.kts");
+        assertBuildResult(result, TaskOutcome.SUCCESS, "decycleMain");
+    }
+
+    @Test
+    void shouldSucceedWithSourceSetsInKotlinDsl() {
+        final BuildResult result = build("test-sources-kt.gradle.kts");
+        assertBuildResult(result, TaskOutcome.SUCCESS, "decycleTest");
+    }
+
     private BuildResult build(final String buildFile) {
         return execute(buildFile, true);
     }

@@ -40,6 +40,8 @@ gradle check
 
 The plugin adds a `decycle` configuration object to the build, that offers the following optional configuration settings:
 
+<details open>
+<summary><b>Groovy Gradle DSL</b></summary>
 <pre>
 <b>decycle</b> {
     <b>sourceSets</b> sourceSets.main, sourceSets.test, ...
@@ -59,6 +61,29 @@ The plugin adds a `decycle` configuration object to the build, that offers the f
     <b>ignoreFailures</b> false
 }
 </pre>
+</details>
+<details>
+<summary><b>Kotlin Gradle DSL</b> (click to expand)</summary>
+<pre>
+<b>decycle</b> {
+    <b>sourceSets</b>(sourceSets.main, sourceSets.test, ...)
+    <b>including</b>("org.example.includes.**", ...)
+    <b>excluding</b>("org.example.excludes.**", ...)
+    <b>ignoring</b>("org.examples.from.Example" to "org.examples.to.**")
+    <b>slicings</b> {
+        create("name1") {
+            <b>patterns</b>("org.example.{*}.**", ...)
+            <b>allow</b>("a", "b", ...)
+            <b>allowDirect</b>("x", <b>anyOf</b>("y", "z"), ...)
+        }
+        create("name2") {
+            ...
+        }
+    }
+    <b>ignoreFailures</b>(false)
+}
+</pre>
+</details>
 
 (_Note_: technically all configuration settings are method calls and no property assignments.
 So you have to use `sourceSets ...` or even `sourceSets(...)` instead of `sourceSets = ...`.
@@ -67,7 +92,7 @@ they will be added to the existing configuration.)
 
 * `sourceSets`
   defines the source sets that should be analyzed.
-  By default all source sets defined in the gradle build file are considered.
+  By default, all source sets defined in the gradle build file are considered.
   Use this option if you only want a subset of the source sets to be checked.
 
 * `including`
@@ -83,10 +108,12 @@ they will be added to the existing configuration.)
   (i.e. it is present in the report). Multiple ignored dependencies can be configured by using `ignoring` multiple times. 
   Ignored dependencies might be useful if you introduce decycle to an existing project and don't want to resolve all 
   existing cyclic dependencies at once.
-  Technically the parameter for `ignoring` is a map with the following two keys,
+  Technically (using the Groovy DSL) the parameter for `ignoring` is a map with the following two keys,
   both are optional:
-    * `from:` defines the source of the dependency (default: all)
-    * `to`: defines the target of the dependency (default: all)
+    * `from:` defines the source of the dependency (default: '**')
+    * `to`: defines the target of the dependency (default: '**')
+  
+  Using the Kotlin DLS, the parameter for `ignoring` is typically a pair `"from" to "to"`.
 
 * `slicings`
   starts the slicings block, each [slicing](../readme/slicings.md) has a name (also known as slicing type). 
