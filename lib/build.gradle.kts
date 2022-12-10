@@ -79,3 +79,12 @@ tasks.register("publishToSonatype") {
     description = "Publishes decycle-lib to Maven Central via OSS Sonatype"
     dependsOn("publishMavenJavaPublicationToSonatypeRepository")
 }
+
+tasks.register("copyGradleProperties", Copy::class) {
+    from("${rootProject.projectDir}/gradle.properties")
+    into("${sourceSets.main.get().output.resourcesDir}")
+}
+
+tasks.compileJava {
+    dependsOn("copyGradleProperties")
+}
