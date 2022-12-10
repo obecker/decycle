@@ -9,6 +9,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.Objects;
+import java.util.Properties;
+
+import lombok.SneakyThrows;
 
 import org.webjars.WebJarAssetLocator;
 
@@ -18,6 +21,26 @@ import j2html.utils.JSMin;
 
 public class ResourcesExtractor {
 
+    private static final Properties VERSION_PROPERTIES = loadVersionProperties();
+
+    private static final String BOOTSTRAP_VERSION = VERSION_PROPERTIES.getProperty("bootstrapVersion");
+
+    private static final String BOOTSTRAP_ICONS_VERSION = VERSION_PROPERTIES.getProperty("bootstrapIconsVersion");
+
+    private static final String JQUERY_VERSION = VERSION_PROPERTIES.getProperty("jqueryVersion");
+
+    private static final String TOOLTIPSTER_VERSION = VERSION_PROPERTIES.getProperty("tooltipsterVersion");
+
+    private static final String SVGJS_VERSION = VERSION_PROPERTIES.getProperty("svgjsVersion");
+
+    @SneakyThrows(IOException.class)
+    private static Properties loadVersionProperties() {
+        final Properties versionProperties = new Properties();
+        versionProperties.load(ResourcesExtractor.class.getResourceAsStream("/gradle.properties"));
+
+        return versionProperties;
+    }
+
     private static final WebJarAssetLocator locator = new WebJarAssetLocator();
 
     public static void copyResources(final File targetDir) throws IOException {
@@ -26,15 +49,15 @@ public class ResourcesExtractor {
         copyLocalResource(targetDir, "custom.css");
         copyLocalResource(targetDir, "custom.js");
 
-        copyWebJarResource(targetDir, "bootstrap", "bootstrap.min.css");
-        copyWebJarResource(targetDir, "bootstrap-icons", "bootstrap-icons.css");
-        copyWebJarResource(targetDir, "bootstrap-icons", "fonts/bootstrap-icons.woff");
-        copyWebJarResource(targetDir, "bootstrap-icons", "fonts/bootstrap-icons.woff2");
-        copyWebJarResource(targetDir, "jquery", "jquery.min.js");
-        copyWebJarResource(targetDir, "tooltipster", "tooltipster.bundle.min.js");
-        copyWebJarResource(targetDir, "tooltipster", "tooltipster.bundle.min.css");
-        copyWebJarResource(targetDir, "tooltipster", "tooltipster-SVG.min.js");
-        copyWebJarResource(targetDir, "svg.js", "svg.min.js");
+        copyWebJarResource(targetDir, "bootstrap", String.format("%s/css/bootstrap.min.css", BOOTSTRAP_VERSION));
+        copyWebJarResource(targetDir, "bootstrap-icons", String.format("%s/font/bootstrap-icons.css", BOOTSTRAP_ICONS_VERSION));
+        copyWebJarResource(targetDir, "bootstrap-icons", String.format("%s/font/fonts/bootstrap-icons.woff", BOOTSTRAP_ICONS_VERSION));
+        copyWebJarResource(targetDir, "bootstrap-icons", String.format("%s/font/fonts/bootstrap-icons.woff2", BOOTSTRAP_ICONS_VERSION));
+        copyWebJarResource(targetDir, "jquery", String.format("%s/jquery.min.js", JQUERY_VERSION));
+        copyWebJarResource(targetDir, "tooltipster", String.format("%s/dist/js/tooltipster.bundle.min.js", TOOLTIPSTER_VERSION));
+        copyWebJarResource(targetDir, "tooltipster", String.format("%s/dist/css/tooltipster.bundle.min.css", TOOLTIPSTER_VERSION));
+        copyWebJarResource(targetDir, "tooltipster", String.format("%s/dist/js/plugins/tooltipster/SVG/tooltipster-SVG.min.js", TOOLTIPSTER_VERSION));
+        copyWebJarResource(targetDir, "svg.js", String.format("%s/svg.min.js", SVGJS_VERSION));
     }
 
     private static void copyLocalResource(final File targetDir, final String name) throws IOException {
