@@ -85,6 +85,6 @@ tasks.register("copyGradleProperties", Copy::class) {
     into("${sourceSets.main.get().output.resourcesDir}")
 }
 
-tasks.compileJava {
+tasks.processResources {
     dependsOn("copyGradleProperties")
 }
