@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 0.10.0 - not released yet
+   - Load specific asset versions from webjars - fixes [#16](https://github.com/obecker/decycle/issues/16)
+
 ## 0.9.0 – 2022-01-08
    - Breaking changes:
      - Slicing patterns will now only match classes (and no longer packages).
