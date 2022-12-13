@@ -124,10 +124,7 @@ public class DecyclePluginFunctionalTest {
         final BuildResult result = build("source-sets.gradle");
         assertBuildResult(result, TaskOutcome.SUCCESS, "decycleMain");
         assertBuildResult(result, TaskOutcome.SUCCESS, "decycleTest");
-        assertBuildResult(result, TaskOutcome.SUCCESS, "decycleShared");
-        assertThat(result.getOutput()).doesNotContain("skipped decycleMain")
-                .contains("Decycle: test classes are missing - skipped decycleTest")
-                .contains("Decycle: shared classes are missing - skipped decycleShared");
+        assertBuildResult(result, TaskOutcome.NO_SOURCE, "decycleShared");
     }
 
     @Test
