@@ -99,6 +99,9 @@ public class FromClass<@TypeParamAnnotation T extends GenericTypeForClass> exten
             void localClassMethod() {
                 var x = new BaseInterface<@TypeUseAnnotation Integer>() { // expands to FromClass$1LocalClass$1
 
+                    Object y = new BaseInterface<@TypeUseAnnotation Integer>() { // expands to FromClass$1LocalClass$1$1
+
+                    };
                 };
             }
         }
@@ -107,6 +110,11 @@ public class FromClass<@TypeParamAnnotation T extends GenericTypeForClass> exten
     }
 
     public void otherMethod(Object o) {
+
+        class LocalClass extends ReturnType { // expands to FromClass$2LocalClass
+
+        }
+
         if (o instanceof InstanceOfType) {
             var x = (TypeCast) o;
 
