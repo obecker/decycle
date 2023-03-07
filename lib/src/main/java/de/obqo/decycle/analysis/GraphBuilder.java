@@ -21,6 +21,7 @@ class GraphBuilder {
 
     private static final Pattern singlePattern = Pattern.compile("\\[*L([\\w/$]+);");
     private static final Pattern multiPattern = Pattern.compile("(?<=L)([\\w/$]+)(?=[;<])");
+    private static final Pattern anonymousClassPattern = Pattern.compile("\\$\\d+(?!\\w)");
 
     private final Graph graph;
     private Node currentNode;
@@ -32,7 +33,9 @@ class GraphBuilder {
     }
 
     static Node classNodeFromTypeName(final String slashSeparatedName) {
-        return Node.classNode(slashSeparatedName.replace('/', '.'));
+        final String fullClassName = slashSeparatedName.replace('/', '.');
+        // remove all anonymous class names ($<number> like $1 or $345)
+        return Node.classNode(anonymousClassPattern.matcher(fullClassName).replaceAll(""));
     }
 
     static Node classNodeFromSingleType(final String singleTypeDescription) {
