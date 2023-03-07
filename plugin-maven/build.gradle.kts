@@ -19,17 +19,17 @@ val mavenPluginToolsVersion: String by project
 
 dependencies {
     implementation(project(":decycle-lib"))
-    implementation("org.apache.maven:maven-core:${mavenVersion}") {
+    implementation("org.apache.maven:maven-core:$mavenVersion") {
         exclude(group = "com.google.guava")
     }
-    implementation("org.apache.maven.plugin-tools:maven-plugin-annotations:${mavenPluginToolsVersion}")
+    implementation("org.apache.maven.plugin-tools:maven-plugin-annotations:$mavenPluginToolsVersion")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
     testImplementation("org.junit.jupiter:junit-jupiter-params:$junitVersion")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
-    testImplementation("org.assertj:assertj-core:${assertjVersion}")
-    testImplementation("commons-io:commons-io:${commonsioVersion}")
-    testRuntimeOnly("org.slf4j:slf4j-jdk14:${slf4jVersion}")
+    testImplementation("org.assertj:assertj-core:$assertjVersion")
+    testImplementation("commons-io:commons-io:$commonsioVersion")
+    testRuntimeOnly("org.slf4j:slf4j-jdk14:$slf4jVersion")
 }
 
 tasks.compileJava {
