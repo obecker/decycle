@@ -1,0 +1,13 @@
+plugins {
+    id 'java'
+    id "org.checkerframework" version "0.6.18"
+    id "de.obqo.decycle" version "0.11.0-SNAPSHOT"
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}

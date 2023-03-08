@@ -14,7 +14,8 @@ val guavaVersion: String by project
 val j2htmlVersion: String by project
 val fontmetricsVersion: String by project
 val webjarsVersion: String by project
-val lombokVersion: String by project
+val mavenVersion: String by project
+val slf4jVersion: String by project
 val bootstrapVersion: String by project
 val bootstrapIconsVersion: String by project
 val jqueryVersion: String by project
@@ -22,7 +23,7 @@ val tooltipsterVersion: String by project
 val svgjsVersion: String by project
 val junitVersion: String by project
 val assertjVersion: String by project
-val slf4jVersion: String by project
+val lombokVersion: String by project
 
 dependencies {
     implementation("org.ow2.asm:asm:$asmVersion")
@@ -32,6 +33,7 @@ dependencies {
     implementation("org.webjars:webjars-locator-core:$webjarsVersion") {
         exclude(group = "com.fasterxml.jackson.core") // not used
     }
+    implementation("org.apache.maven:maven-artifact:$mavenVersion")
     implementation("org.slf4j:slf4j-api:$slf4jVersion")
     runtimeOnly("org.webjars:bootstrap:$bootstrapVersion")
     runtimeOnly("org.webjars.npm:bootstrap-icons:$bootstrapIconsVersion")
@@ -78,13 +80,4 @@ tasks.register("publishToSonatype") {
     group = "Publishing"
     description = "Publishes decycle-lib to Maven Central via OSS Sonatype"
     dependsOn("publishMavenJavaPublicationToSonatypeRepository")
-}
-
-tasks.register("copyGradleProperties", Copy::class) {
-    from("${rootProject.projectDir}/gradle.properties")
-    into("${sourceSets.main.get().output.resourcesDir}")
-}
-
-tasks.processResources {
-    dependsOn("copyGradleProperties")
 }
