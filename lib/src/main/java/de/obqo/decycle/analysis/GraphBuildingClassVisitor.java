@@ -9,6 +9,7 @@ import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.RecordComponentVisitor;
 import org.objectweb.asm.TypePath;
 
 public class GraphBuildingClassVisitor extends ClassVisitor {
@@ -56,6 +57,13 @@ public class GraphBuildingClassVisitor extends ClassVisitor {
             final boolean visible) {
         this.graphBuilder.connectNodesFromDescriptors(descriptor);
         return new GraphBuildingAnnotationVisitor(this.api, this.graphBuilder);
+    }
+
+    @Override
+    public RecordComponentVisitor visitRecordComponent(final String name, final String descriptor,
+            final String signature) {
+        this.graphBuilder.connectNodesFromDescriptors(descriptor, signature);
+        return new GraphBuildingRecordComponentVisitor(this.api, this.graphBuilder);
     }
 
     @Override

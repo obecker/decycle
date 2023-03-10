@@ -1,0 +1,33 @@
+buildscript {
+    var decycleVersion = providers.gradleProperty("decycleVersion").getOrElse("0.10.0")
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+    dependencies {
+        classpath "de.obqo.decycle:decycle-gradle-plugin:${decycleVersion}"
+    }
+}
+
+apply plugin: "de.obqo.decycle"
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+wrapper {
+    gradleVersion = "8.0.2"
+}
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+    }
+}
+
+decycle {
+    sourceSets sourceSets.main
+}
