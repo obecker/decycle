@@ -7,6 +7,7 @@ import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Map;
@@ -61,7 +62,11 @@ public class ResourcesExtractor {
         final InputStream inputStream = locator.getClass().getClassLoader().getResourceAsStream(fullPath);
         Objects.requireNonNull(inputStream, () -> String.format("Cannot read resource %s", fullPath));
         final File targetFile = getTargetFile(targetDir, asset);
-        Files.copy(inputStream, targetFile.toPath(), REPLACE_EXISTING);
+        try {
+            Files.copy(inputStream, targetFile.toPath(), REPLACE_EXISTING);
+        } catch (final FileAlreadyExistsException ignored) {
+            // may happen if two threads (or gradle tasks) try to copy the same file concurrently
+        }
     }
 
     private static String getFullPath(final String webjar, final String asset) {
