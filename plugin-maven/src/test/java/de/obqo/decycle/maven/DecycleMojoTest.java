@@ -119,6 +119,20 @@ class DecycleMojoTest {
     }
 
     @Test
+    void shouldSkipReport() throws MojoExecutionException, MojoFailureException {
+        // given
+        final DecycleCheckMojo decycleMojo = givenDecycleCheckMojo();
+        decycleMojo.setSkipReports(true);
+
+        // when
+        decycleMojo.execute();
+
+        // then
+        assertThat(new File(DECYCLE_MAIN_DIR)).doesNotExist();
+        assertThat(new File(DECYCLE_TEST_DIR)).doesNotExist();
+    }
+
+    @Test
     void shouldFailForSlicingWithoutName() {
         // given
         final DecycleCheckMojo decycleCheckMojo = givenDecycleCheckMojo();

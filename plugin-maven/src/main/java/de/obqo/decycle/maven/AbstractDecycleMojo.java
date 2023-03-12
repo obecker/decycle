@@ -99,6 +99,12 @@ abstract class AbstractDecycleMojo extends AbstractMojo {
     @Parameter(property = "decycle.skipTest", defaultValue = "false")
     private boolean skipTest;
 
+    /**
+     * If set to true, then no report is created after executing the decycle checks. Default is false.
+     */
+    @Parameter(property = "decycle.skipReports", defaultValue = "false")
+    private boolean skipReports;
+
     @Override
     public final void execute() throws MojoExecutionException, MojoFailureException {
         try {
@@ -136,22 +142,18 @@ abstract class AbstractDecycleMojo extends AbstractMojo {
             return List.of();
         }
 
-        final File reportDir = getDecycleReportDir();
-        final String resourcesDirName = ResourcesExtractor.createResourcesIfRequired(reportDir);
+        if (this.skipReports) {
+            final Configuration config = buildConfiguration(classpath, sourceSet, null, null);
+            return check(config, null);
+        } else {
+            final File reportDir = getDecycleReportDir();
+            final String resourcesDirName = ResourcesExtractor.createResourcesIfRequired(reportDir);
 
-        final File report = new File(reportDir, sourceSet + ".html");
-        try (final FileWriter reportWriter = new FileWriter(report)) {
-            final Configuration config = buildConfiguration(classpath, sourceSet, resourcesDirName, reportWriter);
-
-            log.debug("Decycle configuration: " + config);
-
-            final Consumer<String> logHandler = this.ignoreFailures ? log::warn : log::error;
-            final List<Constraint.Violation> violations = config.check();
-            if (!violations.isEmpty()) {
-                logHandler.accept("Violations detected: " + Constraint.Violation.displayString(violations));
-                logHandler.accept("See the report at: " + report);
+            final File report = new File(reportDir, sourceSet + ".html");
+            try (final FileWriter reportWriter = new FileWriter(report)) {
+                final Configuration config = buildConfiguration(classpath, sourceSet, resourcesDirName, reportWriter);
+                return check(config, report);
             }
-            return violations;
         }
     }
 
@@ -169,6 +171,21 @@ abstract class AbstractDecycleMojo extends AbstractMojo {
                 .reportResourcesPrefix(resourcesDirName)
                 .reportTitle(this.project.getName() + " | " + sourceSet)
                 .build();
+    }
+
+    private List<Constraint.Violation> check(final Configuration config, final File report) {
+        final Log log = getLog();
+        log.debug("Decycle configuration: " + config);
+
+        final Consumer<String> logHandler = this.ignoreFailures ? log::warn : log::error;
+        final List<Constraint.Violation> violations = config.check();
+        if (!violations.isEmpty()) {
+            logHandler.accept("Violations detected: " + Constraint.Violation.displayString(violations));
+            if (report != null) {
+                logHandler.accept("See the report at: " + report);
+            }
+        }
+        return violations;
     }
 
     protected String getMainClasses() {

@@ -47,6 +47,7 @@
             </slicing>
           </slicings>
           <ignoreFailures>false</ignoreFailures>
+          <skipReports>false</skipReports>
         </configuration>
       </plugin>
     </plugins>

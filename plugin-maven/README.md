@@ -90,6 +90,7 @@ Within the `configuration` element of the plugin (see [Installation](#installati
   <skip>false</skip>
   <skipMain>false</skipMain>
   <skipTest>false</skipTest>
+  <skipReports>false</skipReports>
 </configuration>
 ```
 
@@ -119,14 +120,17 @@ Within the `configuration` element of the plugin (see [Installation](#installati
      * `any-of` contains comma separated slices names with an [unspecified slice order](../readme/slicings.md#unspecified-order-of-slices)
      * `one-of` contains comma separated slices names that [must not depend on each other](../readme/slicings.md#forbidden-dependencies-between-slices)
 
- * `ignoreFailures` whether to allow the build to continue if there are constraint violations (default: false).
+ * `ignoreFailures` whether to allow the build to continue if there are constraint violations (default: `false`).
    This parameter can also be specified by defining the property `decycle.ignoreFailures`
 
- * `skip` whether to skip the execution of decycle (default: false). 
+ * `skip` whether to skip the execution of decycle (default: `false`). 
    This parameter can also be specified by defining the property `decycle.skip`  
 
- * `skipMain` whether to skip the execution of decycle on the `main` classes (default: false). 
+ * `skipMain` whether to skip the execution of decycle on the `main` classes (default: `false`). 
    This parameter can also be specified by defining the property `decycle.skipMain`  
 
- * `skipTest` whether to skip the execution of decycle on the `test` classes (default: false). 
+ * `skipTest` whether to skip the execution of decycle on the `test` classes (default: `false`). 
    This parameter can also be specified by defining the property `decycle.skipTest`  
+ 
+ * `skipReports` whether to skip the creation of the HTML reports (default: `false`). 
+   This parameter can also be specified by defining the property `decycle.skipReports`  
