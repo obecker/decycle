@@ -73,7 +73,8 @@ public class DecyclePluginFunctionalTest {
     void shouldFailBecauseOfCycles() {
         final BuildResult result = buildAndFail("cycle.gradle");
         assertBuildResult(result, TaskOutcome.FAILED, "decycleMain")
-                .contains("demo.cycle.a → demo.cycle.b, demo.cycle.b → demo.cycle.a");
+                .contains("demo.cycle.a → demo.cycle.b, demo.cycle.b → demo.cycle.a")
+                .contains("See the report at: ");
     }
 
     @Test
@@ -152,9 +153,18 @@ public class DecyclePluginFunctionalTest {
     @Test
     void shouldSucceedWithIgnoreFailures() {
         final BuildResult result = build("ignoreFailures.gradle");
-        assertBuildResult(result, TaskOutcome.SUCCESS, "decycleMain").contains(
-                "\nViolations detected: Violation(slicing=Package, name=cycle, " +
-                        "dependencies=[demo.cycle.a → demo.cycle.b, demo.cycle.b → demo.cycle.a])\n");
+        assertBuildResult(result, TaskOutcome.SUCCESS, "decycleMain")
+                .contains("\nViolations detected: Violation(slicing=Package, name=cycle, " +
+                        "dependencies=[demo.cycle.a → demo.cycle.b, demo.cycle.b → demo.cycle.a])\n")
+                .contains("See the report at: ");
+    }
+
+    @Test
+    void shouldFailButWithoutReport() {
+        final BuildResult result = buildAndFail("reportsDisabled.gradle");
+        assertBuildResult(result, TaskOutcome.FAILED, "decycleMain")
+                .contains("demo.cycle.a → demo.cycle.b, demo.cycle.b → demo.cycle.a")
+                .doesNotContain("See the report at: ");
     }
 
     @Test
@@ -188,7 +198,8 @@ public class DecyclePluginFunctionalTest {
         return GradleRunner.create().withProjectDir(new File("demo")).withPluginClasspath(pluginClasspath);
     }
 
-    private AbstractStringAssert<?> assertBuildResult(final BuildResult buildResult, final TaskOutcome expectedOutcome, final String taskName) {
+    private AbstractStringAssert<?> assertBuildResult(final BuildResult buildResult, final TaskOutcome expectedOutcome,
+            final String taskName) {
         System.out.println(buildResult.getOutput());
 
         if (taskName != null) {

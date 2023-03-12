@@ -59,6 +59,7 @@ The plugin adds a `decycle` configuration object to the build, that offers the f
         }
     }
     <b>ignoreFailures</b> false
+    <b>reportsEnabled</b> true
 }
 </pre>
 </details>
@@ -81,6 +82,7 @@ The plugin adds a `decycle` configuration object to the build, that offers the f
         }
     }
     <b>ignoreFailures</b>(false)
+    <b>reportsEnabled</b>(true)
 }
 </pre>
 </details>
@@ -133,3 +135,5 @@ they will be added to the existing configuration.)
         * <code>oneOf(<i>slice, ...</i>)</code> for [forbidden dependencies between slices](../readme/slicings.md#forbidden-dependencies-between-slices)
     
 * `ignoreFailures` whether to allow the build to continue if there are constraint violations (default: `false`).
+
+* `reportsEnabled` whether to create an HTML report for each analyzed source set (default: `true`).

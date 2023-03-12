@@ -120,4 +120,8 @@ public class DecycleExtension {
     public void ignoreFailures(final boolean ignoreFailures) {
         this.configuration.setIgnoreFailures(ignoreFailures);
     }
+
+    public void reportsEnabled(final boolean reportsEnabled) {
+        this.configuration.setReportsEnabled(reportsEnabled);
+    }
 }

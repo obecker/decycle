@@ -10,6 +10,7 @@ import de.obqo.decycle.check.Layer;
 import de.obqo.decycle.check.LayeringConstraint;
 import de.obqo.decycle.check.SlicedConstraint;
 import de.obqo.decycle.configuration.Configuration;
+import de.obqo.decycle.configuration.Configuration.ConfigurationBuilder;
 import de.obqo.decycle.configuration.Pattern;
 import de.obqo.decycle.report.ResourcesExtractor;
 import de.obqo.decycle.slicer.IgnoredDependency;
@@ -40,7 +41,7 @@ public abstract class DecycleWorker implements WorkAction<DecycleWorkerParameter
         final File reportFile = getParameters().getReportFile().getAsFile().get();
         final String reportTitle = getParameters().getReportTitle().get();
 
-        final Configuration.ConfigurationBuilder builder = Configuration.builder();
+        final ConfigurationBuilder builder = Configuration.builder();
 
         builder.classpath(classpath);
         builder.including(configuration.getIncludings());
@@ -54,34 +55,40 @@ public abstract class DecycleWorker implements WorkAction<DecycleWorkerParameter
                         slConfig -> slConfig.getAllows().stream().map(allow -> getSlicedConstraint(slConfig, allow))
                 ).collect(toSet()));
 
-        reportFile.getParentFile().mkdirs();
+        if (configuration.isReportsEnabled()) {
+            reportFile.getParentFile().mkdirs();
 
-        try (final FileWriter writer = new FileWriter(reportFile)) {
-            final String resourcesDirName = ResourcesExtractor.createResourcesIfRequired(reportFile.getParentFile());
+            try (final FileWriter writer = new FileWriter(reportFile)) {
+                final String resourcesDirName = ResourcesExtractor.createResourcesIfRequired(reportFile.getParentFile());
 
-            builder.report(writer);
-            builder.reportResourcesPrefix(resourcesDirName);
-            builder.reportTitle(reportTitle);
+                builder.report(writer);
+                builder.reportResourcesPrefix(resourcesDirName);
+                builder.reportTitle(reportTitle);
 
-            final Configuration decycleConfig = builder.build();
-
-            logger.info("Decycle configuration: {}", decycleConfig);
-
-            final List<Constraint.Violation> violations = decycleConfig.check();
-
-            logger.debug("decycle result: {}", violations);
-
-            if (!violations.isEmpty()) {
-                final String message = String.format("%s\nSee the report at: %s",
-                        Constraint.Violation.displayString(violations), reportFile);
-                if (configuration.isIgnoreFailures()) {
-                    logger.warn("Violations detected: {}", message);
-                } else {
-                    throw new GradleException(message);
-                }
+                buildAndCheck(builder, configuration.isIgnoreFailures(), "\nSee the report at: " + reportFile);
+            } catch (final IOException ioException) {
+                throw new GradleException(ioException.getMessage(), ioException);
             }
-        } catch (final IOException ioException) {
-            throw new GradleException(ioException.getMessage(), ioException);
+        } else { // reports not enabled
+            buildAndCheck(builder, configuration.isIgnoreFailures(), "");
+        }
+    }
+
+    private void buildAndCheck(final ConfigurationBuilder builder, final boolean ignoreFailures,
+            final String violationsInfo) {
+        final Configuration decycleConfig = builder.build();
+        logger.info("Decycle configuration: {}", decycleConfig);
+
+        final List<Constraint.Violation> violations = decycleConfig.check();
+        logger.debug("decycle result: {}", violations);
+
+        if (!violations.isEmpty()) {
+            final String message = Constraint.Violation.displayString(violations) + violationsInfo;
+            if (ignoreFailures) {
+                logger.warn("Violations detected: {}", message);
+            } else {
+                throw new GradleException(message);
+            }
         }
     }
 

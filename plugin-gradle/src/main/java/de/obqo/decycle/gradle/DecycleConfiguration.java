@@ -21,6 +21,7 @@ class DecycleConfiguration implements Serializable {
     private final List<IgnoreConfig> ignoredDeps = new ArrayList<>();
     private final List<SlicingConfiguration> slicings = new ArrayList<>();
     private boolean ignoreFailures = false;
+    private boolean reportsEnabled = true;
 
     List<SourceSet> getSourceSets() {
         return this.sourceSets;
@@ -70,5 +71,13 @@ class DecycleConfiguration implements Serializable {
 
     boolean isIgnoreFailures() {
         return this.ignoreFailures;
+    }
+
+    boolean isReportsEnabled() {
+        return this.reportsEnabled;
+    }
+
+    void setReportsEnabled(final boolean reportsEnabled) {
+        this.reportsEnabled = reportsEnabled;
     }
 }

@@ -1,0 +1,8 @@
+plugins {
+    id 'de.obqo.decycle'
+}
+
+decycle {
+    including 'demo.cycle.**'
+    reportsEnabled false
+}
