@@ -10,7 +10,7 @@
    - Add configuration option `skipReports` to the Decycle Maven Plugin
 
 ## 0.10.0 - 2022-12-14
-   - Gradle Plugin: Better support for the Kotlin Gradle DSL (for `sourceSets` and `ingnoring`)
+   - Gradle Plugin: Better support for the Kotlin Gradle DSL (for `sourceSets` and `ignoring`)
    - Bugfix: Load specific asset versions from webjars when generating the report
      (fixes [#16](https://github.com/obecker/decycle/issues/16))
 
