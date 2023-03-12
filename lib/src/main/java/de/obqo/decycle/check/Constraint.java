@@ -33,6 +33,10 @@ public interface Constraint {
             return new TreeSet<>(this.violatingSubgraph.edges());
         }
 
+        public String toString() {
+            return displayString();
+        }
+
         public String displayString() {
             return String.format(
                     "Violation(slicing=%s, name=%s, dependencies=[%s])",

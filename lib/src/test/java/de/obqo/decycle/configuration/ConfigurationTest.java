@@ -31,6 +31,7 @@ class ConfigurationTest {
     @BeforeAll
     static void beforeAll() throws IOException {
         final File dir = new File(REPORT_DIR + RESOURCES_DIR);
+        dir.mkdirs();
         ResourcesExtractor.copyResources(dir);
     }
 

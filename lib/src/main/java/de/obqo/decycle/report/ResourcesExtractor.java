@@ -1,12 +1,12 @@
 package de.obqo.decycle.report;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
-import static java.nio.file.StandardOpenOption.CREATE;
-import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.util.AbstractMap.SimpleEntry;
@@ -28,9 +28,16 @@ public class ResourcesExtractor {
 
     private static final WebJarAssetLocator locator = new WebJarAssetLocator();
 
-    public static void copyResources(final File targetDir) throws IOException {
-        targetDir.mkdirs();
+    public static String createResourcesIfRequired(final File reportDir) throws IOException {
+        final String resourcesDirName = "resources-" + ResourcesExtractor.class.getPackage().getImplementationVersion();
+        final File resourcesDir = new File(reportDir, resourcesDirName);
+        if (!resourcesDir.exists() && resourcesDir.mkdirs()) {
+            copyResources(resourcesDir);
+        }
+        return resourcesDirName;
+    }
 
+    public static void copyResources(final File targetDir) throws IOException {
         copyLocalResource(targetDir, "custom.css");
         copyLocalResource(targetDir, "custom.js");
 
@@ -52,8 +59,7 @@ public class ResourcesExtractor {
         } else if (name.endsWith(".js")) {
             content = JSMin.compressJs(content);
         }
-        final File targetFile = getTargetFile(targetDir, name);
-        Files.writeString(targetFile.toPath(), content, CREATE, TRUNCATE_EXISTING);
+        copy(new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8)), targetDir, name);
     }
 
     private static void copyWebJarResource(final File targetDir, final String webjar, final String asset)
@@ -61,12 +67,7 @@ public class ResourcesExtractor {
         final String fullPath = getFullPath(webjar, asset);
         final InputStream inputStream = locator.getClass().getClassLoader().getResourceAsStream(fullPath);
         Objects.requireNonNull(inputStream, () -> String.format("Cannot read resource %s", fullPath));
-        final File targetFile = getTargetFile(targetDir, asset);
-        try {
-            Files.copy(inputStream, targetFile.toPath(), REPLACE_EXISTING);
-        } catch (final FileAlreadyExistsException ignored) {
-            // may happen if two threads (or gradle tasks) try to copy the same file concurrently
-        }
+        copy(inputStream, targetDir, asset);
     }
 
     private static String getFullPath(final String webjar, final String asset) {
@@ -90,11 +91,16 @@ public class ResourcesExtractor {
         }
     }
 
-    private static File getTargetFile(final File targetDir, final String name) {
+    private static void copy(final InputStream inputStream, final File targetDir, final String name) throws IOException {
         final File targetFile = new File(targetDir, name);
         if (name.contains("/")) {
             targetFile.getParentFile().mkdirs();
         }
-        return targetFile;
+
+        try {
+            Files.copy(inputStream, targetFile.toPath(), REPLACE_EXISTING);
+        } catch (final FileAlreadyExistsException ignored) {
+            // may happen if two threads (or gradle tasks) try to copy the same file concurrently
+        }
     }
 }

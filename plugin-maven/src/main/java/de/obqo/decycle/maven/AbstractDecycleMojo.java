@@ -137,7 +137,7 @@ abstract class AbstractDecycleMojo extends AbstractMojo {
         }
 
         final File reportDir = getDecycleReportDir();
-        final String resourcesDirName = createResourcesIfRequired(reportDir);
+        final String resourcesDirName = ResourcesExtractor.createResourcesIfRequired(reportDir);
 
         final File report = new File(reportDir, sourceSet + ".html");
         try (final FileWriter reportWriter = new FileWriter(report)) {
@@ -181,16 +181,6 @@ abstract class AbstractDecycleMojo extends AbstractMojo {
 
     private File getDecycleReportDir() {
         return new File(this.project.getModel().getReporting().getOutputDirectory(), "decycle");
-    }
-
-    private String createResourcesIfRequired(final File reportDir) throws IOException {
-        final String resourcesDirName = "resources-" + Configuration.class.getPackage().getImplementationVersion();
-        final File resourcesDir = new File(reportDir, resourcesDirName);
-        if (!resourcesDir.exists()) {
-            reportDir.mkdirs();
-            ResourcesExtractor.copyResources(resourcesDir);
-        }
-        return resourcesDirName;
     }
 
     private Stream<String> tokenize(final String value) {

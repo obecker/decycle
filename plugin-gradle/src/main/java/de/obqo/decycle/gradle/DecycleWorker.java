@@ -57,7 +57,7 @@ public abstract class DecycleWorker implements WorkAction<DecycleWorkerParameter
         reportFile.getParentFile().mkdirs();
 
         try (final FileWriter writer = new FileWriter(reportFile)) {
-            final String resourcesDirName = createResourcesIfRequired(reportFile);
+            final String resourcesDirName = ResourcesExtractor.createResourcesIfRequired(reportFile.getParentFile());
 
             builder.report(writer);
             builder.reportResourcesPrefix(resourcesDirName);
@@ -83,16 +83,6 @@ public abstract class DecycleWorker implements WorkAction<DecycleWorkerParameter
         } catch (final IOException ioException) {
             throw new GradleException(ioException.getMessage(), ioException);
         }
-    }
-
-    private String createResourcesIfRequired(final File reportFile) throws IOException {
-        final String resourcesDirName = "resources-" + Configuration.class.getPackage().getImplementationVersion();
-        final File resourcesDir = new File(reportFile.getParentFile(), resourcesDirName);
-        if (!resourcesDir.exists()) {
-            resourcesDir.mkdirs();
-            ResourcesExtractor.copyResources(resourcesDir);
-        }
-        return resourcesDirName;
     }
 
     // Helper methods for converting the plugin's configuration (or extension) instances into decycle objects.
