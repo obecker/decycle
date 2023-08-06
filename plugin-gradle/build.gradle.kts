@@ -7,10 +7,6 @@ plugins {
 
 val pluginId = "de.obqo.decycle"
 
-val junitVersion: String by project
-val assertjVersion: String by project
-val commonsioVersion: String by project
-
 tasks.register("createClasspathManifest") {
     val outputDir = file("$buildDir/classpathManifest")
     val pluginClasspath = sourceSets.main.get().runtimeClasspath
@@ -24,14 +20,16 @@ tasks.register("createClasspathManifest") {
     }
 }
 
+// see gradle/libs.versions.toml for libs.<xyz> dependencies
 dependencies {
     compileOnly(project(":decycle-lib"))
 
     testImplementation(gradleTestKit())
-    testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
-    testImplementation("org.assertj:assertj-core:$assertjVersion")
-    testImplementation("commons-io:commons-io:$commonsioVersion")
+    testImplementation(libs.assertj)
+    testImplementation(libs.commons.io)
+    testImplementation(platform(libs.junit.bom))
+    testImplementation("org.junit.jupiter:junit-jupiter-api")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
     testRuntimeOnly(files(tasks.getByName("createClasspathManifest")))
 }
 
