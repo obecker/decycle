@@ -1,7 +1,7 @@
 plugins {
     `java-library`
-    id("io.freefair.lombok")
-    id("io.freefair.maven-plugin")
+    alias(libs.plugins.lombok)
+    alias(libs.plugins.maven.plugin)
 }
 
 description = "Maven plugin that executes decycle dependency checks"
@@ -9,27 +9,21 @@ val displayName by extra("Decycle Maven Plugin")
 
 apply(from = rootProject.file("gradle/publishing.gradle.kts"))
 
-val junitVersion: String by project
-val assertjVersion: String by project
-val commonsioVersion: String by project
-val slf4jVersion: String by project
-val lombokVersion: String by project
-val mavenVersion: String by project
-val mavenPluginToolsVersion: String by project
-
+// see gradle/libs.versions.toml for libs.<xyz> dependencies
 dependencies {
     implementation(project(":decycle-lib"))
-    implementation("org.apache.maven:maven-core:$mavenVersion") {
+    implementation(libs.maven.core) {
         exclude(group = "com.google.guava")
     }
-    implementation("org.apache.maven.plugin-tools:maven-plugin-annotations:$mavenPluginToolsVersion")
+    implementation(libs.maven.plugin.tools)
 
-    testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
-    testImplementation("org.junit.jupiter:junit-jupiter-params:$junitVersion")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
-    testImplementation("org.assertj:assertj-core:$assertjVersion")
-    testImplementation("commons-io:commons-io:$commonsioVersion")
-    testRuntimeOnly("org.slf4j:slf4j-jdk14:$slf4jVersion")
+    testImplementation(libs.assertj)
+    testImplementation(libs.commons.io)
+    testImplementation(platform(libs.junit.bom))
+    testImplementation("org.junit.jupiter:junit-jupiter-api")
+    testImplementation("org.junit.jupiter:junit-jupiter-params")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+    testRuntimeOnly(libs.slf4j.jdk14)
 }
 
 tasks.compileJava {
@@ -45,7 +39,7 @@ java {
 }
 
 lombok {
-    version.set(lombokVersion)
+    version.set(libs.versions.lombok.get())
 }
 
 tasks.test {

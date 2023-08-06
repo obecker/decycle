@@ -1,7 +1,7 @@
 plugins {
     `java-library`
-    id("io.freefair.lombok")
-    id("io.freefair.maven-publish-java")
+    alias(libs.plugins.lombok)
+    alias(libs.plugins.maven.publish.java)
 }
 
 description = "Java library for detecting and reporting package cycles"
@@ -9,43 +9,25 @@ val displayName by extra("Decycle Lib")
 
 apply(from = rootProject.file("gradle/publishing.gradle.kts"))
 
-val asmVersion: String by project
-val guavaVersion: String by project
-val j2htmlVersion: String by project
-val fontmetricsVersion: String by project
-val webjarsVersion: String by project
-val mavenVersion: String by project
-val slf4jVersion: String by project
-val bootstrapVersion: String by project
-val bootstrapIconsVersion: String by project
-val jqueryVersion: String by project
-val tooltipsterVersion: String by project
-val svgjsVersion: String by project
-val junitVersion: String by project
-val assertjVersion: String by project
-val lombokVersion: String by project
-
+// see gradle/libs.versions.toml for libs.<xyz> dependencies
 dependencies {
-    implementation("org.ow2.asm:asm:$asmVersion")
-    implementation("com.google.guava:guava:$guavaVersion")
-    implementation( "com.j2html:j2html:$j2htmlVersion")
-    implementation("org.javastack:fontmetrics:$fontmetricsVersion")
-    implementation("org.webjars:webjars-locator-core:$webjarsVersion") {
+    implementation(libs.asm)
+    implementation(libs.fontmetrics)
+    implementation(libs.guava)
+    implementation(libs.j2html)
+    implementation(libs.maven.artifact)
+    implementation(libs.slf4j.api)
+    implementation(libs.webjars.locator) {
         exclude(group = "com.fasterxml.jackson.core") // not used
     }
-    implementation("org.apache.maven:maven-artifact:$mavenVersion")
-    implementation("org.slf4j:slf4j-api:$slf4jVersion")
-    runtimeOnly("org.webjars:bootstrap:$bootstrapVersion")
-    runtimeOnly("org.webjars.npm:bootstrap-icons:$bootstrapIconsVersion")
-    runtimeOnly("org.webjars:jquery:$jqueryVersion")
-    runtimeOnly("org.webjars.npm:tooltipster:$tooltipsterVersion")
-    runtimeOnly("org.webjars:svg.js:$svgjsVersion")
+    runtimeOnly(libs.bundles.webjars)
 
-    testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
-    testImplementation("org.junit.jupiter:junit-jupiter-params:$junitVersion")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
-    testImplementation("org.assertj:assertj-core:$assertjVersion")
-    testRuntimeOnly("org.slf4j:slf4j-jdk14:$slf4jVersion")
+    testImplementation(libs.assertj)
+    testImplementation(platform(libs.junit.bom))
+    testImplementation("org.junit.jupiter:junit-jupiter-api")
+    testImplementation("org.junit.jupiter:junit-jupiter-params")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+    testRuntimeOnly(libs.slf4j.jdk14)
 }
 
 tasks.compileJava {
@@ -61,7 +43,7 @@ java {
 }
 
 lombok {
-    version.set(lombokVersion)
+    version.set(libs.versions.lombok.get())
 }
 
 tasks.test {
