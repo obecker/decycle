@@ -1,26 +1,26 @@
 [versions]
-freefair = "6.6.3"
-lombok = "1.18.26"
-maven = "3.8.7"
-slf4j = "1.7.36"
+freefair = "8.1.0"
+lombok = "1.18.28"
+maven = "3.9.4"
+slf4j = "2.0.7"
 
 [libraries]
-asm = "org.ow2.asm:asm:9.4"
+asm = "org.ow2.asm:asm:9.5"
 assertj = "org.assertj:assertj-core:3.24.2"
-commons-io = "commons-io:commons-io:2.11.0"
+commons-io = "commons-io:commons-io:2.13.0"
 fontmetrics = "org.javastack:fontmetrics:1.1.0"
-guava = "com.google.guava:guava:31.1-jre"
-j2html = "com.j2html:j2html:1.5.0"
-junit-bom = "org.junit:junit-bom:5.9.2"
+guava = "com.google.guava:guava:32.1.2-jre"
+j2html = "com.j2html:j2html:1.6.0"
+junit-bom = "org.junit:junit-bom:5.10.0"
 maven-artifact = { module = "org.apache.maven:maven-artifact", version.ref = "maven" }
 maven-core = { module = "org.apache.maven:maven-core", version.ref = "maven" }
-maven-plugin-tools = "org.apache.maven.plugin-tools:maven-plugin-annotations:3.8.1"
+maven-plugin-tools = "org.apache.maven.plugin-tools:maven-plugin-annotations:3.9.0"
 slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
 slf4j-jdk14 = { module = "org.slf4j:slf4j-jdk14", version.ref = "slf4j" }
 webjars-bootstrap4 = "org.webjars:bootstrap:4.6.2"
-webjars-bootstrapIcons = "org.webjars.npm:bootstrap-icons:1.10.2"
-webjars-jquery = "org.webjars:jquery:3.6.3"
-webjars-locator = "org.webjars:webjars-locator-core:0.52"
+webjars-bootstrapIcons = "org.webjars.npm:bootstrap-icons:1.10.5"
+webjars-jquery = "org.webjars:jquery:3.7.0"
+webjars-locator = "org.webjars:webjars-locator-core:0.53"
 webjars-svgjs = "org.webjars:svg.js:3.1.1"
 webjars-tooltipster = "org.webjars.npm:tooltipster:4.2.8"
 
