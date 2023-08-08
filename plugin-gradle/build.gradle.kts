@@ -68,19 +68,16 @@ tasks.test {
     dependsOn(":decycle-lib:publishMavenJavaPublicationToLocalRepository")
 }
 
-pluginBundle {
-    website = "https://github.com/obecker/decycle/tree/master/plugin-gradle"
-    vcsUrl = "https://github.com/obecker/decycle"
-    tags = listOf("decycle", "code-quality")
-}
-
 gradlePlugin {
+    website.set("https://github.com/obecker/decycle/tree/master/plugin-gradle")
+    vcsUrl.set("https://github.com/obecker/decycle")
     plugins {
         create("decyclePlugin") {
             id = pluginId
             displayName = "Gradle Decycle Plugin"
             description = "Gradle plugin that executes decycle dependency checks"
             implementationClass = "de.obqo.decycle.gradle.DecyclePlugin"
+            tags.set(listOf("decycle", "code-quality"))
         }
     }
 }
