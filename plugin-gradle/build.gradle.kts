@@ -2,7 +2,7 @@ plugins {
     groovy
     `java-gradle-plugin`
     `maven-publish`
-    id("com.gradle.plugin-publish") version "1.1.0"
+    alias(libs.plugins.publish)
 }
 
 val pluginId = "de.obqo.decycle"
