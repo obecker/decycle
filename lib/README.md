@@ -6,5 +6,3 @@
 The **Decycle Lib** is the engine behind the [Gradle](../plugin-gradle) and [Maven](../plugin-maven) plugins. 
 Checkout the [Configuration class](src/main/java/de/obqo/decycle/configuration/Configuration.java)
 for the main API entry point, if you want to use the Decycle features outside the current published plugins.
-
-**Note:** the API is not stable and might change between releases.

@@ -1,6 +1,9 @@
 # CHANGELOG
 
-## 0.11.0 - 2023-03-12
+## 1.0.0 – 2023-08-09
+   - Support for Java 21 (by upgrading to [asm 9.5](https://asm.ow2.io/versions.html))
+
+## 0.11.0 – 2023-03-12
    - Remove anonymous classes from the HTML report. Dependencies from anonymous classes to other classes will be treated
      as dependencies from the parent class.
    - Add support for Java Record Component annotations (annotations with target `RECORD_COMPONENT`)
@@ -9,7 +12,7 @@
    - Add configuration option `reportsEnabled` to the Decycle Gradle Plugin
    - Add configuration option `skipReports` to the Decycle Maven Plugin
 
-## 0.10.0 - 2022-12-14
+## 0.10.0 – 2022-12-14
    - Gradle Plugin: Better support for the Kotlin Gradle DSL (for `sourceSets` and `ignoring`)
    - Bugfix: Load specific asset versions from webjars when generating the report
      (fixes [#16](https://github.com/obecker/decycle/issues/16))
