@@ -1,0 +1,22 @@
+version: 2
+updates:
+  - package-ecosystem: gradle
+    directory: /
+    schedule:
+      interval: daily
+    assignees:
+      - obecker
+    commit-message:
+      prefix: ":arrow_up: "
+    ignore:
+      - dependency-name: "org.webjars:bootstrap"
+        update-types:
+          - "version-update:semver-major" # TODO
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    assignees:
+      - obecker
+    commit-message:
+      prefix: ":arrow_up: "
