@@ -1,4 +1,4 @@
-[![](https://img.shields.io/maven-metadata/v?label=Plugin&metadataUrl=https%3A%2F%2Fplugins.gradle.org%2Fm2%2Fde%2Fobqo%2Fdecycle%2Fde.obqo.decycle.gradle.plugin%2Fmaven-metadata.xml)](https://plugins.gradle.org/plugin/de.obqo.decycle)
+[![Version](https://img.shields.io/gradle-plugin-portal/v/de.obqo.decycle?logo=gradle)](https://plugins.gradle.org/plugin/de.obqo.decycle)
 
 ![Decycle](../readme/images/logo-gradle-plugin.svg#gh-light-mode-only)
 ![Decycle](../readme/images/logo-gradle-plugin-dm.svg#gh-dark-mode-only)

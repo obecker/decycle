@@ -1,4 +1,4 @@
-[![](https://img.shields.io/maven-central/v/de.obqo.decycle/decycle-lib.svg)](https://search.maven.org/artifact/de.obqo.decycle/decycle-lib)
+[![Version](https://img.shields.io/maven-central/v/de.obqo.decycle/decycle-lib?logo=apachemaven)](https://search.maven.org/artifact/de.obqo.decycle/decycle-lib)
 
 ![Decycle](../readme/images/logo-lib.svg#gh-light-mode-only)
 ![Decycle](../readme/images/logo-lib-dm.svg#gh-dark-mode-only)
