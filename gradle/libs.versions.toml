@@ -18,7 +18,7 @@ maven-plugin-tools = "org.apache.maven.plugin-tools:maven-plugin-annotations:3.9
 slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
 slf4j-jdk14 = { module = "org.slf4j:slf4j-jdk14", version.ref = "slf4j" }
 webjars-bootstrap4 = "org.webjars:bootstrap:4.6.2"
-webjars-bootstrapIcons = "org.webjars.npm:bootstrap-icons:1.10.5"
+webjars-bootstrapIcons = "org.webjars.npm:bootstrap-icons:1.11.0"
 webjars-jquery = "org.webjars:jquery:3.7.1"
 webjars-locator = "org.webjars:webjars-locator-core:0.53"
 webjars-svgjs = "org.webjars:svg.js:3.1.1"
