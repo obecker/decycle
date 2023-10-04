@@ -1,7 +1,7 @@
 [versions]
 freefair = "8.4"
 lombok = "1.18.28"
-maven = "3.9.4"
+maven = "3.9.5"
 slf4j = "2.0.9"
 
 [libraries]
