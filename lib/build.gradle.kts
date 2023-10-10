@@ -42,10 +42,6 @@ java {
     }
 }
 
-lombok {
-    version.set(libs.versions.lombok.get())
-}
-
 tasks.test {
     useJUnitPlatform()
 }
