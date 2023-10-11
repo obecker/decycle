@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## 1.1.0 – 2023-10-11
+   - Several dependency updates
+     * asm 9.5 → 9.6 (supports Java 22)
+     * guava 32.1.2 → 32.1.3
+     * maven 3.9.4 → 3.9.5
+     * slf4j 2.0.7 → 2.0.9
+     * jquery 3.7.0 → 3.7.1
+     * bootstrap-icons 1.10.5 → 1.11.1
+
 ## 1.0.0 – 2023-08-09
    - Support for Java 21 (by upgrading to [asm 9.5](https://asm.ow2.io/versions.html))
 
