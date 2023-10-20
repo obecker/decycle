@@ -19,7 +19,7 @@ slf4j-jdk14 = { module = "org.slf4j:slf4j-jdk14", version.ref = "slf4j" }
 webjars-bootstrap4 = "org.webjars:bootstrap:4.6.2"
 webjars-bootstrapIcons = "org.webjars.npm:bootstrap-icons:1.11.1"
 webjars-jquery = "org.webjars:jquery:3.7.1"
-webjars-locator = "org.webjars:webjars-locator-core:0.53"
+webjars-locator = "org.webjars:webjars-locator-core:0.54"
 webjars-svgjs = "org.webjars:svg.js:3.1.1"
 webjars-tooltipster = "org.webjars.npm:tooltipster:4.2.8"
 
