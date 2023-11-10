@@ -1,5 +1,6 @@
 package de.obqo.decycle.gradle
 
+import org.gradle.api.GradleException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -14,8 +15,6 @@ class DecyclePlugin implements Plugin<Project> {
 
     @Override
     void apply(final Project project) {
-        project.apply plugin: 'java'
-
         Properties props = new Properties()
         getClass().classLoader.getResource("META-INF/gradle-plugins/de.obqo.decycle.properties").withInputStream { stream ->
             props.load(stream)
@@ -42,7 +41,11 @@ class DecyclePlugin implements Plugin<Project> {
 
             def sources = configuration.sourceSets
             if (sources.empty) {
-                sources = project.sourceSets.asMap.values()
+                def projectSources = project.findProperty("sourceSets")
+                if (projectSources == null) {
+                    throw new GradleException("No source sets found. Did you forget to apply the 'java' plugin?")
+                }
+                sources = projectSources.asMap.values()
             }
 
             // create decycle work tasks, one for each source set
