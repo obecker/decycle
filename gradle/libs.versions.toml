@@ -6,7 +6,7 @@ slf4j = "2.0.9"
 [libraries]
 asm = "org.ow2.asm:asm:9.6"
 assertj = "org.assertj:assertj-core:3.24.2"
-commons-io = "commons-io:commons-io:2.15.0"
+commons-io = "commons-io:commons-io:2.15.1"
 fontmetrics = "org.javastack:fontmetrics:1.1.0"
 guava = "com.google.guava:guava:32.1.3-jre"
 j2html = "com.j2html:j2html:1.6.0"
