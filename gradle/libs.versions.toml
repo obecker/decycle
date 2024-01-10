@@ -13,7 +13,7 @@ j2html = "com.j2html:j2html:1.6.0"
 junit-bom = "org.junit:junit-bom:5.10.1"
 maven-artifact = { module = "org.apache.maven:maven-artifact", version.ref = "maven" }
 maven-core = { module = "org.apache.maven:maven-core", version.ref = "maven" }
-maven-plugin-tools = "org.apache.maven.plugin-tools:maven-plugin-annotations:3.10.2"
+maven-plugin-tools = "org.apache.maven.plugin-tools:maven-plugin-annotations:3.11.0"
 slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
 slf4j-jdk14 = { module = "org.slf4j:slf4j-jdk14", version.ref = "slf4j" }
 webjars-bootstrap4 = "org.webjars:bootstrap:4.6.2"
