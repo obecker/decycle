@@ -1,0 +1,3 @@
+# https://github.com/github-linguist/linguist/blob/master/docs/overrides.md
+# exclude html test files from language statistics
+*.html -linguist-detectable
