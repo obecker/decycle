@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import org.gradle.api.Action;
 import org.gradle.api.GradleException;
+import org.gradle.api.Named;
 import org.gradle.api.NamedDomainObjectContainer;
 import org.gradle.api.NamedDomainObjectProvider;
 import org.gradle.api.Project;
@@ -56,6 +57,22 @@ public class DecycleExtension {
                         value));
             }
             this.configuration.addSourceSet((SourceSet) value);
+        }
+    }
+
+    /**
+     * Declare the source sets to checked by decycle. Will be used for android source sets.
+     *
+     * @param sourceSets the source sets to be checked
+     */
+    public void sourceSets(final Named... sourceSets) {
+        for (final Named sourceSet : sourceSets) {
+            if (!sourceSet.getClass().getName().contains("com.android.build.gradle.internal.api.DefaultAndroidSourceSet")) {
+                throw new GradleException(String.format(
+                        "decycle: passed value to sourceSets is not a SourceSet, encountered %s",
+                        sourceSet));
+            }
+            this.configuration.addAndroidSourceSet(sourceSet);
         }
     }
 

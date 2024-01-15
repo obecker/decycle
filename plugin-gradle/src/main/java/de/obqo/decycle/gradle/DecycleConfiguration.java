@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.gradle.api.Named;
 import org.gradle.api.tasks.SourceSet;
 
 /**
@@ -16,6 +17,7 @@ class DecycleConfiguration implements Serializable {
     private static final long serialVersionUID = 10L;
 
     private final transient List<SourceSet> sourceSets = new ArrayList<>();
+    private final transient List<Named> androidSourceSets = new ArrayList<>();
     private final List<String> includings = new ArrayList<>();
     private final List<String> excludings = new ArrayList<>();
     private final List<IgnoreConfig> ignoredDeps = new ArrayList<>();
@@ -27,8 +29,16 @@ class DecycleConfiguration implements Serializable {
         return this.sourceSets;
     }
 
+    public List<Named> getAndroidSourceSets() {
+        return this.androidSourceSets;
+    }
+
     void addSourceSet(final SourceSet sourceSet) {
         this.sourceSets.add(sourceSet);
+    }
+
+    void addAndroidSourceSet(final Named sourceSet) {
+        this.androidSourceSets.add(sourceSet);
     }
 
     List<String> getIncludings() {
