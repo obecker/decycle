@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## 1.1.1 – 2024-01-15
+   - Several dependency updates
+     * guava 32.1.3 → 33.0.0
+     * maven 3.9.5 → 3.9.6
+     * maven-plugin-annotations 3.9.0 → 3.11.0
+     * slf4j 2.0.9 → 2.0.11
+     * webjars-locator-core 0.53 → 0.55
+     * bootstrap-icons 1.11.1 → 1.11.2
+
 ## 1.1.0 – 2023-10-11
    - Several dependency updates
      * asm 9.5 → 9.6 (supports Java 22)
