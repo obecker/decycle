@@ -184,3 +184,6 @@ gradle-app.setting
 
 ### Project specific stuff ###
 tmp/
+
+### SDKMAN ###
+.sdkmanrc
