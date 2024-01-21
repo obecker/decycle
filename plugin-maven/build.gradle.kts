@@ -23,7 +23,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api")
     testImplementation("org.junit.jupiter:junit-jupiter-params")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
-    testRuntimeOnly(libs.slf4j.jdk14)
+    testRuntimeOnly("org.slf4j:slf4j-jdk14")
 }
 
 tasks.compileJava {
