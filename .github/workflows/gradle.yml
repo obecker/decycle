@@ -1,6 +1,6 @@
 # This workflow will build a Java project with Gradle
 # For more information see:
-# https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
+# https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-gradle
 
 name: Build
 
@@ -23,6 +23,8 @@ jobs:
         with:
           java-version: 11
           distribution: temurin
+      - name: Validate Gradle Wrapper
+        uses: gradle/wrapper-validation-action@v1 # https://github.com/marketplace/actions/gradle-wrapper-validation
       - name: Build with Gradle
         uses: gradle/gradle-build-action@v2 # https://github.com/marketplace/actions/gradle-build-action
         with:
