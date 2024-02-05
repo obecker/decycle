@@ -25,10 +25,12 @@ jobs:
           distribution: temurin
       - name: Validate Gradle Wrapper
         uses: gradle/wrapper-validation-action@v2 # https://github.com/marketplace/actions/gradle-wrapper-validation
-      - name: Build with Gradle
-        uses: gradle/gradle-build-action@v3 # https://github.com/marketplace/actions/gradle-build-action
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v3 # https://github.com/marketplace/actions/build-with-gradle
         with:
-          arguments: build
+          add-job-summary-as-pr-comment: on-failure
+      - name: Build with Gradle
+        run: ./gradlew build
       - name: Create build artifacts
         uses: actions/upload-artifact@v4 # https://github.com/marketplace/actions/upload-a-build-artifact
         if: always()
