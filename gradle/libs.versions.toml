@@ -1,5 +1,5 @@
 [versions]
-freefair = "8.4"
+freefair = "8.6"
 maven = "3.9.6"
 
 [libraries]
