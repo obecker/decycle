@@ -41,9 +41,9 @@ class DecycleMojoTest {
 
         // then
         assertThat(new File(DECYCLE_MAIN_DIR)).exists()
-                .content().startsWith("<html").contains(projectName + " | main - Decycle Report");
+                .content().startsWith("<!DOCTYPE html><html").contains(projectName + " | main - Decycle Report");
         assertThat(new File(DECYCLE_TEST_DIR)).exists()
-                .content().startsWith("<html").contains(projectName + " | test - Decycle Report");
+                .content().startsWith("<!DOCTYPE html><html").contains(projectName + " | test - Decycle Report");
     }
 
     @Test
@@ -57,7 +57,7 @@ class DecycleMojoTest {
 
         // then
         assertThat(new File(DECYCLE_MAIN_DIR)).exists()
-                .content().startsWith("<html").contains(projectName + " | main - Decycle Report");
+                .content().startsWith("<!DOCTYPE html><html").contains(projectName + " | main - Decycle Report");
         assertThat(new File(DECYCLE_TEST_DIR)).doesNotExist();
     }
 
@@ -73,7 +73,7 @@ class DecycleMojoTest {
         // then
         assertThat(new File(DECYCLE_MAIN_DIR)).doesNotExist();
         assertThat(new File(DECYCLE_TEST_DIR)).exists()
-                .content().startsWith("<html").contains(projectName + " | test - Decycle Report");
+                .content().startsWith("<!DOCTYPE html><html").contains(projectName + " | test - Decycle Report");
     }
 
     @Test

@@ -25,6 +25,7 @@ import static j2html.TagCreator.body;
 import static j2html.TagCreator.dd;
 import static j2html.TagCreator.div;
 import static j2html.TagCreator.dl;
+import static j2html.TagCreator.document;
 import static j2html.TagCreator.dt;
 import static j2html.TagCreator.each;
 import static j2html.TagCreator.h1;
@@ -72,7 +73,6 @@ import j2html.TagCreator;
 import j2html.rendering.FlatHtml;
 import j2html.rendering.IndentedHtml;
 import j2html.tags.DomContent;
-import j2html.tags.specialized.HtmlTag;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -87,24 +87,24 @@ public class HtmlReport {
 
         resetDynIds();
 
-        final HtmlTag html = buildHtml(graph, violations, resourcesPrefix, title);
+        final var document = buildHtml(graph, violations, resourcesPrefix, title);
 
-        final Config config = Config.defaults().withTextEscaper(ImprovedTextEscaper::escape);
+        final var config = Config.defaults().withTextEscaper(ImprovedTextEscaper::escape);
         try {
-            html.render(this.minify ? FlatHtml.into(out, config) : IndentedHtml.into(out, config));
+            document.render(this.minify ? FlatHtml.into(out, config) : IndentedHtml.into(out, config));
         } catch (final IOException exception) {
             throw new UncheckedIOException(exception);
         }
     }
 
-    private HtmlTag buildHtml(final Graph graph, final List<Violation> violations, final String resourcesPrefix,
+    private DomContent buildHtml(final Graph graph, final List<Violation> violations, final String resourcesPrefix,
             final String title) {
         final var sliceSections = graph.sliceTypes().stream()
                 .filter(Predicate.not(SliceType::isClassType))
                 .sorted()
                 .map(sliceType -> buildSliceSection(graph, violations, sliceType));
 
-        return html().withLang("en").with(
+        final var html = html().withLang("en").with(
                 head(
                         meta().withCharset("UTF-8"),
                         meta().withName("viewport")
@@ -146,6 +146,8 @@ public class HtmlReport {
                         )
                 )
         );
+
+        return each(document(), html);
     }
 
     private DomContent inlineMarkup(final boolean minify, final String path) {
