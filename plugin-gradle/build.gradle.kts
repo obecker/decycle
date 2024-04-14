@@ -29,6 +29,7 @@ dependencies {
     testImplementation(libs.commons.io)
     testImplementation(platform(libs.junit.bom))
     testImplementation("org.junit.jupiter:junit-jupiter-api")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
     testRuntimeOnly(files(tasks.getByName("createClasspathManifest")))
 }
