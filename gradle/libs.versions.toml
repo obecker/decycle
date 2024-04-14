@@ -22,7 +22,7 @@ webjars-svgjs = "org.webjars:svg.js:3.1.1"
 webjars-tooltipster = "org.webjars.npm:tooltipster:4.2.8"
 
 [bundles]
-webjars = ["webjars-bootstrap4", "webjars-bootstrapIcons", "webjars-jquery", "webjars-tooltipster", "webjars-svgjs"]
+runtime-webjars = ["webjars-bootstrap4", "webjars-bootstrapIcons", "webjars-jquery", "webjars-svgjs"]
 
 [plugins]
 lombok = { id = "io.freefair.lombok", version.ref = "freefair" }

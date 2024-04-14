@@ -9,6 +9,14 @@ val displayName by extra("Decycle Lib")
 
 apply(from = rootProject.file("gradle/publishing.gradle.kts"))
 
+sourceSets.main {
+    resources {
+        srcDirs(layout.buildDirectory.dir("generated/resources"))
+    }
+}
+
+val tooltipster: Configuration by configurations.creating
+
 // see gradle/libs.versions.toml for libs.<xyz> dependencies
 dependencies {
     implementation(libs.asm)
@@ -21,7 +29,10 @@ dependencies {
     implementation(libs.webjars.locator) {
         exclude(group = "com.fasterxml.jackson.core") // not used
     }
-    runtimeOnly(libs.bundles.webjars)
+
+    runtimeOnly(libs.bundles.runtime.webjars)
+
+    tooltipster(libs.webjars.tooltipster)
 
     testImplementation(libs.assertj)
     testImplementation(platform(libs.junit.bom))
@@ -31,10 +42,6 @@ dependencies {
     testRuntimeOnly("org.slf4j:slf4j-jdk14")
 }
 
-tasks.compileJava {
-    options.compilerArgs.addAll(listOf("-Xlint:all", "-Xlint:-processing", "-Werror"))
-}
-
 java {
     withSourcesJar()
     withJavadocJar()
@@ -42,6 +49,33 @@ java {
         languageVersion.set(JavaLanguageVersion.of(11))
     }
 }
+
+tasks.compileJava {
+    options.compilerArgs.addAll(listOf("-Xlint:all", "-Xlint:-processing", "-Werror"))
+}
+
+val extractTooltipster = tasks.register<Copy>("extractTooltipster") {
+    // The tooltipster webjar contains outdated jQuery and jQuery UI versions that cause CVE warnings.
+    // Work-around: extract the required tooltipster dist files and copy them into the local resources.
+    from(zipTree(tooltipster.singleFile)) {
+        includeEmptyDirs = false
+        val included = setOf("tooltipster.bundle.min.css", "tooltipster.bundle.min.js", "tooltipster-SVG.min.js")
+        eachFile {
+            if (!included.contains(name)) {
+                exclude()
+            }
+            // flatten the path (remove the source directory structure)
+            relativePath = RelativePath(true, name)
+        }
+    }
+    into(layout.buildDirectory.dir("generated/resources/libs"))
+}
+
+tasks.processResources {
+    dependsOn(extractTooltipster)
+}
+
+tasks["sourcesJar"].dependsOn(extractTooltipster)
 
 tasks.test {
     useJUnitPlatform()

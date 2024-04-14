@@ -38,22 +38,25 @@ public class ResourcesExtractor {
     }
 
     public static void copyResources(final File targetDir) throws IOException {
-        copyLocalResource(targetDir, "custom.css");
-        copyLocalResource(targetDir, "custom.js");
+        copyLocalResource(targetDir, "report", "custom.css");
+        copyLocalResource(targetDir, "report", "custom.js");
+
+        copyLocalResource(targetDir, "libs", "tooltipster.bundle.min.css");
+        copyLocalResource(targetDir, "libs", "tooltipster.bundle.min.js");
+        copyLocalResource(targetDir, "libs", "tooltipster-SVG.min.js");
 
         copyWebJarResource(targetDir, "bootstrap", "bootstrap.min.css");
+        copyWebJarResource(targetDir, "bootstrap", "bootstrap.min.css.map");
         copyWebJarResource(targetDir, "bootstrap-icons", "bootstrap-icons.css");
         copyWebJarResource(targetDir, "bootstrap-icons", "fonts/bootstrap-icons.woff");
         copyWebJarResource(targetDir, "bootstrap-icons", "fonts/bootstrap-icons.woff2");
         copyWebJarResource(targetDir, "jquery", "jquery.min.js");
-        copyWebJarResource(targetDir, "tooltipster", "tooltipster.bundle.min.js");
-        copyWebJarResource(targetDir, "tooltipster", "tooltipster.bundle.min.css");
-        copyWebJarResource(targetDir, "tooltipster", "tooltipster-SVG.min.js");
         copyWebJarResource(targetDir, "svg.js", "svg.min.js");
+        copyWebJarResource(targetDir, "svg.js", "svg.min.js.map");
     }
 
-    private static void copyLocalResource(final File targetDir, final String name) throws IOException {
-        String content = InlineStaticResource.getFileAsString("/report/" + name);
+    private static void copyLocalResource(final File targetDir, final String prefix, final String name) throws IOException {
+        String content = InlineStaticResource.getFileAsString("/" + prefix + "/" + name);
         if (name.endsWith(".css")) {
             content = CSSMin.compressCss(content);
         } else if (name.endsWith(".js")) {
