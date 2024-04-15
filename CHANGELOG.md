@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## 1.2.0 – 2024-04-15
+   - Several dependency updates
+     * asm 9.6 → 9.7 (supports Java 23)
+     * guava 33.0.0 → 33.1.0
+     * maven-plugin-annotations 3.11.0 → 3.12.0
+     * slf4j 2.0.11 → 2.0.13
+     * webjars-locator-core 0.55 → 0.58
+     * bootstrap-icons 1.11.2 → 1.11.3
+   - Fix jQuery CVE warning from tooltipster webjar (fixes [#79](https://github.com/obecker/decycle/issues/79))
+   - Add html DOCTYPE to generated reports
+
 ## 1.1.1 – 2024-01-15
    - Several dependency updates
      * guava 32.1.3 → 33.0.0
