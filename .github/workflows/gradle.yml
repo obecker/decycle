@@ -24,7 +24,7 @@ jobs:
           java-version: 11
           distribution: temurin
       - name: Validate Gradle Wrapper
-        uses: gradle/wrapper-validation-action@v3 # https://github.com/marketplace/actions/gradle-wrapper-validation
+        uses: gradle/actions/wrapper-validation@v3 # https://github.com/marketplace/actions/gradle-wrapper-validation
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v3 # https://github.com/marketplace/actions/build-with-gradle
         with:
