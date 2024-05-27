@@ -1,6 +1,6 @@
 [versions]
 freefair = "8.6"
-maven = "3.9.6"
+maven = "3.9.7"
 
 [libraries]
 asm = "org.ow2.asm:asm:9.7"
