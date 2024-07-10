@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## [1.2.1](https://github.com/obecker/decycle/compare/v1.2.0...v1.2.1) – 2024-07-10
+   - Several dependency updates
+     * guava 33.1.0 → 33.2.1
+     * maven 3.9.6 → 3.9.8
+     * maven-plugin-annotations 3.12.0 → 3.13.1
+     * webjars-locator-core 0.58 → 0.59
+
 ## [1.2.0](https://github.com/obecker/decycle/compare/v1.1.1...v1.2.0) – 2024-04-15
    - Several dependency updates
      * asm 9.6 → 9.7 (supports Java 23)
