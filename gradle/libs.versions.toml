@@ -13,7 +13,7 @@ junit-bom = "org.junit:junit-bom:5.10.3"
 maven-artifact = { module = "org.apache.maven:maven-artifact", version.ref = "maven" }
 maven-core = { module = "org.apache.maven:maven-core", version.ref = "maven" }
 maven-plugin-tools = "org.apache.maven.plugin-tools:maven-plugin-annotations:3.13.1"
-slf4j-bom = "org.slf4j:slf4j-bom:2.0.15"
+slf4j-bom = "org.slf4j:slf4j-bom:2.0.16"
 webjars-bootstrap4 = "org.webjars:bootstrap:4.6.2"
 webjars-bootstrapIcons = "org.webjars.npm:bootstrap-icons:1.11.3"
 webjars-jquery = "org.webjars:jquery:3.7.1"
