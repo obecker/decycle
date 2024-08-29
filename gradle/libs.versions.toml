@@ -28,4 +28,4 @@ runtime-webjars = ["webjars-bootstrap4", "webjars-bootstrapIcons", "webjars-jque
 lombok = { id = "io.freefair.lombok", version.ref = "freefair" }
 maven-plugin = { id = "io.freefair.maven-plugin", version.ref = "freefair" }
 maven-publish-java = { id = "io.freefair.maven-publish-java", version.ref = "freefair" }
-publish = { id = "com.gradle.plugin-publish", version = "1.2.1" }
+publish = { id = "com.gradle.plugin-publish", version = "1.2.2" }
