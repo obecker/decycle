@@ -1,5 +1,7 @@
 package de.obqo.decycle.configuration;
 
+import static java.lang.String.format;
+
 import de.obqo.decycle.slicer.Categorizer;
 import de.obqo.decycle.slicer.NamedPatternMatchingCategorizer;
 
@@ -16,6 +18,10 @@ class NamedPattern implements Pattern {
         if (name.contains("*") || name.contains(".")) {
             log.warn("Decycle: Looks like you use the pattern '{}' as the NAME of a NamedPattern. " +
                     "Please note that a named pattern has the form <pattern>=<name>.", name);
+        }
+        if (pattern.contains("{") || pattern.contains("}")) {
+            throw new IllegalArgumentException(
+                    format("Curly braces are not allowed in a named pattern. Encountered '%s'", pattern));
         }
 
         this.name = name;

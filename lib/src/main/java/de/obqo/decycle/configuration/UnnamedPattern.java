@@ -5,7 +5,6 @@ import de.obqo.decycle.slicer.PatternMatchingCategorizer;
 
 import lombok.extern.slf4j.Slf4j;
 
-//@RequiredArgsConstructor
 @Slf4j
 class UnnamedPattern implements Pattern {
 

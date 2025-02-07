@@ -136,6 +136,13 @@ public class DecyclePluginFunctionalTest {
     }
 
     @Test
+    void shouldFailBecauseOfIllegalNamePatterns() {
+        final BuildResult result = buildAndFail("error-illegal-pattern.gradle");
+        assertBuildResult(result, TaskOutcome.FAILED, "decycleMain")
+                .contains("Curly braces are not allowed in a named pattern. Encountered 'demo.module.{*}.**'");
+    }
+
+    @Test
     void shouldFailBecauseOfWrongIgnoringListConfiguration() {
         final BuildResult result = buildAndFail("error-ignoring-list.gradle");
         assertBuildResult(result, TaskOutcome.FAILED, null)
