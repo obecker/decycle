@@ -157,10 +157,10 @@ public class HtmlReport {
     private DomContent buildViolationDiv(final List<Violation> violations) {
         return violations.isEmpty()
                 ? div().withClass("violations rounded-lg pb-1 mb-3 alert-success row").with(
-                h1().withClass("m-0 pt-2").with(i().withClass("bi bi-check-circle-fill")),
+                h1().withClass("m-0").with(i().withClass("bi bi-check-circle-fill")),
                 div().withClass("col-12 mt-1").with(b("No violations found")))
                 : div().withClass("violations rounded-lg pb-1 mb-3 alert-danger row").with(
-                h1().withClass("m-0 pt-2").with(i().withClass("bi bi-exclamation-triangle-fill")),
+                h1().withClass("m-0").with(i().withClass("bi bi-exclamation-triangle-fill")),
                 each(violations.stream().flatMap(this::buildViolationDivColumns)));
     }
 

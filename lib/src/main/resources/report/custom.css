@@ -4,7 +4,7 @@ html {
 
 .violations {
     position: relative;
-    min-height: 3.75rem;
+    min-height: calc(4rem + 2px);
     box-shadow: #dee2e6 0 1px 3px, #dee2e6 0 1px 6px;
 }
 .violations.alert-danger {
@@ -19,6 +19,8 @@ html {
 .violations > h1 {
     position: absolute;
     right: 0.75rem;
+    top: 0.75rem;
+    line-height: 1;
     text-shadow: 0 0 2px white;
 }
 
