@@ -85,10 +85,22 @@ The slices should be named `com.example.app`, `com.example.app.customer`, `com.e
 For the complete slicing configuration click the links below:
 
 <details>
-<summary>Gradle (click to expand)</summary>
+<summary>Gradle Kotlin DSL (click to expand)</summary>
+
+```kotlin
+// build.gradle.kts
+slicings {
+    create("branches") {
+        patterns("{com.example.app}.*", "{com.example.app.*}.**")
+    }
+}
+```
+</details>
+<details>
+<summary>Gradle Groovy DSL (click to expand)</summary>
 
 ```groovy
-// Gradle
+// build.gradle
 slicings {
     branches {
         patterns '{com.example.app}.*', '{com.example.app.*}.**'
@@ -100,7 +112,7 @@ slicings {
 <summary>Maven (click to expand)</summary>
 
 ```xml
-<!-- Maven -->
+<!-- pom.xml -->
 <slicings>
   <slicing>
     <name>branches</name>
@@ -120,10 +132,22 @@ The patterns for these slices are `com.example.app.*=base` and `com.example.app.
 For the complete slicing configuration click the links below:
 
 <details>
-<summary>Gradle (click to expand)</summary>
+<summary>Gradle Kotlin DSL (click to expand)</summary>
+
+```kotlin
+// build.gradle.kts
+slicings {
+    create("branches") {
+        patterns("com.example.app.*=base", "com.example.app.{*}.**")
+    }
+}
+```
+</details>
+<details>
+<summary>Gradle Groovy DSL (click to expand)</summary>
 
 ```groovy
-// Gradle
+// build.gradle
 slicings {
     branches {
         patterns 'com.example.app.*=base', 'com.example.app.{*}.**'
@@ -135,7 +159,7 @@ slicings {
 <summary>Maven (click to expand)</summary>
 
 ```xml
-<!-- Maven -->
+<!-- pom.xml -->
 <slicings>
   <slicing>
     <name>branches</name>
@@ -159,10 +183,25 @@ Classes that don't match the pattern will be ignored - in other words: a slicing
 classes.
 
 <details>
-<summary>Gradle (click to expand)</summary>
+<summary>Gradle Kotlin DSL (click to expand)</summary>
+
+```kotlin
+// build.gradle.kts
+slicings {
+    create("branches") {
+        patterns("com.example.app.*=base", "com.example.app.{*}.**")
+    }
+    create("layers") {
+        patterns("com.example.app.*.{*}.**")
+    }
+}
+```
+</details>
+<details>
+<summary>Gradle Groovy DSL (click to expand)</summary>
 
 ```groovy
-// Gradle
+// build.gradle
 slicings {
     branches {
         patterns 'com.example.app.*=base', 'com.example.app.{*}.**'
@@ -177,7 +216,7 @@ slicings {
 <summary>Maven (click to expand)</summary>
 
 ```xml
-<!-- Maven -->
+<!-- pom.xml -->
 <slicings>
   <slicing>
     <name>branches</name>
@@ -206,21 +245,38 @@ For defining the order of the dependencies in a slicing use `allow` with a list 
 For example: `invoice` may depend on `order` and `customer`, `order` may depend on `customer`,
 and all three of them may depend on `base`. This would be specified by
 
+```kotlin
+// build.gradle.kts
+allow("invoice", "order", "customer", "base")
+```
 ```groovy
-// Gradle
+// build.gradle
 allow 'invoice', 'order', 'customer', 'base'
 ```
 ```xml
-<!-- Maven -->
+<!-- pom.xml -->
 <allow>invoice, order, customer, base</allow>
 ```
 
 
 <details>
-<summary>Complete Gradle slicing configuration (click to expand)</summary>
+<summary>Complete Gradle slicing configuration - Kotlin DSL (click to expand)</summary>
+
+```kotlin
+// build.gradle.kts
+slicings {
+    create("branches") {
+        patterns("com.example.app.*=base", "com.example.app.{*}.**")
+        allow("invoice", "order", "customer", "base")
+    }
+}
+```
+</details>
+<details>
+<summary>Complete Gradle slicing configuration - Groovy DSL (click to expand)</summary>
 
 ```groovy
-// Gradle
+// build.gradle
 slicings {
     branches {
         patterns 'com.example.app.*=base', 'com.example.app.{*}.**'
@@ -233,7 +289,7 @@ slicings {
 <summary>Complete Maven slicing configuration (click to expand)</summary>
 
 ```xml
-<!-- Maven -->
+<!-- pom.xml -->
 <slicings>
   <slicing>
     <name>branches</name>
@@ -255,19 +311,23 @@ If you don't want to allow dependencies to skip slices, you can use `allowDirect
 instead of `allow`.
 So in the following (probably unrealistic) example `invoice` must depend only on `order`, but not on `customer`:
 
+```kotlin
+// build.gradle.kts
+allowDirect("invoice", "order", "customer")
+```
 ```groovy
-// Gradle
+// build.gradle
 allowDirect 'invoice', 'order', 'customer'
 ```
 ```xml
-<!-- Maven -->
+<!-- pom.xml -->
 <allow-direct>invoice, order, customer</allow-direct>
 ```
 
 Moreover, slices not part of the specified list may only depend on the first element in the list, or only the last 
 element in the list may depend on such unspecified slices.
 
-Example: if there would be another slice `product`, then all of the slices in
+Example: if there would be another slice `product`, then all the slices in
 `allow 'invoice', 'order', 'customer', 'base'` might depend on `product`. However, in
 `allowDirect 'invoice', 'order', 'customer'` only `customer` is allowed to depend on `product`.
 
@@ -276,8 +336,12 @@ Example: if there would be another slice `product`, then all of the slices in
 If there is a group of slices for which you don’t care about the order, you can specify them using `anyOf(...)` like in
 the following example:
 
+```kotlin
+// build.gradle.kts
+allow(anyOf("invoice", "order"), "customer", "base")
+```
 ```groovy
-// Gradle
+// build.gradle
 allow anyOf('invoice', 'order'), 'customer', 'base'
 ```
 
@@ -287,7 +351,7 @@ between these two slices).
 In the Maven plugin the corresponding configuration is a bit more verbose:
 
 ```xml
-<!-- Maven -->
+<!-- pom.xml -->
 <allow>
   <any-of>invoice, order</any-of>
   <any-of>customer</any-of>
@@ -303,12 +367,16 @@ to enclose every single slice name in the `<allow>` list in an `<any-of>` elemen
 If you want to define that some slices must not depend directly on each other, you can put them into an `oneOf` construct.
 So, changing our example into
 
+```kotlin
+// build.gradle.kts
+allow(oneOf("invoice", "order"), "customer", "base")
+```
 ```groovy
-// Gradle
+// build.gradle
 allow oneOf('invoice', 'order'), 'customer', 'base'
 ```
 ```xml
-<!-- Maven -->
+<!-- pom.xml -->
 <allow>
   <one-of>invoice, order</one-of>
   <any-of>customer</any-of> <!-- could be as well <one-of>customer</one-of> -->
@@ -321,12 +389,16 @@ Both still may depend on `customer` and `base`.
 
 In particular (using some other example application with a technical layer slicing), it is possible to add a 
 constraint that consists solely of a `oneOf` like this:
+```kotlin
+// build.gradle.kts
+allow(oneOf("api", "web", "amqp"))
+```
 ```groovy
-// Gradle
+// build.gradle
 allow oneOf('api', 'web', 'amqp')
 ```
 ```xml
-<!-- Maven -->
+<!-- pom.xml -->
 <allow>
   <one-of>api, web, amqp</one-of>
 </allow>
@@ -335,4 +407,4 @@ Here we don't specify any dependency order. Instead, we forbid (direct) dependen
 `api`, `web`, and `amqp`.
 
 Both `anyOf` and `oneOf` may be used with `allow` and `allowDirect`.
-Also multiple `allow` / `allowDirect` specifications are possible per slicing.
+Also, multiple `allow` / `allowDirect` specifications are possible per slicing.

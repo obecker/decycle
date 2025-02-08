@@ -16,7 +16,7 @@ Add the plugin to your build gradle file as described on the
 ## Running
 
 The plugin creates for each source set a corresponding <code>decycle<i>SourceSetName</i></code> task.
-Additionally there is one `decycle` task that runs all these source set specific tasks.
+Additionally, there is one `decycle` task that runs all these source set specific tasks.
 
 You can run a single decycle check (for example for the `main` source set) with
 
@@ -41,31 +41,9 @@ gradle check
 The plugin adds a `decycle` configuration object to the build, that offers the following optional configuration settings:
 
 <details open>
-<summary><b>Groovy Gradle DSL</b></summary>
+<summary><b>Gradle Kotlin DSL</b></summary>
 <pre>
-<b>decycle</b> {
-    <b>sourceSets</b> sourceSets.main, sourceSets.test, ...
-    <b>including</b> 'org.example.includes.**', ...
-    <b>excluding</b> 'org.example.excludes.**', ...
-    <b>ignoring</b> from: 'org.examples.from.Example', to: 'org.examples.to.**'
-    <b>slicings</b> {
-        <i>name1</i> {
-            <b>patterns</b> 'org.example.{*}.**', ...
-            <b>allow</b> 'a', 'b', ...
-            <b>allowDirect</b> 'x', <b>anyOf</b>('y', 'z'), ...
-        }
-        <i>name2</i> {
-            ...
-        }
-    }
-    <b>ignoreFailures</b> false
-    <b>reportsEnabled</b> true
-}
-</pre>
-</details>
-<details>
-<summary><b>Kotlin Gradle DSL</b> (click to expand)</summary>
-<pre>
+<i>// build.gradle.kts</i>
 <b>decycle</b> {
     <b>sourceSets</b>(sourceSets.main, sourceSets.test, ...)
     <b>including</b>("org.example.includes.**", ...)
@@ -83,6 +61,30 @@ The plugin adds a `decycle` configuration object to the build, that offers the f
     }
     <b>ignoreFailures</b>(false)
     <b>reportsEnabled</b>(true)
+}
+</pre>
+</details>
+<details>
+<summary><b>Gradle Groovy DSL</b> (click to expand)</summary>
+<pre>
+<i>// build.gradle</i>
+<b>decycle</b> {
+    <b>sourceSets</b> sourceSets.main, sourceSets.test, ...
+    <b>including</b> 'org.example.includes.**', ...
+    <b>excluding</b> 'org.example.excludes.**', ...
+    <b>ignoring</b> from: 'org.examples.from.Example', to: 'org.examples.to.**'
+    <b>slicings</b> {
+        <i>name1</i> {
+            <b>patterns</b> 'org.example.{*}.**', ...
+            <b>allow</b> 'a', 'b', ...
+            <b>allowDirect</b> 'x', <b>anyOf</b>('y', 'z'), ...
+        }
+        <i>name2</i> {
+            ...
+        }
+    }
+    <b>ignoreFailures</b> false
+    <b>reportsEnabled</b> true
 }
 </pre>
 </details>
@@ -110,13 +112,14 @@ they will be added to the existing configuration.)
   (i.e. it is present in the report). Multiple ignored dependencies can be configured by using `ignoring` multiple times. 
   Ignored dependencies might be useful if you introduce decycle to an existing project and don't want to resolve all 
   existing cyclic dependencies at once.
-  Technically (using the Groovy DSL) the parameter for `ignoring` is a map with the following two keys,
+
+  Using the Kotlin DLS, the parameter for `ignoring` is a pair `"from" to "to"`.
+
+  Using the Groovy DSL the parameter for `ignoring` is a map with the following two keys,
   both are optional:
     * `from:` defines the source of the dependency (default: '**')
     * `to`: defines the target of the dependency (default: '**')
   
-  Using the Kotlin DLS, the parameter for `ignoring` is typically a pair `"from" to "to"`.
-
 * `slicings`
   starts the slicings block, each [slicing](../readme/slicings.md) has a name (also known as slicing type). 
   A slicing configuration contains:

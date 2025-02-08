@@ -45,7 +45,7 @@ If it detects violations (i.e. package cycles) then the build will fail by defau
 (however, this behavior can be adjusted, see `ignoreFailures` below in [Configuration](#configuration)).
 
 The two goals `decycle:checkMain` and `decycle:checkTest` are intended to be invoked as single goals
-(e.g. via `mvn decycle:checkMain`). They will first compile the sources and perform the decycle check afterwards.
+(e.g. via `mvn decycle:checkMain`). They will first compile the sources and perform the decycle check afterward.
 They may be executed after fixing violations detected by decycle.
 (Note: running `decycle:check` in contrast will *not* automatically recompile the sources.)
 
