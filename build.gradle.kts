@@ -1,5 +1,5 @@
 group = "de.obqo.decycle"
-version = "1.2.2-SNAPSHOT"
+version = "1.2.2"
 
 tasks.wrapper {
     gradleVersion = "8.2.1"

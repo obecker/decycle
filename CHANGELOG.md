@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## [1.2.2](https://github.com/obecker/decycle/compare/v1.2.1...v1.2.2) – 2025-02-14
+   - Several dependency updates
+     * asm 9.7 → 9.7.1 (supports Java 24)
+     * guava 33.2.1 → 33.4.0
+     * maven 3.9.8 → 3.9.9
+     * maven-plugin-annotations 3.13.1 → 3.15.1
+     * slf4j 2.0.13 → 2.0.16
+   - Extend configuration validation: Reject curly braces in pattern names
+   - Minor style improvements: Adjust paddings in the HTML report
+   - Fix CVE warning from bootstrap4 webjar
+
+
 ## [1.2.1](https://github.com/obecker/decycle/compare/v1.2.0...v1.2.1) – 2024-07-10
    - Several dependency updates
      * guava 33.1.0 → 33.2.1
