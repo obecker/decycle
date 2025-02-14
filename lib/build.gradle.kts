@@ -16,6 +16,7 @@ sourceSets.main {
 }
 
 val tooltipster: Configuration by configurations.creating
+val bootstrap: Configuration by configurations.creating
 
 // see gradle/libs.versions.toml for libs.<xyz> dependencies
 dependencies {
@@ -33,6 +34,7 @@ dependencies {
     runtimeOnly(libs.bundles.runtime.webjars)
 
     tooltipster(libs.webjars.tooltipster)
+    bootstrap(libs.webjars.bootstrap4)
 
     testImplementation(libs.assertj)
     testImplementation(platform(libs.junit.bom))
@@ -71,12 +73,28 @@ val extractTooltipster = tasks.register<Copy>("extractTooltipster") {
     }
     into(layout.buildDirectory.dir("generated/resources/libs"))
 }
-
-tasks.processResources {
-    dependsOn(extractTooltipster)
+val extractBootstrap = tasks.register<Copy>("extractBootstrap") {
+    // The JS components in bootstrap 4 cause a CVE warning. However, we don't use any JS from bootstrap.
+    // Work-around: extract only the bootstrap CSS files and copy them into the local resources.
+    from(zipTree(bootstrap.files.first { it.name.contains("bootstrap") })) {
+        includeEmptyDirs = false
+        val included = setOf("bootstrap.min.css", "bootstrap.min.css.map")
+        eachFile {
+            if (!included.contains(name)) {
+                exclude()
+            }
+            // flatten the path (remove the source directory structure)
+            relativePath = RelativePath(true, name)
+        }
+    }
+    into(layout.buildDirectory.dir("generated/resources/libs"))
 }
 
-tasks["sourcesJar"].dependsOn(extractTooltipster)
+tasks.processResources {
+    dependsOn(extractTooltipster, extractBootstrap)
+}
+
+tasks["sourcesJar"].dependsOn(extractTooltipster, extractBootstrap)
 
 tasks.test {
     useJUnitPlatform()

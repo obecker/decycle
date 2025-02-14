@@ -44,9 +44,9 @@ public class ResourcesExtractor {
         copyLocalResource(targetDir, "libs", "tooltipster.bundle.min.css");
         copyLocalResource(targetDir, "libs", "tooltipster.bundle.min.js");
         copyLocalResource(targetDir, "libs", "tooltipster-SVG.min.js");
+        copyLocalResource(targetDir, "libs", "bootstrap.min.css");
+        copyLocalResource(targetDir, "libs", "bootstrap.min.css.map");
 
-        copyWebJarResource(targetDir, "bootstrap", "bootstrap.min.css");
-        copyWebJarResource(targetDir, "bootstrap", "bootstrap.min.css.map");
         copyWebJarResource(targetDir, "bootstrap-icons", "bootstrap-icons.css");
         copyWebJarResource(targetDir, "bootstrap-icons", "fonts/bootstrap-icons.woff");
         copyWebJarResource(targetDir, "bootstrap-icons", "fonts/bootstrap-icons.woff2");
