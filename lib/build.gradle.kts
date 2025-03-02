@@ -1,3 +1,8 @@
+import org.gradle.kotlin.dsl.dependencies
+import org.webjars.WebJarAssetLocator
+import java.nio.file.Files
+import java.nio.file.StandardCopyOption.REPLACE_EXISTING
+
 plugins {
     `java-library`
     alias(libs.plugins.lombok)
@@ -9,14 +14,25 @@ val displayName by extra("Decycle Lib")
 
 apply(from = rootProject.file("gradle/publishing.gradle.kts"))
 
-sourceSets.main {
-    resources {
-        srcDirs(layout.buildDirectory.dir("generated/resources"))
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath(libs.webjars.locator) {
+            exclude(group = "com.fasterxml.jackson.core") // not used
+        }
+        classpath(libs.bundles.webjars)
     }
 }
 
-val tooltipster: Configuration by configurations.creating
-val bootstrap: Configuration by configurations.creating
+val generatedResources = layout.buildDirectory.dir("generated/resources")
+sourceSets.main {
+    resources {
+        srcDirs(generatedResources)
+    }
+}
 
 // see gradle/libs.versions.toml for libs.<xyz> dependencies
 dependencies {
@@ -27,14 +43,6 @@ dependencies {
     implementation(libs.maven.artifact)
     implementation(platform(libs.slf4j.bom))
     implementation("org.slf4j:slf4j-api")
-    implementation(libs.webjars.locator) {
-        exclude(group = "com.fasterxml.jackson.core") // not used
-    }
-
-    runtimeOnly(libs.bundles.runtime.webjars)
-
-    tooltipster(libs.webjars.tooltipster)
-    bootstrap(libs.webjars.bootstrap4)
 
     testImplementation(libs.assertj)
     testImplementation(platform(libs.junit.bom))
@@ -57,44 +65,44 @@ tasks.compileJava {
     options.compilerArgs.addAll(listOf("-Xlint:all", "-Xlint:-processing", "-Werror"))
 }
 
-val extractTooltipster = tasks.register<Copy>("extractTooltipster") {
-    // The tooltipster webjar contains outdated jQuery and jQuery UI versions that cause CVE warnings.
-    // Work-around: extract the required tooltipster dist files and copy them into the local resources.
-    from(zipTree(tooltipster.singleFile)) {
-        includeEmptyDirs = false
-        val included = setOf("tooltipster.bundle.min.css", "tooltipster.bundle.min.js", "tooltipster-SVG.min.js")
-        eachFile {
-            if (!included.contains(name)) {
-                exclude()
-            }
-            // flatten the path (remove the source directory structure)
-            relativePath = RelativePath(true, name)
+val extractWebJars = tasks.register("extractWebjars") {
+    description = "Extract webjar resources to generated/resources"
+
+    val locator = WebJarAssetLocator()
+    val classLoader = locator::class.java.classLoader
+    val resourcesLibs = generatedResources.map { it.dir("libs") }
+
+    fun copyWebJarResource(webJar: String, resource: String) {
+        logger.info("Copying resource $resource from $webJar")
+        val stream = requireNotNull(classLoader.getResourceAsStream(locator.getFullPath(webJar, resource))) {
+            "Missing $resource in $webJar"
         }
+        val target = resourcesLibs.get().file(resource).asFile.also {
+            it.parentFile.mkdirs()
+        }.toPath()
+        Files.copy(stream, target, REPLACE_EXISTING)
     }
-    into(layout.buildDirectory.dir("generated/resources/libs"))
-}
-val extractBootstrap = tasks.register<Copy>("extractBootstrap") {
-    // The JS components in bootstrap 4 cause a CVE warning. However, we don't use any JS from bootstrap.
-    // Work-around: extract only the bootstrap CSS files and copy them into the local resources.
-    from(zipTree(bootstrap.files.first { it.name.contains("bootstrap") })) {
-        includeEmptyDirs = false
-        val included = setOf("bootstrap.min.css", "bootstrap.min.css.map")
-        eachFile {
-            if (!included.contains(name)) {
-                exclude()
-            }
-            // flatten the path (remove the source directory structure)
-            relativePath = RelativePath(true, name)
-        }
+
+    doLast {
+        copyWebJarResource("bootstrap", "bootstrap.min.css")
+        copyWebJarResource("bootstrap", "bootstrap.min.css.map")
+        copyWebJarResource("bootstrap-icons", "bootstrap-icons.css")
+        copyWebJarResource("bootstrap-icons", "fonts/bootstrap-icons.woff")
+        copyWebJarResource("bootstrap-icons", "fonts/bootstrap-icons.woff2")
+        copyWebJarResource("jquery", "jquery.min.js")
+        copyWebJarResource("tooltipster", "tooltipster.bundle.min.css")
+        copyWebJarResource("tooltipster", "tooltipster.bundle.min.js")
+        copyWebJarResource("tooltipster", "tooltipster-SVG.min.js")
+        copyWebJarResource("svg.js", "svg.min.js")
+        copyWebJarResource("svg.js", "svg.min.js.map")
     }
-    into(layout.buildDirectory.dir("generated/resources/libs"))
 }
 
 tasks.processResources {
-    dependsOn(extractTooltipster, extractBootstrap)
+    dependsOn(extractWebJars)
 }
 
-tasks["sourcesJar"].dependsOn(extractTooltipster, extractBootstrap)
+tasks["sourcesJar"].dependsOn(extractWebJars)
 
 tasks.test {
     useJUnitPlatform()
