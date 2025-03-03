@@ -54,7 +54,8 @@ ul.references > li > a.toggle-display {
     color: dimgray;
     position: absolute;
     left: -18px;
-    top: 4px;
+    top: 0;
+    bottom: 0;
 }
 ul.references > li > a.toggle-display:hover {
     color: black;
