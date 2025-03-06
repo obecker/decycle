@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## [1.2.3](https://github.com/obecker/decycle/compare/v1.2.2...v1.2.3) – 2025-03-06
+   - Update slf4j 2.0.16 → 2.0.17
+   - Remove all runtime webjar dependencies. All required frontend resources are now included in decycle.
+   - CSS position fix in the HTML report
+
 ## [1.2.2](https://github.com/obecker/decycle/compare/v1.2.1...v1.2.2) – 2025-02-14
    - Several dependency updates
      * asm 9.7 → 9.7.1 (supports Java 24)
@@ -10,7 +15,6 @@
    - Extend configuration validation: Reject curly braces in pattern names
    - Minor style improvements: Adjust paddings in the HTML report
    - Fix CVE warning from bootstrap4 webjar
-
 
 ## [1.2.1](https://github.com/obecker/decycle/compare/v1.2.0...v1.2.1) – 2024-07-10
    - Several dependency updates
