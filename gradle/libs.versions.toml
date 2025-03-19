@@ -7,7 +7,7 @@ asm = "org.ow2.asm:asm:9.7.1"
 assertj = "org.assertj:assertj-core:3.27.3"
 commons-io = "commons-io:commons-io:2.18.0"
 fontmetrics = "org.javastack:fontmetrics:1.1.0"
-guava = "com.google.guava:guava:33.4.0-jre"
+guava = "com.google.guava:guava:33.4.5-jre"
 j2html = "com.j2html:j2html:1.6.0"
 junit-bom = "org.junit:junit-bom:5.12.1"
 maven-artifact = { module = "org.apache.maven:maven-artifact", version.ref = "maven" }
