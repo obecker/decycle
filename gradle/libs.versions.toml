@@ -15,7 +15,7 @@ maven-core = { module = "org.apache.maven:maven-core", version.ref = "maven" }
 maven-plugin-tools = "org.apache.maven.plugin-tools:maven-plugin-annotations:3.15.1"
 slf4j-bom = "org.slf4j:slf4j-bom:2.0.17"
 webjars-bootstrap4 = "org.webjars:bootstrap:4.6.2"
-webjars-bootstrapIcons = "org.webjars.npm:bootstrap-icons:1.11.3"
+webjars-bootstrapIcons = "org.webjars.npm:bootstrap-icons:1.12.1"
 webjars-jquery = "org.webjars:jquery:3.7.1"
 webjars-locator = "org.webjars:webjars-locator-core:0.59"
 webjars-svgjs = "org.webjars:svg.js:3.1.1"
