@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## [1.2.4](https://github.com/obecker/decycle/compare/v1.2.3...v1.2.4) – 2025-05-05
+   - Several dependency updates
+     * asm 9.7.1 → 9.8 (supports Java 25)
+     * guava 33.4.0 → 33.4.8
+
 ## [1.2.3](https://github.com/obecker/decycle/compare/v1.2.2...v1.2.3) – 2025-03-06
    - Update slf4j 2.0.16 → 2.0.17
    - Remove all runtime webjar dependencies. All required frontend resources are now included in decycle.
