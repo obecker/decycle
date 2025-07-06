@@ -239,4 +239,11 @@ public class DecyclePluginFunctionalTest {
         // then
         assertBuildResult(upToDateResult, TaskOutcome.UP_TO_DATE, "decycleMain");
     }
+
+    @Test
+    void shouldFailWhenNoCompatiblePluginApplied() {
+        final BuildResult result = buildAndFail("error-no-java-plugin.gradle");
+        assertBuildResult(result, TaskOutcome.FAILED, null)
+                .contains("Decycle plugin requires a plugin that provides source sets");
+    }
 }
