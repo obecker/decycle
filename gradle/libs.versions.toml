@@ -5,7 +5,7 @@ maven = "3.9.11"
 [libraries]
 asm = "org.ow2.asm:asm:9.8"
 assertj = "org.assertj:assertj-core:3.27.3"
-commons-io = "commons-io:commons-io:2.19.0"
+commons-io = "commons-io:commons-io:2.20.0"
 fontmetrics = "org.javastack:fontmetrics:1.1.0"
 guava = "com.google.guava:guava:33.4.8-jre"
 j2html = "com.j2html:j2html:1.6.0"
