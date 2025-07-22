@@ -9,7 +9,7 @@ commons-io = "commons-io:commons-io:2.20.0"
 fontmetrics = "org.javastack:fontmetrics:1.1.0"
 guava = "com.google.guava:guava:33.4.8-jre"
 j2html = "com.j2html:j2html:1.6.0"
-junit-bom = "org.junit:junit-bom:5.13.3"
+junit-bom = "org.junit:junit-bom:5.13.4"
 maven-artifact = { module = "org.apache.maven:maven-artifact", version.ref = "maven" }
 maven-core = { module = "org.apache.maven:maven-core", version.ref = "maven" }
 maven-plugin-tools = "org.apache.maven.plugin-tools:maven-plugin-annotations:3.15.1"
