@@ -6,6 +6,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
@@ -55,7 +56,9 @@ public class ResourcesExtractor {
     }
 
     private static void copyLibResource(final File targetDir, final String name) throws IOException {
-        copy(ResourcesExtractor.class.getResourceAsStream("/libs/" + name), targetDir, name);
+        final URLConnection connection = ResourcesExtractor.class.getResource("/libs/" + name).openConnection();
+        connection.setUseCaches(false);
+        copy(connection.getInputStream(), targetDir, name);
     }
 
     private static void copy(final InputStream inputStream, final File targetDir, final String name) throws IOException {
