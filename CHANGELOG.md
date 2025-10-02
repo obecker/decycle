@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## [1.2.5](https://github.com/obecker/decycle/compare/v1.2.4...v1.2.5) – 2025-10-02
+  - Fix occasional "Stream closed" exception when generating HTML reports ([#52](https://github.com/obecker/decycle/issues/152))
+  - Several dependency updates
+    * guava 33.4.8 → 33.5.0
+    * maven 3.9.9 → 3.9.11
+    * bootstrap-icons 1.11.2 → 1.13.1
+
 ## [1.2.4](https://github.com/obecker/decycle/compare/v1.2.3...v1.2.4) – 2025-05-05
    - Several dependency updates
      * asm 9.7.1 → 9.8 (supports Java 25)
