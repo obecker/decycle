@@ -14,7 +14,6 @@ class DecyclePlugin implements Plugin<Project> {
 
     @Override
     void apply(final Project project) {
-        project.apply plugin: 'java'
 
         Properties props = new Properties()
         getClass().classLoader.getResource("META-INF/gradle-plugins/de.obqo.decycle.properties").withInputStream { stream ->
@@ -35,6 +34,13 @@ class DecyclePlugin implements Plugin<Project> {
         workerClasspath.setDescription("The Decycle libraries to be used for this project")
 
         project.afterEvaluate {
+            // Ensure that a compatible plugin (java, java-library, android, etc.) is applied
+            if (!project.hasProperty('sourceSets')) {
+                throw new org.gradle.api.GradleException(
+                    "Decycle plugin requires a plugin that provides source sets (e.g., 'java', 'java-library', or Android plugins). " +
+                    "Please apply one of these plugins before applying the decycle plugin."
+                )
+            }
 
             project.dependencies {
                 decycle "de.obqo.decycle:decycle-lib:${toolVersion}"

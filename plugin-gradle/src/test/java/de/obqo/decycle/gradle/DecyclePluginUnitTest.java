@@ -15,6 +15,7 @@ public class DecyclePluginUnitTest {
     @Test
     void pluginShouldAddTaskAndExtension() {
         Project project = ProjectBuilder.builder().build();
+        project.getPluginManager().apply("java");
         project.getPluginManager().apply("de.obqo.decycle");
 
         assertThat(project.getTasks().getByName("decycle")).isInstanceOf(Task.class);
