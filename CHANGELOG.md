@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## [1.2.6](https://github.com/obecker/decycle/compare/v1.2.5...v1.2.6) – 2025-03-01
+  - Print filename of the generated HTML report as URI (enables clicking on the link in some terminals)
+  - Several dependency updates
+    * asm 9.8 → 9.9.1  (supports Java 26)
+    * maven 3.9.11 → 3.9.12
+    * maven-plugin-annotations 3.15.1 → 3.15.2
+    * jquery 3.7.1 → 4.0.0
+
 ## [1.2.5](https://github.com/obecker/decycle/compare/v1.2.4...v1.2.5) – 2025-10-02
   - Fix occasional "Stream closed" exception when generating HTML reports ([#52](https://github.com/obecker/decycle/issues/152))
   - Several dependency updates
