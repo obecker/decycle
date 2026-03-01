@@ -182,8 +182,10 @@ abstract class AbstractDecycleMojo extends AbstractMojo {
         if (!violations.isEmpty()) {
             logHandler.accept("Violations detected: " + Constraint.Violation.displayString(violations));
             if (report != null) {
-                logHandler.accept("See the report at: " + report);
+                logHandler.accept("See the report at: " + report.toURI());
             }
+        } else if (report != null) {
+            log.info("Decycle HTML report is available at: " + report.toURI());
         }
         return violations;
     }

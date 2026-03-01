@@ -65,17 +65,17 @@ public abstract class DecycleWorker implements WorkAction<DecycleWorkerParameter
                 builder.reportResourcesPrefix(resourcesDirName);
                 builder.reportTitle(reportTitle);
 
-                buildAndCheck(builder, configuration.isIgnoreFailures(), "\nSee the report at: " + reportFile);
+                buildAndCheck(builder, configuration.isIgnoreFailures(), reportFile);
             } catch (final IOException ioException) {
                 throw new GradleException(ioException.getMessage(), ioException);
             }
         } else { // reports not enabled
-            buildAndCheck(builder, configuration.isIgnoreFailures(), "");
+            buildAndCheck(builder, configuration.isIgnoreFailures(), null);
         }
     }
 
     private void buildAndCheck(final ConfigurationBuilder builder, final boolean ignoreFailures,
-            final String violationsInfo) {
+            final File reportFile) {
         final Configuration decycleConfig = builder.build();
         logger.info("Decycle configuration: {}", decycleConfig);
 
@@ -83,12 +83,17 @@ public abstract class DecycleWorker implements WorkAction<DecycleWorkerParameter
         logger.debug("decycle result: {}", violations);
 
         if (!violations.isEmpty()) {
-            final String message = Constraint.Violation.displayString(violations) + violationsInfo;
+            final StringBuilder message = new StringBuilder(Constraint.Violation.displayString(violations));
+            if (reportFile != null) {
+                message.append(System.lineSeparator()).append("See the report at: ").append(reportFile.toURI());
+            }
             if (ignoreFailures) {
                 logger.warn("Violations detected: {}", message);
             } else {
-                throw new GradleException(message);
+                throw new GradleException(message.toString());
             }
+        } else if (reportFile != null) {
+            logger.info("Decycle HTML report is available at: {}",  reportFile.toURI());
         }
     }
 
