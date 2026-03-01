@@ -160,10 +160,11 @@ public class DecyclePluginFunctionalTest {
     @Test
     void shouldSucceedWithIgnoreFailures() {
         final BuildResult result = build("ignoreFailures.gradle");
+        final String nl = System.lineSeparator();
         assertBuildResult(result, TaskOutcome.SUCCESS, "decycleMain")
-                .contains("\nViolations detected: Violation(slicing=Package, name=cycle, " +
-                        "dependencies=[demo.cycle.a → demo.cycle.b, demo.cycle.b → demo.cycle.a])\n")
-                .contains("See the report at: ");
+                .contains(nl + "Violations detected: Violation(slicing=Package, name=cycle, " +
+                        "dependencies=[demo.cycle.a → demo.cycle.b, demo.cycle.b → demo.cycle.a])" + nl)
+                .contains(nl + "See the report at: file:/");
     }
 
     @Test

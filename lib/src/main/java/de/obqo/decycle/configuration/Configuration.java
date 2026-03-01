@@ -109,7 +109,7 @@ public class Configuration {
      */
     @Builder
     private Configuration(
-            final String classpath,
+            @NonNull final String classpath,
             final List<String> including,
             final List<String> excluding,
             final List<IgnoredDependency> ignoring,
@@ -191,13 +191,14 @@ public class Configuration {
      */
     @Override
     public String toString() {
-        final StringBuilder builder = new StringBuilder("Decycle {\n");
-        builder.append("  classpath: ").append(this.classpath).append("\n");
-        builder.append("  including: ").append(this.including).append("\n");
-        builder.append("  excluding: ").append(this.excluding).append("\n");
-        builder.append("  ignoring: ").append(this.ignoring).append("\n");
-        builder.append("  slicings: ").append(this.slicings).append("\n");
-        builder.append("  constraints: ").append(this.constraints).append("\n");
+        final String nl = System.lineSeparator();
+        final StringBuilder builder = new StringBuilder("Decycle {").append(nl);
+        builder.append("  classpath: ").append(this.classpath).append(nl);
+        builder.append("  including: ").append(this.including).append(nl);
+        builder.append("  excluding: ").append(this.excluding).append(nl);
+        builder.append("  ignoring: ").append(this.ignoring).append(nl);
+        builder.append("  slicings: ").append(this.slicings).append(nl);
+        builder.append("  constraints: ").append(this.constraints).append(nl);
         builder.append("}");
         return builder.toString();
     }

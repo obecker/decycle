@@ -47,7 +47,7 @@ public interface Constraint {
         }
 
         public static String displayString(final List<Violation> violations) {
-            return violations.stream().map(Constraint.Violation::displayString).collect(joining("\n"));
+            return violations.stream().map(Constraint.Violation::displayString).collect(joining(System.lineSeparator()));
         }
     }
 
