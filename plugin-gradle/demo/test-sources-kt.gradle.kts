@@ -1,4 +1,5 @@
 plugins {
+    id("java")
     id("de.obqo.decycle")
 }
 

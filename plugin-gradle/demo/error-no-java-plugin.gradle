@@ -1,0 +1,8 @@
+plugins {
+    id 'de.obqo.decycle'
+}
+
+// This simulates a project without the java plugin - it should fail with a meaningful error
+decycle {
+    excluding 'demo.cycle.**'
+}
