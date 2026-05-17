@@ -15,7 +15,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-@SuppressWarnings("UnstableApiUsage")
 class DefaultMutableSlicing implements MutableSlicing {
 
     @Getter

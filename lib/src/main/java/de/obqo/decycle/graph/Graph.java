@@ -32,7 +32,6 @@ import com.google.common.graph.NetworkBuilder;
  * {@link SliceType#customType(String) custom slice} nodes that are connected to class nodes by {@link
  * Edge.EdgeLabel#CONTAINS containing} {@link Edge edges}.
  */
-@SuppressWarnings("UnstableApiUsage")
 public class Graph implements SlicingSource {
 
     private final Categorizer categorizer;
