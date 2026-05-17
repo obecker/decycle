@@ -82,10 +82,10 @@ public class Configuration {
     private final Graph graph;
 
     /**
-     * Constructor for the Lombok builder. Will not be visible in the generated javadoc, but the param comments will be
+     * Constructor for the Lombok builder. Will not be visible in the generated Javadoc, but the param comments will be
      * copied to their corresponding builder methods.
      *
-     * @param classpath    The classpath the be analyzed - this cannot be {@code null} or omitted. The classpath is a
+     * @param classpath    The classpath to be analyzed - this cannot be {@code null} or omitted. The classpath is a
      *                     string of directories or jar files that are separated by the OS specific path separator
      *                     (typically a semicolon ';' or colon ':').
      * @param including    Include only classes in the analysis whose fully qualified class names match the given
@@ -105,7 +105,7 @@ public class Configuration {
      *                     configured.
      * @param minifyReport Whether the HTML report should be minified (default is {@code true}). Has no effect if no
      *                     {@code report} was configured.
-     * @since dummy javadoc tag - prevents a lombok bug that discards the last param comment in the builder methods
+     * @since dummy Javadoc tag - prevents a lombok bug that discards the last param comment in the builder methods
      */
     @Builder
     private Configuration(

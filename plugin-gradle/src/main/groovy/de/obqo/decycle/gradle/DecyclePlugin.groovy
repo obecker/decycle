@@ -56,7 +56,7 @@ class DecyclePlugin implements Plugin<Project> {
                 decycleWorkTask.configuration.set(configuration)
                 decycleWorkTask.classpath.set(source.output)
                 decycleWorkTask.reportFile.set(new File(project.buildDir, "reports/decycle/${name}.html"))
-                decycleWorkTask.reportTitle.set(project.name + " | " + name);
+                decycleWorkTask.reportTitle.set(project.name + " | " + name)
                 decycleWorkTask.workerClasspath.set(workerClasspath)
 
                 // set task dependencies, e.g. decycle -> decycleTest -> testClasses

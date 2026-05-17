@@ -14,7 +14,7 @@ class FontMetricsSupport {
 
     static FontMetricsSupport get(final boolean minify) {
         // minify=false is only used for testing - in that case we force using the IndexedFontMetrics to get
-        // deterministic results on all platforms (namely local and in github actions)
+        // deterministic results on all platforms (namely local and in GitHub actions)
         SimpleFontMetrics.FontMetricsHelper delegate = SimpleFontMetrics.SystemFontMetrics.getDefaultInstance();
         if (delegate == null || !minify) {
             delegate = SimpleFontMetrics.IndexedFontMetrics.getDefaultInstance();

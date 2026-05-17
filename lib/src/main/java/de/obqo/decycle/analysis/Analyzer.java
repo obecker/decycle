@@ -31,7 +31,7 @@ public class Analyzer {
 
         final Graph graph = new Graph(categorizer, filter, ignoredEdgesFilter);
 
-        final String[] libs = classpath.split(System.getProperty("path.separator"));
+        final String[] libs = classpath.split(File.pathSeparator);
         Stream.of(libs).flatMap(FileFinder::find).forEach(file -> analyze(file, graph));
 
         return graph;
@@ -61,7 +61,7 @@ public class Analyzer {
             final var reader = new ClassReader(stream);
             reader.accept(new GraphBuildingClassVisitor(graph), 0);
         } catch (final Exception e) {
-            log.error("Decycle: Something went wrong when analyzing " + name, e);
+            log.error("Decycle: Something went wrong when analyzing {}", name, e);
         }
     }
 }

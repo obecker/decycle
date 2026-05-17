@@ -6,7 +6,7 @@ import java.util.Map;
 import j2html.attributes.Attribute;
 
 /**
- * Dynamic {@code id} attribute that will get a number appended to its value in order to achieve uniqueness within a
+ * Dynamic {@code id} attribute that will get a number appended to its value in order to achieve uniqueness within an
  * HTML document. To be used for generated SVG that may appear multiple times in the same document.
  * <p>
  * Note: it is necessary to {@link #dynId(String) create} the id before creating any {@link #dynRef(String) references}

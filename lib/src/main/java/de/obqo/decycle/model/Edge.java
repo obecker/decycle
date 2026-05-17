@@ -6,6 +6,7 @@ import com.google.common.annotations.VisibleForTesting;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NonNull;
 
 /**
  * An {@link Edge} represents the connection between two {@link Node nodes}.
@@ -22,7 +23,7 @@ import lombok.Getter;
  * </li>
  * <li>
  * An edge having the {@link #label} {@link EdgeLabel#CONTAINS CONTAINS} reflects that node {@link #from} contains node
- * {@link #to}. Typically a package or slice node contains a class node if the class belongs to the package or slice.
+ * {@link #to}. Typically, a package or slice node contains a class node if the class belongs to the package or slice.
  * The {@link #from} and {@link #to} nodes of a {@link EdgeLabel#CONTAINS containing} edge will always have different
  * {@link Node#type node types}.
  * </li>
@@ -96,7 +97,7 @@ public class Edge implements Comparable<Edge> {
     }
 
     @Override
-    public int compareTo(final Edge other) {
+    public int compareTo(final @NonNull Edge other) {
         return COMPARATOR.compare(this, other);
     }
 }

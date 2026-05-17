@@ -11,7 +11,7 @@ import org.gradle.api.tasks.SourceSet;
  *
  * @author Oliver Becker
  */
-class DecycleConfiguration implements Serializable {
+public class DecycleConfiguration implements Serializable {
 
     private static final long serialVersionUID = 10L;
 

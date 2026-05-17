@@ -86,7 +86,7 @@ class Topological {
             }
         }
 
-        // run DFS in the directed graph g from node node and compute postorder
+        // run DFS in the directed graph g from node and compute postorder
         private void depthFirstSearch(final Slicing g, final Node node) {
             this.marked.add(node);
             for (final Edge e : sorted(g.outEdges(node), Edge.COMPARATOR.reversed())) { // for a deterministic order

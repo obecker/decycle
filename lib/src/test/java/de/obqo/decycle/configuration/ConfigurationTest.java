@@ -39,7 +39,7 @@ class ConfigurationTest {
     void projectConfigurationShouldHaveNoConstraintViolations() throws IOException {
         try (final FileWriter out = new FileWriter(REPORT_DIR + "main.html")) {
             assertThat(Configuration.builder()
-                    .classpath("build/classes/java/main") // for gradle
+                    .classpath("build/classes/java/main") // for Gradle
 //                    .classpath("out/production/classes") // for IntelliJ
                     .including(List.of("de.obqo.decycle.**"))
                     .report(out)
@@ -54,7 +54,7 @@ class ConfigurationTest {
     void shouldReportAllDependencies() throws IOException {
         final StringBuilder out = new StringBuilder();
         assertThat(Configuration.builder()
-                .classpath("build/classes/java/test") // for gradle
+                .classpath("build/classes/java/test") // for Gradle
 //                .classpath("out/test/classes") // for IntelliJ
                 .including(List.of("de.obqo.decycle.demo.base.**"))
                 .report(out)

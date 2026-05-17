@@ -4,6 +4,7 @@ import java.util.Comparator;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.NonNull;
 import lombok.Value;
 
 /**
@@ -67,7 +68,7 @@ public class SliceType implements Comparable<SliceType> {
     }
 
     @Override
-    public int compareTo(final SliceType other) {
+    public int compareTo(@NonNull final SliceType other) {
         return COMPARATOR.compare(this, other);
     }
 }

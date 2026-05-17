@@ -70,7 +70,7 @@ public class ResourcesExtractor {
         try {
             Files.copy(inputStream, targetFile.toPath(), REPLACE_EXISTING);
         } catch (final FileAlreadyExistsException ignored) {
-            // may happen if two threads (or gradle tasks) try to copy the same file concurrently
+            // may happen if two threads (or Gradle tasks) try to copy the same file concurrently
         }
     }
 }

@@ -60,7 +60,7 @@ public class Node implements Comparable<Node> {
     }
 
     @Override
-    public int compareTo(final Node other) {
+    public int compareTo(final @NonNull Node other) {
         return COMPARATOR.compare(this, other);
     }
 }

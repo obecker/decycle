@@ -10,7 +10,6 @@ class ImprovedTextEscaper {
         int lastIndex = 0;
         StringBuilder escapedText = null;
         String replacement;
-        loop:
         for (int i = 0; i < s.length(); i++) {
             switch (s.charAt(i)) {
             case '<':
@@ -30,7 +29,7 @@ class ImprovedTextEscaper {
 //                replacement = "&apos;";
 //                break;
             default:
-                continue loop;
+                continue;
             }
             if (escapedText == null) {
                 escapedText = new StringBuilder(s.length() + 16);
