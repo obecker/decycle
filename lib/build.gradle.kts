@@ -14,12 +14,6 @@ val displayName by extra("Decycle Lib")
 
 apply(from = rootProject.file("gradle/publishing.gradle.kts"))
 
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(17))
-    }
-}
-
 buildscript {
     repositories {
         mavenCentral()
@@ -63,12 +57,16 @@ java {
     withSourcesJar()
     withJavadocJar()
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(11))
+        languageVersion.set(JavaLanguageVersion.of(17))
     }
 }
 
 tasks.compileJava {
     options.compilerArgs.addAll(listOf("-Xlint:all", "-Xlint:-processing", "-Werror"))
+}
+
+tasks.withType<Javadoc>().configureEach {
+    (options as StandardJavadocDocletOptions).addBooleanOption("Xdoclint:-missing", true)
 }
 
 val extractWebJars = tasks.register("extractWebjars") {

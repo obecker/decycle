@@ -7,12 +7,6 @@ plugins {
 
 val pluginId = "de.obqo.decycle"
 
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(17))
-    }
-}
-
 tasks.register("createClasspathManifest") {
     val outputDir = file("$buildDir/classpathManifest")
     val pluginClasspath = sourceSets.main.get().runtimeClasspath
@@ -48,9 +42,13 @@ tasks.compileJava {
     options.compilerArgs.addAll(listOf("-Xlint:all", "-Werror"))
 }
 
+tasks.withType<Javadoc>().configureEach {
+    (options as StandardJavadocDocletOptions).addBooleanOption("Xdoclint:-missing", true)
+}
+
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(11))
+        languageVersion.set(JavaLanguageVersion.of(17))
     }
 }
 

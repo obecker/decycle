@@ -32,7 +32,7 @@ Dependencies creating cycles would be displayed as arcs going upwards on the lef
 
 <img src="https://user-images.githubusercontent.com/197628/148555788-0acb50d1-01b6-4bcb-8559-571c218baa0a.gif" alt="Example report" width="400">
 
-Decycle requires Java 11 or above.
+Decycle requires Java 17 or above.
 The recommended way of integrating Decycle is by using the [Gradle](plugin-gradle) or [Maven](plugin-maven) plugins. 
 
 ## Documentation

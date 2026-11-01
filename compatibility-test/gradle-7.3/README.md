@@ -1,6 +1,6 @@
-# Test with gradle 5.6
+# Test with gradle 7.3
 
-(requires Java 11)
+(requires Java 17)
 
 ```
 ./gradlew decycle -PdecycleVersion=...

@@ -9,17 +9,12 @@ val displayName by extra("Decycle Maven Plugin")
 
 apply(from = rootProject.file("gradle/publishing.gradle.kts"))
 
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(17))
-    }
-}
-
 // see gradle/libs.versions.toml for libs.<xyz> dependencies
 dependencies {
     implementation(project(":decycle-lib"))
     implementation(libs.maven.core) {
         exclude(group = "com.google.guava")
+        exclude(group = "org.ow2.asm")
     }
     implementation(libs.maven.plugin.tools)
 
@@ -37,11 +32,15 @@ tasks.compileJava {
     options.compilerArgs.addAll(listOf("-Xlint:all", "-Xlint:-processing", "-Werror"))
 }
 
+tasks.withType<Javadoc>().configureEach {
+    (options as StandardJavadocDocletOptions).addBooleanOption("Xdoclint:-missing", true)
+}
+
 java {
     withSourcesJar()
     withJavadocJar()
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(11))
+        languageVersion.set(JavaLanguageVersion.of(17))
     }
 }
 
