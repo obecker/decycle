@@ -61,7 +61,8 @@ public class Edge implements Comparable<Edge> {
 
     // stateful attributes for REFERENCES edges
     private boolean ignored;
-    private int weight = 1;
+    private int weight;
+    private int adjustedWeight;
     private boolean violating = false;
 
     private Edge(final Node from, final Node to, final EdgeLabel label, final boolean ignored) {
@@ -69,6 +70,8 @@ public class Edge implements Comparable<Edge> {
         this.to = to;
         this.label = label;
         this.ignored = ignored;
+        this.weight = 1;
+        this.adjustedWeight = ignored ? 0 : 1;
     }
 
     public boolean isReferencing() {
@@ -82,6 +85,7 @@ public class Edge implements Comparable<Edge> {
     public void combine(final Edge edge) {
         this.ignored &= edge.isIgnored();
         this.weight += edge.weight;
+        this.adjustedWeight += edge.adjustedWeight;
     }
 
     public void setViolating() {

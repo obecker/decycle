@@ -3,6 +3,7 @@ package de.obqo.decycle.check;
 import static de.obqo.decycle.graph.MutableSlicing.create;
 import static de.obqo.decycle.graph.StronglyConnectedComponentsFinder.findComponents;
 
+import de.obqo.decycle.graph.MutableSlicing;
 import de.obqo.decycle.graph.Slicing;
 import de.obqo.decycle.graph.SlicingSource;
 import de.obqo.decycle.model.Edge;
@@ -51,13 +52,18 @@ public class CycleFree implements Constraint {
 
     private void identifyViolations(final Slicing subgraph) {
         // Try to identify those edges that are the "wrong" ones, i.e. the violating edges.
-        // This is done by finding the edge with the lowest weight in the subgraph, marking it as "violating" (which
-        // removes it effectively from the cycle check), and running the findComponents() logic recursively on the
-        // remaining subgraph until all cycles have disappeared.
+        // This is done by adding edges to a new MutableSlicing in order of decreasing weight, and checking after each
+        // addition whether the new MutableSlicing has cycles. If it does, the current edge is marked as violating
+        // (which removes it effectively from the next cycle check).
         Preconditions.checkState(!subgraph.edges().isEmpty());
-        subgraph.edges().stream()
-                .min(Comparator.comparing(Edge::getWeight).thenComparing(Edge::displayString))
-                .ifPresent(Edge::setViolating);
-        findComponents(subgraph).forEach(edges -> identifyViolations(create(subgraph.getSliceType(), edges)));
+        final List<Edge> edges = new ArrayList<>(subgraph.edges());
+        edges.sort(Comparator.comparing(Edge::getAdjustedWeight).reversed().thenComparing(Edge::displayString));
+        final MutableSlicing cycleCheckSlicing = create(subgraph.getSliceType());
+        for (final Edge e : edges) {
+            cycleCheckSlicing.addEdge(e);
+            if (!findComponents(cycleCheckSlicing).isEmpty()) {
+                e.setViolating();
+            }
+        }
     }
 }
