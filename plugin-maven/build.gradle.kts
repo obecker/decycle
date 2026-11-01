@@ -9,6 +9,12 @@ val displayName by extra("Decycle Maven Plugin")
 
 apply(from = rootProject.file("gradle/publishing.gradle.kts"))
 
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+    }
+}
+
 // see gradle/libs.versions.toml for libs.<xyz> dependencies
 dependencies {
     implementation(project(":decycle-lib"))
