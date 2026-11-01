@@ -4,6 +4,8 @@
   - Fix/improve the detection of violating edges in the cycle-free check. Previously, some package dependencies could
     be displayed as violating, even if they were not primarily causing the cycle. This affected only the HTML report,
     not the actual cycle detection.
+  - Decycle is now built with Java 17 (previously Java 11). The minimum required Java version for running decycle is 
+    still Java 11.
 
 ## [1.2.6](https://github.com/obecker/decycle/compare/v1.2.5...v1.2.6) – 2025-03-01
   - Print filename of the generated HTML report as URI (enables clicking on the link in some terminals)

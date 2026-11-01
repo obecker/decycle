@@ -14,6 +14,12 @@ val displayName by extra("Decycle Lib")
 
 apply(from = rootProject.file("gradle/publishing.gradle.kts"))
 
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+    }
+}
+
 buildscript {
     repositories {
         mavenCentral()

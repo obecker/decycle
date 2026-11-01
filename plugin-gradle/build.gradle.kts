@@ -7,6 +7,12 @@ plugins {
 
 val pluginId = "de.obqo.decycle"
 
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+    }
+}
+
 tasks.register("createClasspathManifest") {
     val outputDir = file("$buildDir/classpathManifest")
     val pluginClasspath = sourceSets.main.get().runtimeClasspath
