@@ -7,15 +7,12 @@ tasks.wrapper {
 }
 
 subprojects {
-
     group = rootProject.group
     version = rootProject.version
-
-    repositories {
-        mavenCentral()
-    }
 }
 
-tasks.register("clean") {
-    delete("build")
+tasks.register<Delete>("clean") {
+    description = "Deletes the build directory"
+    group = "Build"
+    delete(layout.buildDirectory)
 }

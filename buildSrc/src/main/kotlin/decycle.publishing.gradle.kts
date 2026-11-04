@@ -1,29 +1,32 @@
-apply(plugin = "signing")
+import java.util.Base64
+
+plugins {
+    signing
+}
+
+val ossrhHost = "https://ossrh-staging-api.central.sonatype.com"
 
 configure<PublishingExtension> {
     repositories {
         maven {
             name = "local"
-            url = file("${rootProject.buildDir}/repository").toURI()
+            url = rootProject.layout.buildDirectory.dir("repository").get().asFile.toURI()
         }
         maven {
-            // see https://central.sonatype.org/publish/generate-portal-token/
-            val ossrhUsername: String? by project
-            val ossrhPassword: String? by project
             name = "sonatype"
-            url = uri("https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/")
+            url = uri("$ossrhHost/service/local/staging/deploy/maven2/")
             credentials {
-                username = ossrhUsername
-                password = ossrhPassword
+                username = System.getenv("OSSRH_USERNAME")
+                password = System.getenv("OSSRH_PASSWORD")
             }
         }
     }
     publications {
         // publication mavenJava is provided by the io.freefair.maven-publish-java plugin
-        getByName<MavenPublication>("mavenJava").run {
+        withType<MavenPublication>().matching { it.name == "mavenJava" }.configureEach {
             pom {
-                name.set(project.extra["displayName"] as String)
-                description.set(project.description)
+                name.set(provider { project.extra["displayName"] as String })
+                description.set(provider { project.description })
                 url.set("https://github.com/obecker/decycle")
                 licenses {
                     license {
@@ -47,25 +50,21 @@ configure<PublishingExtension> {
     }
 }
 
-tasks.withType<PublishToMavenRepository>() {
+tasks.withType<PublishToMavenRepository>().configureEach {
     val isSnapshot = version.toString().endsWith("-SNAPSHOT")
     if (repository.name == "sonatype" && isSnapshot) {
         enabled = false
     }
 }
 
-tasks.withType<Sign>() {
+tasks.withType<Sign>().configureEach {
     onlyIf {
         project.hasProperty("signing.keyId")
     }
 }
 
-tasks.withType<Javadoc>() {
-    doLast {
-        // workaround for https://bugs.openjdk.java.net/browse/JDK-8215291 in Java 11
-        file("${destinationDir}/search.js").appendText("getURLPrefix = function(ui) { return ''; };\n")
-    }
-    (options as StandardJavadocDocletOptions).links("https://docs.oracle.com/en/java/javase/11/docs/api/")
+tasks.withType<Javadoc>().configureEach {
+    (options as StandardJavadocDocletOptions).links("https://docs.oracle.com/en/java/javase/17/docs/api/")
 }
 
 val postToSonatype by tasks.registering {
@@ -73,17 +72,17 @@ val postToSonatype by tasks.registering {
     description = "Finalizes the publication by sending a POST request to OSSRH"
     // see https://central.sonatype.org/publish/publish-portal-ossrh-staging-api/#1-modify-your-ci-script
     doLast {
-        val ossrhUsername: String? by project
-        val ossrhPassword: String? by project
+        val ossrhUsername = System.getenv("OSSRH_USERNAME")
+        val ossrhPassword = System.getenv("OSSRH_PASSWORD")
         val ossrhNamespace = "de.obqo"
-        val url = "https://ossrh-staging-api.central.sonatype.com/manual/upload/defaultRepository/$ossrhNamespace"
-        val authToken = java.util.Base64.getEncoder().encodeToString("$ossrhUsername:$ossrhPassword".toByteArray())
+        val url = "$ossrhHost/manual/upload/defaultRepository/$ossrhNamespace"
+        val authToken = Base64.getEncoder().encodeToString("$ossrhUsername:$ossrhPassword".toByteArray())
         val authHeader = "Authorization: Bearer $authToken"
-        val process = ProcessBuilder("curl", "-X", "POST", "-H", authHeader, url)
-            .inheritIO()
+        val process = ProcessBuilder("curl", "-4", "--fail-with-body", "-X", "POST", "-H", authHeader, url)
             .start()
         val exitCode = process.waitFor()
         if (exitCode != 0) {
+            project.logger.error(process.inputStream.bufferedReader().readText())
             throw GradleException("POST request to OSSRH failed (exit code: $exitCode)")
         }
     }
