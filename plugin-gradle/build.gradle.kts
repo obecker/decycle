@@ -8,15 +8,18 @@ plugins {
 val pluginId = "de.obqo.decycle"
 
 tasks.register("createClasspathManifest") {
-    val outputDir = file("$buildDir/classpathManifest")
+    val outputDir = layout.buildDirectory.dir("classpathManifest")
+    val outputFile = outputDir.map { it.file("plugin-classpath.txt") }
     val pluginClasspath = sourceSets.main.get().runtimeClasspath
 
     inputs.files(pluginClasspath)
     outputs.dir(outputDir)
 
     doLast {
-        outputDir.mkdirs()
-        file("$outputDir/plugin-classpath.txt").writeText(pluginClasspath.files.joinToString("\n"))
+        outputFile.get().asFile.apply {
+            parentFile.mkdirs()
+            writeText(pluginClasspath.files.joinToString("\n"))
+        }
     }
 }
 
@@ -31,7 +34,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
-    testRuntimeOnly(files(tasks.getByName("createClasspathManifest")))
+    testRuntimeOnly(files(tasks.named("createClasspathManifest")))
 }
 
 tasks.clean {
@@ -55,7 +58,8 @@ java {
 tasks.processResources {
     inputs.property("version", version)
     doLast {
-        file("$buildDir/resources/main/META-INF/gradle-plugins/$pluginId.properties").appendText("tool-version=$version\n")
+        layout.buildDirectory.file("resources/main/META-INF/gradle-plugins/$pluginId.properties")
+            .get().asFile.appendText("tool-version=$version\n")
     }
 }
 

@@ -7,12 +7,11 @@ plugins {
     `java-library`
     alias(libs.plugins.lombok)
     alias(libs.plugins.maven.publish.java)
+    id("decycle.publishing")
 }
 
 description = "Java library for detecting and reporting package cycles"
 val displayName by extra("Decycle Lib")
-
-apply(from = rootProject.file("gradle/publishing.gradle.kts"))
 
 buildscript {
     repositories {
@@ -71,6 +70,8 @@ tasks.withType<Javadoc>().configureEach {
 
 val extractWebJars = tasks.register("extractWebjars") {
     description = "Extract webjar resources to generated/resources"
+    inputs.files(buildscript.configurations.getByName("classpath"))
+    outputs.dir(generatedResources)
 
     val locator = WebJarAssetLocator()
     val classLoader = locator::class.java.classLoader
@@ -106,7 +107,9 @@ tasks.processResources {
     dependsOn(extractWebJars)
 }
 
-tasks["sourcesJar"].dependsOn(extractWebJars)
+tasks.named<Jar>("sourcesJar") {
+    dependsOn(extractWebJars)
+}
 
 tasks.test {
     useJUnitPlatform()

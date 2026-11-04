@@ -2,12 +2,11 @@ plugins {
     `java-library`
     alias(libs.plugins.lombok)
     alias(libs.plugins.maven.plugin)
+    id("decycle.publishing")
 }
 
 description = "Maven plugin that executes decycle dependency checks"
 val displayName by extra("Decycle Maven Plugin")
-
-apply(from = rootProject.file("gradle/publishing.gradle.kts"))
 
 // see gradle/libs.versions.toml for libs.<xyz> dependencies
 dependencies {

@@ -1,5 +1,12 @@
 rootProject.name = 'decycle'
 
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        mavenCentral()
+    }
+}
+
 include('decycle-lib')
 include('decycle-gradle-plugin')
 include('decycle-maven-plugin')
