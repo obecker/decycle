@@ -5,6 +5,7 @@ import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.plugins.JavaBasePlugin
+import org.gradle.api.tasks.TaskProvider
 /**
  * @author Oliver Becker
  */
@@ -22,9 +23,10 @@ class DecyclePlugin implements Plugin<Project> {
         }
 
         // create a runner task that runs all single decycle tasks
-        final Task decycleRunnerTask = project.tasks.create(TASK_NAME)
-        decycleRunnerTask.description = "Runs all decycle checks"
-        decycleRunnerTask.group = JavaBasePlugin.VERIFICATION_GROUP
+        final TaskProvider<Task> decycleRunnerTask = project.tasks.register(TASK_NAME) { Task task ->
+            task.description = "Runs all decycle checks"
+            task.group = JavaBasePlugin.VERIFICATION_GROUP
+        }
 
         final DecycleConfiguration configuration = new DecycleConfiguration()
         final String toolVersion = props.getProperty('tool-version')
@@ -49,22 +51,29 @@ class DecyclePlugin implements Plugin<Project> {
             sources.forEach { source ->
                 def name = source.name
 
-                DecycleTask decycleWorkTask = project.tasks.create(TASK_NAME + name.capitalize(), DecycleTask)
-                decycleWorkTask.
-                        description = "Checks the ${name} sources for package cycles and other custom constraints"
-                decycleWorkTask.group = JavaBasePlugin.VERIFICATION_GROUP
-                decycleWorkTask.configuration.set(configuration)
-                decycleWorkTask.classpath.set(source.output)
-                decycleWorkTask.reportFile.set(new File(project.buildDir, "reports/decycle/${name}.html"))
-                decycleWorkTask.reportTitle.set(project.name + " | " + name)
-                decycleWorkTask.workerClasspath.set(workerClasspath)
+                TaskProvider<DecycleTask> decycleWorkTask =
+                        project.tasks.register(TASK_NAME + name.capitalize(), DecycleTask) { DecycleTask task ->
+                            task.description =
+                                    "Checks the ${name} sources for package cycles and other custom constraints"
+                            task.group = JavaBasePlugin.VERIFICATION_GROUP
+                            task.configuration.set(configuration)
+                            task.classpath.set(source.output)
+                            task.reportFile.set(new File(project.buildDir, "reports/decycle/${name}.html"))
+                            task.reportTitle.set(project.name + " | " + name)
+                            task.workerClasspath.set(workerClasspath)
+                            task.dependsOn(project.tasks.named(source.classesTaskName))
+                        }
 
                 // set task dependencies, e.g. decycle -> decycleTest -> testClasses
-                decycleRunnerTask.dependsOn(decycleWorkTask.dependsOn(project.tasks[source.classesTaskName]))
+                decycleRunnerTask.configure { Task task ->
+                    task.dependsOn(decycleWorkTask)
+                }
             }
 
             // finally make task 'check' depend on the runner task
-            project.tasks[JavaBasePlugin.CHECK_TASK_NAME].dependsOn decycleRunnerTask
+            project.tasks.named(JavaBasePlugin.CHECK_TASK_NAME).configure { Task task ->
+                task.dependsOn(decycleRunnerTask)
+            }
         }
     }
 }
