@@ -1,12 +1,21 @@
 # CHANGELOG
 
 ## Unreleased
-  - Fix/improve the detection of violating edges in the cycle-free check. Previously, some package dependencies could
-    be displayed as violating, even if they were not primarily causing the cycle. This affected only the HTML report,
-    not the actual cycle detection.
   - Decycle now requires Java 17 (previously Java 11), the Gradle plugin requires Gradle 7.3 (previously Gradle 5.6).
 
-## [1.2.6](https://github.com/obecker/decycle/compare/v1.2.5...v1.2.6) – 2025-03-01
+## [1.2.7](https://github.com/obecker/decycle/compare/v1.2.6...v1.2.7) – 2026-11-07
+  - Fix/improve the display of violating edges in the cycle-free check. Previously, some package dependencies could
+    be displayed as violating, even if they were not primarily causing the cycle. This affected only the HTML report
+    for rather complex cycles, not the actual cycle detection.
+  - Several dependency updates
+    * asm 9.9.1 → 9.11.1  (supports Java 28)
+    * guava 33.5.0 → 33.8.0
+    * maven 3.9.12 → 3.10.0
+    * maven-plugin-annotations 3.15.2 → 3.16.0
+    * slf4j 2.0.17 → 2.0.20
+    * bootstrap-icons 1.13.1 → 1.13.2
+
+## [1.2.6](https://github.com/obecker/decycle/compare/v1.2.5...v1.2.6) – 2026-03-01
   - Print filename of the generated HTML report as URI (enables clicking on the link in some terminals)
   - Several dependency updates
     * asm 9.8 → 9.9.1  (supports Java 26)
