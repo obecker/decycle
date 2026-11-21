@@ -6,7 +6,9 @@
 The **Decycle Gradle Plugin** adds verification tasks to the Gradle build that check for package and slice cycles 
 on the sources of the Gradle project.
 
-**Requirements:** Gradle ≥ 7.3, Java ≥ 17 
+**Requirements:** 
+* current Decycle 1.x: Gradle ≥ 5.6, Java ≥ 11 
+* upcoming Decycle 2.x: Gradle ≥ 7.3, Java ≥ 17
 
 ## Installation
 
