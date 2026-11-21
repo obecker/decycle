@@ -39,7 +39,6 @@ dependencies {
     implementation(libs.fontmetrics)
     implementation(libs.guava)
     implementation(libs.j2html)
-    implementation(libs.maven.artifact)
     implementation(platform(libs.slf4j.bom))
     implementation("org.slf4j:slf4j-api")
 
