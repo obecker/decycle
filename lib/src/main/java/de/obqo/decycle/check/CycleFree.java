@@ -39,6 +39,7 @@ public class CycleFree implements Constraint {
                 }
             }
         }
+        violatingSubgraphs.sort(Comparator.comparing((Slicing slicing) -> slicing.edges().size()).reversed());
 
         final List<Violation> violations = new ArrayList<>();
         final boolean multiple = violatingSubgraphs.size() > 1;

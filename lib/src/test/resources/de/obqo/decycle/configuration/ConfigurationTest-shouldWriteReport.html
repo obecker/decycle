@@ -74,7 +74,7 @@
                 <h1 class="mb-3">
                     Violation Report for j2html
                 </h1>
-                <div class="violations rounded-lg pb-1 mb-3 alert-danger row">
+                <div class="violations rounded-lg py-1 mb-3 alert-danger row">
                     <h1 class="m-0">
                         <i class="bi bi-exclamation-triangle-fill">
                         </i>
@@ -83,6 +83,10 @@
                         <b>
                             Package cycle
                         </b>
+                        <br>
+                        <span>
+                            12 dependencies
+                        </span>
                     </div>
                     <div class="col-8 dependencies mt-1">
                         <div>
@@ -146,131 +150,135 @@
                             </a>
                         </div>
                     </div>
+                    <div class="col-12 separator mt-1">
+                    </div>
                 </div>
                 <div class="row">
-                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="360" height="336" viewBox="0 0 2881 2690" class="dependency-graph border rounded mr-3">
-                        <defs>
-                            <marker id="ad1" markerWidth="100" markerHeight="100" refX="28" refY="50" orient="auto" markerUnits="userSpaceOnUse">
-                                <path fill="black" d="M85.2 50 21.2 82a4.8 4.8 0 0 1-6.4-4.8l6.4-28.16-6.4-28.16a4.8 4.8 0 0 1 6.4-4.8z">
-                                </path>
-                            </marker>
-                            <marker id="au1" markerWidth="100" markerHeight="100" refX="28" refY="50" orient="auto" markerUnits="userSpaceOnUse">
-                                <path fill="#721c24" d="M85.2 50 21.2 82a4.8 4.8 0 0 1-6.4-4.8l6.4-28.16-6.4-28.16a4.8 4.8 0 0 1 6.4-4.8z">
-                                </path>
-                            </marker>
-                            <linearGradient id="lg1" x2="0" y2="100%">
-                                <stop offset="0" stop-color="#bbb" stop-opacity=".1">
-                                </stop>
-                                <stop offset="1" stop-opacity=".1">
-                                </stop>
-                            </linearGradient>
-                            <clipPath id="cl1">
-                                <rect width="1421" height="200" rx="35">
-                                </rect>
-                            </clipPath>
-                            <g id="box1" clip-path="url(#cl1)">
-                                <rect width="1421" height="200" fill="#c6d8ec">
-                                </rect>
-                                <rect width="1421" height="200" fill="url(#lg1)">
-                                </rect>
-                            </g>
-                        </defs>
-                        <text x="1440" y="130" fill="#000" font-weight="bold">
-                            Package cycle
-                        </text>
-                        <path d="M0 190h2881" stroke="#dee2e6" stroke-width="8">
-                        </path>
-                        <a xlink:href="#Package-j2html" href="#Package-j2html" class="node" data-name="n-j2html">
-                            <use xlink:href="#box1" href="#box1" x="730" y="290">
-                            </use>
-                            <text x="1440" y="430" fill="#000">
-                                j2html
+                    <div class="col-12 d-flex">
+                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="360" height="336" viewBox="0 0 2881 2690" class="dependency-graph border rounded mx-auto mb-3">
+                            <defs>
+                                <marker id="ad1" markerWidth="100" markerHeight="100" refX="28" refY="50" orient="auto" markerUnits="userSpaceOnUse">
+                                    <path fill="black" d="M85.2 50 21.2 82a4.8 4.8 0 0 1-6.4-4.8l6.4-28.16-6.4-28.16a4.8 4.8 0 0 1 6.4-4.8z">
+                                    </path>
+                                </marker>
+                                <marker id="au1" markerWidth="100" markerHeight="100" refX="28" refY="50" orient="auto" markerUnits="userSpaceOnUse">
+                                    <path fill="#721c24" d="M85.2 50 21.2 82a4.8 4.8 0 0 1-6.4-4.8l6.4-28.16-6.4-28.16a4.8 4.8 0 0 1 6.4-4.8z">
+                                    </path>
+                                </marker>
+                                <linearGradient id="lg1" x2="0" y2="100%">
+                                    <stop offset="0" stop-color="#bbb" stop-opacity=".1">
+                                    </stop>
+                                    <stop offset="1" stop-opacity=".1">
+                                    </stop>
+                                </linearGradient>
+                                <clipPath id="cl1">
+                                    <rect width="1421" height="200" rx="35">
+                                    </rect>
+                                </clipPath>
+                                <g id="box1" clip-path="url(#cl1)">
+                                    <rect width="1421" height="200" fill="#c6d8ec">
+                                    </rect>
+                                    <rect width="1421" height="200" fill="url(#lg1)">
+                                    </rect>
+                                </g>
+                            </defs>
+                            <text x="1440" y="130" fill="#000" font-weight="bold">
+                                Package cycle
                             </text>
-                        </a>
-                        <a xlink:href="#Package-j2html.tags.specialized" href="#Package-j2html.tags.specialized" class="node" data-name="n-j2html-tags-specialized">
-                            <use xlink:href="#box1" href="#box1" x="730" y="710">
-                            </use>
-                            <text x="1440" y="850" fill="#000">
-                                j2html.tags.specialized
-                            </text>
-                        </a>
-                        <a xlink:href="#Package-j2html.tags.attributes" href="#Package-j2html.tags.attributes" class="node" data-name="n-j2html-tags-attributes">
-                            <use xlink:href="#box1" href="#box1" x="730" y="1130">
-                            </use>
-                            <text x="1440" y="1270" fill="#000">
-                                j2html.tags.attributes
-                            </text>
-                        </a>
-                        <a xlink:href="#Package-j2html.tags" href="#Package-j2html.tags" class="node" data-name="n-j2html-tags">
-                            <use xlink:href="#box1" href="#box1" x="730" y="1550">
-                            </use>
-                            <text x="1440" y="1690" fill="#000">
-                                j2html.tags
-                            </text>
-                        </a>
-                        <a xlink:href="#Package-j2html.attributes" href="#Package-j2html.attributes" class="node" data-name="n-j2html-attributes">
-                            <use xlink:href="#box1" href="#box1" x="730" y="1970">
-                            </use>
-                            <text x="1440" y="2110" fill="#000">
-                                j2html.attributes
-                            </text>
-                        </a>
-                        <a xlink:href="#Package-j2html.rendering" href="#Package-j2html.rendering" class="node" data-name="n-j2html-rendering">
-                            <use xlink:href="#box1" href="#box1" x="730" y="2390">
-                            </use>
-                            <text x="1440" y="2530" fill="#000">
-                                j2html.rendering
-                            </text>
-                        </a>
-                        <path class="n-j2html n-j2html-attributes edge" d="M2151 420h55a420 810 180 1 1 0 1620" stroke="black" stroke-width="6.59" marker-end="url(#ad1)">
-                        </path>
-                        <path class="tip" data-ref="e1" d="M2151 420h55a420 810 180 1 1 0 1620h-55">
-                        </path>
-                        <path class="n-j2html n-j2html-tags edge" d="M2151 420h55a315 600 180 1 1 0 1200" stroke="black" stroke-width="13.82" marker-end="url(#ad1)">
-                        </path>
-                        <path class="tip" data-ref="e2" d="M2151 420h55a315 600 180 1 1 0 1200h-55">
-                        </path>
-                        <path class="n-j2html n-j2html-tags-specialized edge" d="M2151 420h55a105 180 180 1 1 0 360" stroke="black" stroke-width="28.42" marker-end="url(#ad1)">
-                        </path>
-                        <path class="tip" data-ref="e3" d="M2151 420h55a105 180 180 1 1 0 360h-55">
-                        </path>
-                        <path class="n-j2html-attributes n-j2html-tags edge" d="M730 2040h-55a105 180 180 1 1 0 -360" stroke="#721c24" stroke-width="8.32" marker-end="url(#au1)">
-                        </path>
-                        <path class="tip" data-ref="e4" d="M730 2040h-55a105 180 180 1 1 0 -360h55">
-                        </path>
-                        <path class="n-j2html-rendering n-j2html edge" d="M730 2460h-55a525 1020 180 1 1 0 -2040" stroke="#721c24" stroke-width="6.59" marker-end="url(#au1)">
-                        </path>
-                        <path class="tip" data-ref="e5" d="M730 2460h-55a525 1020 180 1 1 0 -2040h55">
-                        </path>
-                        <path class="n-j2html-tags n-j2html edge" d="M730 1620h-55a315 600 180 1 1 0 -1200" stroke="#721c24" stroke-width="12.48" marker-end="url(#au1)">
-                        </path>
-                        <path class="tip" data-ref="e6" d="M730 1620h-55a315 600 180 1 1 0 -1200h55">
-                        </path>
-                        <path class="n-j2html-tags n-j2html-attributes edge" d="M2151 1680h55a105 180 180 1 1 0 360" stroke="black" stroke-width="8.32" marker-end="url(#ad1)">
-                        </path>
-                        <path class="tip" data-ref="e7" d="M2151 1680h55a105 180 180 1 1 0 360h-55">
-                        </path>
-                        <path class="n-j2html-tags n-j2html-rendering edge" d="M2151 1680h55a210 390 180 1 1 0 780" stroke="black" stroke-width="15.83" marker-end="url(#ad1)">
-                        </path>
-                        <path class="tip" data-ref="e8" d="M2151 1680h55a210 390 180 1 1 0 780h-55">
-                        </path>
-                        <path class="n-j2html-tags n-j2html-tags-specialized edge" d="M730 1620h-55a210 390 180 1 1 0 -780" stroke="#721c24" stroke-width="6.59" marker-end="url(#au1)">
-                        </path>
-                        <path class="tip" data-ref="e9" d="M730 1620h-55a210 390 180 1 1 0 -780h55">
-                        </path>
-                        <path class="n-j2html-tags-attributes n-j2html-tags edge" d="M2151 1260h55a105 180 180 1 1 0 360" stroke="black" stroke-width="32.76" marker-end="url(#ad1)">
-                        </path>
-                        <path class="tip" data-ref="e10" d="M2151 1260h55a105 180 180 1 1 0 360h-55">
-                        </path>
-                        <path class="n-j2html-tags-specialized n-j2html-tags edge" d="M2151 840h55a210 390 180 1 1 0 780" stroke="black" stroke-width="28.42" marker-end="url(#ad1)">
-                        </path>
-                        <path class="tip" data-ref="e11" d="M2151 840h55a210 390 180 1 1 0 780h-55">
-                        </path>
-                        <path class="n-j2html-tags-specialized n-j2html-tags-attributes edge" d="M2151 840h55a105 180 180 1 1 0 360" stroke="black" stroke-width="33.7" marker-end="url(#ad1)">
-                        </path>
-                        <path class="tip" data-ref="e12" d="M2151 840h55a105 180 180 1 1 0 360h-55">
-                        </path>
-                    </svg>
+                            <path d="M0 190h2881" stroke="#dee2e6" stroke-width="8">
+                            </path>
+                            <a xlink:href="#Package-j2html" href="#Package-j2html" class="node" data-name="n-j2html">
+                                <use xlink:href="#box1" href="#box1" x="730" y="290">
+                                </use>
+                                <text x="1440" y="430" fill="#000">
+                                    j2html
+                                </text>
+                            </a>
+                            <a xlink:href="#Package-j2html.tags.specialized" href="#Package-j2html.tags.specialized" class="node" data-name="n-j2html-tags-specialized">
+                                <use xlink:href="#box1" href="#box1" x="730" y="710">
+                                </use>
+                                <text x="1440" y="850" fill="#000">
+                                    j2html.tags.specialized
+                                </text>
+                            </a>
+                            <a xlink:href="#Package-j2html.tags.attributes" href="#Package-j2html.tags.attributes" class="node" data-name="n-j2html-tags-attributes">
+                                <use xlink:href="#box1" href="#box1" x="730" y="1130">
+                                </use>
+                                <text x="1440" y="1270" fill="#000">
+                                    j2html.tags.attributes
+                                </text>
+                            </a>
+                            <a xlink:href="#Package-j2html.tags" href="#Package-j2html.tags" class="node" data-name="n-j2html-tags">
+                                <use xlink:href="#box1" href="#box1" x="730" y="1550">
+                                </use>
+                                <text x="1440" y="1690" fill="#000">
+                                    j2html.tags
+                                </text>
+                            </a>
+                            <a xlink:href="#Package-j2html.attributes" href="#Package-j2html.attributes" class="node" data-name="n-j2html-attributes">
+                                <use xlink:href="#box1" href="#box1" x="730" y="1970">
+                                </use>
+                                <text x="1440" y="2110" fill="#000">
+                                    j2html.attributes
+                                </text>
+                            </a>
+                            <a xlink:href="#Package-j2html.rendering" href="#Package-j2html.rendering" class="node" data-name="n-j2html-rendering">
+                                <use xlink:href="#box1" href="#box1" x="730" y="2390">
+                                </use>
+                                <text x="1440" y="2530" fill="#000">
+                                    j2html.rendering
+                                </text>
+                            </a>
+                            <path class="n-j2html n-j2html-attributes edge" d="M2151 420h55a420 810 180 1 1 0 1620" stroke="black" stroke-width="6.59" marker-end="url(#ad1)">
+                            </path>
+                            <path class="tip" data-ref="e1" d="M2151 420h55a420 810 180 1 1 0 1620h-55">
+                            </path>
+                            <path class="n-j2html n-j2html-tags edge" d="M2151 420h55a315 600 180 1 1 0 1200" stroke="black" stroke-width="13.82" marker-end="url(#ad1)">
+                            </path>
+                            <path class="tip" data-ref="e2" d="M2151 420h55a315 600 180 1 1 0 1200h-55">
+                            </path>
+                            <path class="n-j2html n-j2html-tags-specialized edge" d="M2151 420h55a105 180 180 1 1 0 360" stroke="black" stroke-width="28.42" marker-end="url(#ad1)">
+                            </path>
+                            <path class="tip" data-ref="e3" d="M2151 420h55a105 180 180 1 1 0 360h-55">
+                            </path>
+                            <path class="n-j2html-attributes n-j2html-tags edge" d="M730 2040h-55a105 180 180 1 1 0 -360" stroke="#721c24" stroke-width="8.32" marker-end="url(#au1)">
+                            </path>
+                            <path class="tip" data-ref="e4" d="M730 2040h-55a105 180 180 1 1 0 -360h55">
+                            </path>
+                            <path class="n-j2html-rendering n-j2html edge" d="M730 2460h-55a525 1020 180 1 1 0 -2040" stroke="#721c24" stroke-width="6.59" marker-end="url(#au1)">
+                            </path>
+                            <path class="tip" data-ref="e5" d="M730 2460h-55a525 1020 180 1 1 0 -2040h55">
+                            </path>
+                            <path class="n-j2html-tags n-j2html edge" d="M730 1620h-55a315 600 180 1 1 0 -1200" stroke="#721c24" stroke-width="12.48" marker-end="url(#au1)">
+                            </path>
+                            <path class="tip" data-ref="e6" d="M730 1620h-55a315 600 180 1 1 0 -1200h55">
+                            </path>
+                            <path class="n-j2html-tags n-j2html-attributes edge" d="M2151 1680h55a105 180 180 1 1 0 360" stroke="black" stroke-width="8.32" marker-end="url(#ad1)">
+                            </path>
+                            <path class="tip" data-ref="e7" d="M2151 1680h55a105 180 180 1 1 0 360h-55">
+                            </path>
+                            <path class="n-j2html-tags n-j2html-rendering edge" d="M2151 1680h55a210 390 180 1 1 0 780" stroke="black" stroke-width="15.83" marker-end="url(#ad1)">
+                            </path>
+                            <path class="tip" data-ref="e8" d="M2151 1680h55a210 390 180 1 1 0 780h-55">
+                            </path>
+                            <path class="n-j2html-tags n-j2html-tags-specialized edge" d="M730 1620h-55a210 390 180 1 1 0 -780" stroke="#721c24" stroke-width="6.59" marker-end="url(#au1)">
+                            </path>
+                            <path class="tip" data-ref="e9" d="M730 1620h-55a210 390 180 1 1 0 -780h55">
+                            </path>
+                            <path class="n-j2html-tags-attributes n-j2html-tags edge" d="M2151 1260h55a105 180 180 1 1 0 360" stroke="black" stroke-width="32.76" marker-end="url(#ad1)">
+                            </path>
+                            <path class="tip" data-ref="e10" d="M2151 1260h55a105 180 180 1 1 0 360h-55">
+                            </path>
+                            <path class="n-j2html-tags-specialized n-j2html-tags edge" d="M2151 840h55a210 390 180 1 1 0 780" stroke="black" stroke-width="28.42" marker-end="url(#ad1)">
+                            </path>
+                            <path class="tip" data-ref="e11" d="M2151 840h55a210 390 180 1 1 0 780h-55">
+                            </path>
+                            <path class="n-j2html-tags-specialized n-j2html-tags-attributes edge" d="M2151 840h55a105 180 180 1 1 0 360" stroke="black" stroke-width="33.7" marker-end="url(#ad1)">
+                            </path>
+                            <path class="tip" data-ref="e12" d="M2151 840h55a105 180 180 1 1 0 360h-55">
+                            </path>
+                        </svg>
+                    </div>
                 </div>
                 <div class="pt-2">
                     <h2 class="slice text-capitalize mt-2">
@@ -7772,7 +7780,7 @@
                         </dd>
                     </dl>
                     <div class="row">
-                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="386" height="388" viewBox="0 0 3091 3110" class="dependency-graph border rounded mr-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="386" height="388" viewBox="0 0 3091 3110" class="dependency-graph border rounded mx-auto mb-3">
                             <defs>
                                 <marker id="ad2" markerWidth="100" markerHeight="100" refX="28" refY="50" orient="auto" markerUnits="userSpaceOnUse">
                                     <path fill="black" d="M85.2 50 21.2 82a4.8 4.8 0 0 1-6.4-4.8l6.4-28.16-6.4-28.16a4.8 4.8 0 0 1 6.4-4.8z">
