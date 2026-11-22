@@ -4,6 +4,12 @@
   - Decycle now requires Java 17 (previously Java 11), the Gradle plugin requires Gradle 7.3 (previously Gradle 5.6).
   - Gradle Plugin: use lazy configuration for the decycle task
 
+## [1.2.8](https://github.com/obecker/decycle/compare/v1.2.7...v1.2.8) – 2026-11-22
+  - Improve the HTML report when there are multiple cycles (consistent order, layout tweaks). 
+    Also, the number of violating edges is now displayed in the report for each cycle.
+  - Remove the unused dependency `org.apache.maven:maven-artifact`
+  - Upgrade maven-core from 3.10.0 to 3.10.1
+
 ## [1.2.7](https://github.com/obecker/decycle/compare/v1.2.6...v1.2.7) – 2026-11-07
   - Fix/improve the display of violating edges in the cycle-free check. Previously, some package dependencies could
     be displayed as violating, even if they were not primarily causing the cycle. This affected only the HTML report
