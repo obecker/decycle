@@ -162,7 +162,7 @@ public class DecyclePluginFunctionalTest {
         final BuildResult result = build("ignoreFailures.gradle");
         final String nl = System.lineSeparator();
         assertBuildResult(result, TaskOutcome.SUCCESS, "decycleMain")
-                .contains(nl + "Violations detected: Violation(slicing=Package, name=cycle, " +
+                .contains(nl + "Violations detected: Violation(slicing=Package, name=cycle, size=2, " +
                         "dependencies=[demo.cycle.a → demo.cycle.b, demo.cycle.b → demo.cycle.a])" + nl)
                 .contains(nl + "See the report at: file:/");
     }

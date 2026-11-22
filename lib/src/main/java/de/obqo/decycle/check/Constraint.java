@@ -39,9 +39,10 @@ public interface Constraint {
 
         public String displayString() {
             return String.format(
-                    "Violation(slicing=%s, name=%s, dependencies=[%s])",
+                    "Violation(slicing=%s, name=%s, size=%d, dependencies=[%s])",
                     getSliceType().displayString(),
                     this.name,
+                    getDependencies().size(),
                     getDependencies().stream().map(Edge::displayString).collect(joining(", "))
             );
         }

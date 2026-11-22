@@ -22,6 +22,7 @@ import static de.obqo.decycle.report.svg.SvgTagBuilder.use;
 import static j2html.TagCreator.a;
 import static j2html.TagCreator.b;
 import static j2html.TagCreator.body;
+import static j2html.TagCreator.br;
 import static j2html.TagCreator.dd;
 import static j2html.TagCreator.div;
 import static j2html.TagCreator.dl;
@@ -156,22 +157,28 @@ public class HtmlReport {
 
     private DomContent buildViolationDiv(final List<Violation> violations) {
         return violations.isEmpty()
-                ? div().withClass("violations rounded-lg pb-1 mb-3 alert-success row").with(
+                ? div().withClass("violations rounded-lg py-1 mb-3 alert-success row").with(
                 h1().withClass("m-0").with(i().withClass("bi bi-check-circle-fill")),
                 div().withClass("col-12 mt-1").with(b("No violations found")))
-                : div().withClass("violations rounded-lg pb-1 mb-3 alert-danger row").with(
+                : div().withClass("violations rounded-lg py-1 mb-3 alert-danger row").with(
                 h1().withClass("m-0").with(i().withClass("bi bi-exclamation-triangle-fill")),
                 each(violations.stream().flatMap(this::buildViolationDivColumns)));
     }
 
     private Stream<DomContent> buildViolationDivColumns(final Violation v) {
         return Stream.of(
-                div().withClass("col-4 name mt-1").with(b(violationTitle(v))),
+                div().withClass("col-4 name mt-1").with(
+                        b(violationTitle(v)),
+                        br(),
+                        span(violationSize(v))
+                ),
                 div().withClass("col-8 dependencies mt-1")
                         .with(v.getDependencies().stream().map(dependency ->
                                 div(a(dependency.displayString())
                                         .withHref(nodeRef(dependency.getFrom()))
-                                        .withClass("alert-link")))));
+                                        .withClass("alert-link")))),
+                div().withClass("col-12 separator mt-1")
+        );
     }
 
     private String replaceArrows(final String name) {
@@ -211,8 +218,9 @@ public class HtmlReport {
         );
     }
 
-    private SvgTag buildViolationImage(final Violation violation) {
-        return buildDependencyImage(violation.getViolatingSubgraph(), violationTitle(violation));
+    private DomContent buildViolationImage(final Violation violation) {
+        return div().withClass("col-12 d-flex")
+                .with(buildDependencyImage(violation.getViolatingSubgraph(), violationTitle(violation)));
     }
 
     private String violationTitle(final Violation violation) {
@@ -221,6 +229,10 @@ public class HtmlReport {
 
     private String capitalize(final String s) {
         return s.isEmpty() ? s : Character.toUpperCase(s.charAt(0)) + s.substring(1);
+    }
+
+    private String violationSize(final Violation violation) {
+        return String.format("%d dependencies", violation.getDependencies().size());
     }
 
     private SvgTag buildDependencyImage(final Slicing slicing, final String title) {
@@ -255,7 +267,7 @@ public class HtmlReport {
         final String upColor = "#721c24";
         return svg().widthAndHeight(totalWidth / svgShrinkFactor, totalHeight / svgShrinkFactor)
                 .viewBox(0, 0, totalWidth, totalHeight)
-                .withClass("dependency-graph border rounded mr-3").with(
+                .withClass("dependency-graph border rounded mx-auto mb-3").with(
                         defs().with(
                                 arrowHeadMarker("ad", downColor, 83 - arrowLength, 50),
                                 arrowHeadMarker("au", upColor, 83 - arrowLength, 50),
