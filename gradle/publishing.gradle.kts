@@ -79,11 +79,11 @@ val postToSonatype by tasks.registering {
         val url = "https://ossrh-staging-api.central.sonatype.com/manual/upload/defaultRepository/$ossrhNamespace"
         val authToken = java.util.Base64.getEncoder().encodeToString("$ossrhUsername:$ossrhPassword".toByteArray())
         val authHeader = "Authorization: Bearer $authToken"
-        val process = ProcessBuilder("curl", "-X", "POST", "-H", authHeader, url)
-            .inheritIO()
+        val process = ProcessBuilder("curl", "-4", "--fail-with-body", "-X", "POST", "-H", authHeader, url)
             .start()
         val exitCode = process.waitFor()
         if (exitCode != 0) {
+            project.logger.error(process.inputStream.bufferedReader().readText())
             throw GradleException("POST request to OSSRH failed (exit code: $exitCode)")
         }
     }

@@ -76,7 +76,7 @@ gradlePlugin {
         create("decyclePlugin") {
             id = pluginId
             displayName = "Gradle Decycle Plugin"
-            description = "Gradle plugin that executes decycle dependency checks"
+            description = "Gradle plugin that reports cycles in the packages of a JVM project"
             implementationClass = "de.obqo.decycle.gradle.DecyclePlugin"
             tags.set(listOf("decycle", "code-quality"))
         }
